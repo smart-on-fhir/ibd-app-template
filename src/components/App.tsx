@@ -1,9 +1,9 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import PatientList                      from '../PatientList';
-import SiteHeader                       from '../SiteHeader';
-import PatientView                      from '../PatientView';
-import SiteFooter                       from '../SiteFooter';
+import PatientList                      from './PatientList';
+import SiteHeader                       from './SiteHeader';
+import PatientView                      from './PatientView';
+import SiteFooter                       from './SiteFooter';
 
 
 export default function App() {
