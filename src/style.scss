@@ -1,0 +1,57 @@
+body {
+    padding: 2rem;
+}
+
+img.chart-screenshot {
+    width:100%;
+    mix-blend-mode: multiply;
+    margin-right: 2rem;
+    min-width: 500px;
+    height: 22em;
+}
+
+.js-plotly-plot {
+    vertical-align: middle;
+    width: 100% !important;
+    svg {
+        pointer-events: none;
+    }
+}
+
+.hc-container-small {
+    border-left: 1px dashed var(--bs-border-color);
+    border-right: 1px dashed var(--bs-border-color);
+}
+
+th, td {
+    vertical-align: middle;
+    text-align    : center;
+    line-height   : normal;
+}
+
+.table-hover tbody tr.no-hover:hover > td,
+.table-hover tbody tr.no-hover:hover > th,
+.table-striped tbody tr.no-hover > td,
+.table-striped tbody tr.no-hover > th,
+.table-hover td.no-hover,
+.table-hover th.no-hover {
+    background-color: inherit;
+    box-shadow: none;
+    border-color: transparent !important;
+}
+
+tr.no-border {
+    border-color: transparent !important;
+}
+
+.bg-pale-success {
+    background-color: rgba(var(--bs-success-rgb), 0.05) !important;
+}
+
+.bg-pale-primary {
+    background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+}
+
+td td, td th {
+    background: transparent !important;
+}
