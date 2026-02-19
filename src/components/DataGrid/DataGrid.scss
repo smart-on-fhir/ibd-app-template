@@ -1,0 +1,16 @@
+.data-grid {
+
+    td.date {
+        font-family: monospace;
+        font-size: 86%;
+        color: var(--bs-secondary);
+    }
+
+    td.string {
+        color: var(--bs-body-color);
+    }
+
+    td.number {
+        color: var(--bs-danger-text-emphasis);
+    }
+}
