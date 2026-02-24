@@ -43,21 +43,22 @@ export default function Collapse({
 
     return (
         <div>
-            <div onClick={() => setIsOpen((v) => !v)} className="d-flex gap-2 align-items-baseline" style={{ cursor: 'pointer' }}>
-                <i className={"text-muted small " + (isOpen ? "bi bi-caret-down-fill" : "bi bi-caret-right-fill")} />
+            <div onClick={() => setIsOpen((v) => !v)} className="d-flex gap-1 align-items-baseline" style={{ cursor: 'pointer' }}>
+                <i className={"text-muted lh-0 small " + (isOpen ? "bi bi-caret-down-fill" : "bi bi-caret-right-fill")} />
                 <div>{label}</div>
             </div>
             <div
                 ref={contentRef}
                 onTransitionEnd={onTransitionEnd}
                 style={{
-                    overflow: 'hidden',
-                    transition: 'height 400ms ease, opacity 200ms ease',
+                    overflow: isTransitioning ? 'hidden' : 'visible',
+                    transition: 'height 200ms ease, opacity 100ms ease',
                     height: height,
-                    opacity: isOpen || isTransitioning ? 1 : 0
+                    opacity: isOpen || isTransitioning ? 1 : 0,
+                    width: '100%'
                 }}
             >
-                <div style={{ paddingTop: 6 }}>{children}</div>
+                <div>{isOpen && children}</div>
             </div>
         </div>
     );
