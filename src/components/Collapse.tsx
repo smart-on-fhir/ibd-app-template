@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Collapse({
     children,
-    label
+    label,
 }: {
     children: React.ReactNode,
-    label: React.ReactNode
+    label: React.ReactNode,
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const contentRef = useRef<HTMLDivElement | null>(null);
@@ -44,8 +44,8 @@ export default function Collapse({
     return (
         <div>
             <div onClick={() => setIsOpen((v) => !v)} className="d-flex gap-1 align-items-baseline" style={{ cursor: 'pointer' }}>
-                <i className={"text-muted lh-0 small " + (isOpen ? "bi bi-caret-down-fill" : "bi bi-caret-right-fill")} />
-                <div>{label}</div>
+                <i className={"text-muted opacity-75 lh-0 small " + (isOpen ? "bi bi-caret-down-fill" : "bi bi-caret-right-fill")} />
+                <div style={{ minWidth: 0, overflow: 'hidden' }}>{label}</div>
             </div>
             <div
                 ref={contentRef}
