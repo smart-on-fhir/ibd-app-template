@@ -13,15 +13,22 @@ export function createValueRenderer(allResources: Record<string, FhirResource[]>
             return String(value);
         }
 
+        // Numbers
         if (typeof value === "number") {
             return <span style={{ color: '#a0a' }}>{value}</span>;
         }
+
+        // Booleans
         if (typeof value === "boolean") {
             return <span style={{ color: !!value ? '#090' : '#900' }}>{String(value)}</span>;    
         }
+
+        // null or undefined
         if (value === null || value === undefined) {
             return <span className='text-muted'>{String(value)}</span>;
         }
+
+        // URL values
         if (value.match(/^https?:\/\/.+/)) {
             return (
                 <a href={value} target="_blank" rel="noopener noreferrer" style={{ color: '#00F' }}>
@@ -30,10 +37,13 @@ export function createValueRenderer(allResources: Record<string, FhirResource[]>
                 </a>
             );
         }
+
+        // Date values
         if (value.match(/^\d{4}-\d{2}-\d{2}/)) {
             return <span style={{ color: '#C60' }}>{value}</span>;
         }
 
+        // Attachment data in DocumentReference
         const match = path.match(/^DocumentReference\.content\[(\d+)\]\.attachment\.data$/);
         if (match) {
             console.log('Found attachment data:', path, value, match);
@@ -51,6 +61,7 @@ export function createValueRenderer(allResources: Record<string, FhirResource[]>
             return <span style={{ color: '#C6C' }}>{value}</span>;
         }
 
+        // Reference values
         if (path.endsWith('.reference') || path.endsWith('.url')) {
             const [resourceType, id] = value.split('/');
             if (resourceType && id) {
@@ -71,6 +82,17 @@ export function createValueRenderer(allResources: Record<string, FhirResource[]>
                 }
             }
         }
+
+        // Multi-line strings
+        if (typeof value === 'string' && value.includes('\n')) {
+            return (
+                <Collapse label={<span style={{ color: '#044' }}>Multi-line string ({value.split('\n').length} lines)</span>}>
+                    <pre className="text-muted" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', margin: 0 }}>{value}</pre>
+                </Collapse>
+            );
+        }
+
+        // Normal strings
         return <span style={{ color: '#044' }}>{String(value)}</span>;
     };
 }

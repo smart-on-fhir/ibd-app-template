@@ -29,11 +29,19 @@ export default function JsonViewer({
         );
     }
 
-    if (typeof data === 'object') {
+    if (data && typeof data === 'object') {
         path = path || String(data.resourceType);
         return (
             <div className="ps-3">
                 {Object.entries(data).map(([key, value], idx) => {
+                    if (value === undefined) {
+                        return (
+                            <div key={idx} className="d-flex gap-1 ps-3 w-100">
+                                <b>{key}:</b>
+                                <i className="text-secondary opacity-50">undefined</i>
+                            </div>
+                        );
+                    }
                     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null) {
                         return (
                             <div key={idx} className="d-flex gap-1 ps-3 w-100">
@@ -52,5 +60,5 @@ export default function JsonViewer({
         );
     }
 
-    return null; // should never reach here
+    return <div className="ps-3 text-secondary opacity-50">undefined</div>;
 }
