@@ -1,6 +1,6 @@
 import { Link }               from 'react-router-dom';
 import { useEffect }          from 'react';
-import Loader                 from './Loader';
+import Loader                 from './generic/Loader';
 import { summarizeHumanName } from '../utils';
 import { usePatientContext }  from '../contexts/PatientContext';
 
