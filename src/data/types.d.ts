@@ -1,0 +1,178 @@
+type ISODate = string; // e.g., "2023-10-05"
+
+export type ConditionClinicalStatus = 
+      "active"
+    | "recurrence"
+    | "relapse"
+    | "inactive"
+    | "remission"
+    | "resolved"
+    | string; // free text if code is not present
+
+export type ConditionVerificationStatus = 
+      "unconfirmed"
+    | "provisional"
+    | "differential"
+    | "confirmed"
+    | "refuted"
+    | "entered-in-error"
+    | string; // free text if code is not present
+
+export type EncounterStatus = 
+      "planned"
+    | "arrived"
+    | "triaged"
+    | "in-progress"
+    | "onleave"
+    | "finished"
+    | "cancelled"
+    | "entered-in-error"
+    | "unknown";
+
+export interface ConditionAttributes {
+    id                : string | null;
+    code              : string | null;
+    codeDisplay       : string | null;
+    codeText          : string | null;
+    codeSystem        : string | null;
+    clinicalStatus    : ConditionClinicalStatus | null;
+    verificationStatus: ConditionVerificationStatus | null;
+    onsetDateTime     : Date | null;
+    abatementDateTime : Date | null;
+    recordedDate      : Date | null;
+}
+
+export interface ClaimAttributes {
+    id                 : string | null;
+    status             : string | null;
+    type               : string | null;
+    use                : string | null;
+    created            : ISODate | null;
+    billablePeriodStart: ISODate | null;
+    billablePeriodEnd  : ISODate | null;
+}
+
+export interface EncounterAttributes {
+    id                  : string | null;
+    status              : EncounterStatus | null;
+    class               : string | null;
+    type                : string | null;
+    reasonCode          : string | null;
+    admitSource         : string | null;
+    dischargeDisposition: string | null;
+    periodStart         : Date | null;
+    periodEnd           : Date | null;
+}
+
+export interface MedicationRequestAttributes {
+    id        : string | null;
+    status    : string | null;
+    intent    : string | null;
+    medication: string | null;
+    authoredOn: ISODate | null;
+}
+
+export interface ObservationAttributes {
+    id                : string | null;
+    code              : string | null;
+    codeDisplay       : string | null;
+    codeText          : string | null;
+    codeSystem        : string | null;
+    value             : string | null;
+    effectiveDateTime : ISODate | null;
+    components        : string | null;
+    encounter         : string | null;
+}
+
+export interface OrganizationAttributes {
+    id     : string | null;
+    address: string | null;
+    contact: string | null;
+}
+
+export interface PatientAttributes {
+    id       : string | null;
+    name     : string | null;
+    birthDate: ISODate | null;
+    gender   : string | null;
+}
+
+export interface PractitionerAttributes {
+    id       : string | null;
+    name     : string | null;
+    birthDate: ISODate | null;
+    gender   : string | null;
+}
+
+export interface RelatedPersonAttributes {
+    id       : string | null;
+    name     : string | null;
+    birthDate: ISODate | null;
+    gender   : string | null;
+}
+
+export interface Database {
+    Claim            : ClaimAttributes[];
+    Condition        : ConditionAttributes[];
+    Encounter        : EncounterAttributes[];
+    MedicationRequest: MedicationRequestAttributes[];
+    Observation      : ObservationAttributes[];
+    Organization     : OrganizationAttributes[];
+    Practitioner     : PractitionerAttributes[];
+    Immunization     : ImmunizationAttributes[];
+    Patient          : PatientAttributes[];
+    RelatedPerson    : RelatedPersonAttributes[];
+}
+
+interface ImmunizationAttributes {
+    id                : string | null;
+    vaccineCode       : string | null;
+    occurrenceDateTime: Date   | null;
+    status            : string | null;
+}
+
+export interface ConditionsAPI {
+    
+    // conditions --------------------------------------------------------------
+    
+    /** Get a condition by its ID */
+    getConditionById(id: string): ConditionAttributes | null;
+    /** Get conditions by one or more clinical status codings */
+    getConditionsByClinicalStatus(codings: { system: string, code: string }[]): ConditionAttributes[];
+    /** Get conditions by one or more verification status codes */
+    getConditionsByVerificationStatus(codes: ConditionVerificationStatus[]): ConditionAttributes[];
+    /** Get conditions with onset date/time within the specified range */
+    getConditionsByOnsetDateTime(start: ISODate, end: ISODate): ConditionAttributes[];
+    /** Get conditions with abatement date/time within the specified range */
+    getConditionsByAbatementDateTime(start: ISODate, end: ISODate): ConditionAttributes[];
+    /** Get conditions with recorded date within the specified range */
+    getConditionsByRecordedDate(start: ISODate, end: ISODate): ConditionAttributes[];
+
+    // observations ------------------------------------------------------------
+    
+    /** Get an observation by its ID */
+    getObservationById(id: string): ObservationAttributes | null;
+    /** Get observations by one or more code codings */
+    getObservationsByCode(codes: { system?: string, code: string }[]): ObservationAttributes[];
+    /** Get observations with effective date/time within the specified range */
+    getObservationsByEffectiveDateTime(start: ISODate, end: ISODate): ObservationAttributes[];
+    /** Get observations with the specified value */
+    getObservationsByValue(value: string): ObservationAttributes[];
+    /** Get observations associated with a specific encounter */
+    getObservationsByEncounter(encounterId: string): ObservationAttributes[];
+
+    // encounters --------------------------------------------------------------
+
+    /** Get an encounter by its ID */
+    getEncounterById(id: string): EncounterAttributes | null;
+    /** Get an encounter by its status */
+    getEncounterByStatus(status: EncounterStatus): EncounterAttributes | null;
+}
+
+export type ClinicalAPI = ConditionsAPI;
+
+// Example system prompt excerpt:
+
+// You may only generate TypeScript code that calls the provided ClinicalAPI methods.
+// Do not assume access to the underlying database or any other data sources.
+// If the provided API cannot answer the question, explicitly state that and do not attempt to infer missing data.
