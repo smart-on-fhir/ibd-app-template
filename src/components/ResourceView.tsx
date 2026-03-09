@@ -2,7 +2,7 @@ import { useState }                  from "react";
 import { useParams }                 from "react-router-dom";
 import { modelFactory, ModelMap }    from "../data/index";
 import { usePatientContext }         from "../contexts/PatientContext";
-import DataGrid, { type GridColumn } from "./DataGrid/index";
+import DataGrid, { type GridColumn } from "./generic/DataGrid/index";
 import { Model }                     from "../data/Model";
 
 

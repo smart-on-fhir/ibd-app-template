@@ -1,3 +1,4 @@
+// import Highcharts from "highcharts/highstock"
 import Highcharts from "highcharts"
 import "highcharts/highcharts-more"
 import "highcharts/highcharts-3d"
@@ -16,6 +17,9 @@ import "highcharts/modules/heatmap"
 import "highcharts/modules/treemap"
 import "highcharts/modules/boost"
 import "highcharts/modules/venn"
+import "highcharts/modules/xrange"
+
+
 
 
 // Fix for zombie tooltip containers

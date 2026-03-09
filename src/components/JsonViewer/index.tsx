@@ -1,5 +1,5 @@
 import type { JSONValue } from "../../types";
-import Collapse           from "../Collapse";
+import Collapse           from "../generic/Collapse";
 
 
 export default function JsonViewer({

@@ -1,4 +1,4 @@
-import Collapse from "../Collapse";
+import Collapse from "../generic/Collapse";
 import TimelineEventView from "./TimelineEventView";
 import { getIconForResourceType, type TimelineEvent } from "./utils";
 

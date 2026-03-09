@@ -1,5 +1,5 @@
 import { humanizeNumericValue, textForCoding } from "../../utils/patientTimeline";
-import Collapse               from "../Collapse";
+import Collapse               from "../generic/Collapse";
 import FhirResourceJsonViewer from "../JsonViewer/FhirJsonViewer";
 import type { TimelineEvent } from "./utils";
 
