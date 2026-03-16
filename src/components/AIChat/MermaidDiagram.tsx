@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 
 // Mermaid renderer for mermaid code blocks
-export default function MermaidDiagram({ chart }: { chart: string }) {
+export default function MermaidDiagram({ chart, minWidth }: { chart: string, minWidth?: string }) {
     const ref = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         if (!ref.current) return;
@@ -14,8 +14,10 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
 
         // Quick heuristic: mermaid charts typically start with a directive
         // like `graph`, `sequenceDiagram`, `gantt`, `classDiagram`, etc.
-        const firstLine = (chart || '').trim().split('\n')[0] || '';
-        const isLikelyMermaid = /^(graph|sequenceDiagram|gantt|classDiagram|stateDiagram|erDiagram|journey|timeline|flowchart)\b/i.test(firstLine);
+        // Skip leading %%{init}%% lines before checking the diagram type.
+        const allLines = (chart || '').trim().split('\n');
+        const firstNonInit = allLines.find(l => !/^\s*%%/.test(l)) ?? allLines[0] ?? '';
+        const isLikelyMermaid = /^(graph|sequenceDiagram|gantt|classDiagram|stateDiagram|erDiagram|journey|timeline|flowchart)\b/i.test(firstNonInit);
 
         // Heuristic: if the LLM concatenated markdown after the mermaid fence,
         // strip trailing table/HR/header lines before rendering to avoid parser
@@ -43,10 +45,10 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
                 let chartToRender = trimmedChart || chart;
 
                 // Normalize common LLM artifacts that break the mermaid parser:
-                // - convert HTML <br> tags to literal newlines
                 // - replace various dash/hyphen unicode characters with ASCII '-'
                 // - replace non-breaking spaces with regular spaces
-                chartToRender = chartToRender.replace(/<br\s*\/?>/gi, '\n');
+                // NOTE: <br/> tags are intentionally preserved — Mermaid renders
+                // them as line breaks in HTML labels (securityLevel: 'loose').
                 chartToRender = chartToRender.replace(/[\u00A0\u202F]/g, ' ');
                 chartToRender = chartToRender.replace(/[\u2010\u2011\u2012\u2013\u2014\u2212]/g, '-');
 
@@ -58,8 +60,30 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
                     try {
                         ref.current.innerHTML = svg;
                     } catch (e) {
-                        // If insertion fails, fallthrough to error handling below.
                         throw e;
+                    }
+                    // Mermaid sets explicit width/height attributes and an inline
+                    // max-width on the SVG, all of which fight container-driven sizing.
+                    // The correct responsive SVG pattern: keep viewBox, drop the
+                    // width/height attributes, set width:100% via CSS — the browser
+                    // then scales height automatically from the aspect ratio.
+                    const svgEl = ref.current.querySelector('svg');
+                    if (svgEl) {
+                        // Capture natural width from viewBox before stripping attributes.
+                        // viewBox="minX minY width height" — 3rd token is natural width.
+                        const vb = svgEl.getAttribute('viewBox');
+                        const naturalW = vb ? parseFloat(vb.trim().split(/\s+/)[2]) : NaN;
+                        svgEl.removeAttribute('width');
+                        svgEl.removeAttribute('height');
+                        svgEl.style.maxWidth = '';
+                        // width:100% fills the container; max-width caps at the diagram's
+                        // natural size so small charts don't stretch and blow up the font.
+                        svgEl.style.width    = '100%';
+                        if (!isNaN(naturalW) && naturalW > 0) {
+                            svgEl.style.maxWidth = `${naturalW}px`;
+                        }
+                        svgEl.style.height   = 'auto';
+                        svgEl.style.minWidth = minWidth ?? '';
                     }
                 }
 
@@ -112,6 +136,6 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
             }
         })();
         return () => { mounted = false; };
-    }, [chart]);
+    }, [chart, minWidth]);
     return <div ref={ref} className="mermaid-diagram" />;
 }

@@ -4,6 +4,45 @@ import type { JSONValue }                                 from "../../types";
 import JsonViewer                                         from ".";
 import AttachmentPreview                                  from "./Attachment";
 
+export function Decorator({ children, type }: { children: React.ReactNode; type?: 'number' | 'boolean' | 'string' }) {
+    
+    if (type === 'string') {
+        return <span style={{ color: '#044' }}>{children}</span>;
+    }
+    
+    if (type === 'number') {
+        return <span style={{ color: '#a0a' }}>{children}</span>;
+    }
+    
+    if (type === 'boolean') {
+        return <span style={{ color: children === 'true' ? '#090' : '#900' }}>{children}</span>;    
+    }
+
+    if (children === null || children === undefined) {
+        return <span className='text-muted'>{String(children)}</span>;
+    }
+
+    if (typeof children === 'string') {
+        
+        // URL values
+        if (children.match(/^https?:\/\/.+/)) {
+            return (
+                <a href={children} target="_blank" rel="noopener noreferrer" style={{ color: '#00F' }}>
+                    {children}
+                    <i className="bi bi-box-arrow-up-right ms-1" />
+                </a>
+            );
+        }
+
+        // Date values
+        if (children.match(/^\d{4}-\d{2}-\d{2}/)) {
+            return <span style={{ color: '#C60' }}>{children}</span>;
+        }
+    }
+
+    return children;
+}
+
 
 export function createValueRenderer(allResources: Record<string, FhirResource[]>) {
     return function renderValue(value: string | number | boolean | null, path?: string, root?: JSONValue): React.ReactNode {
@@ -15,17 +54,17 @@ export function createValueRenderer(allResources: Record<string, FhirResource[]>
 
         // Numbers
         if (typeof value === "number") {
-            return <span style={{ color: '#a0a' }}>{value}</span>;
+            return <Decorator type="number">{value}</Decorator>;
         }
 
         // Booleans
         if (typeof value === "boolean") {
-            return <span style={{ color: !!value ? '#090' : '#900' }}>{String(value)}</span>;    
+            return <Decorator type="boolean">{String(value)}</Decorator>;    
         }
 
         // null or undefined
         if (value === null || value === undefined) {
-            return <span className='text-muted'>{String(value)}</span>;
+            return <Decorator>{value}</Decorator>;
         }
 
         // URL values
