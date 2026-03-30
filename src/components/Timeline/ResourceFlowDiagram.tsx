@@ -252,6 +252,7 @@ function resourceId(resource: any): string {
 export function buildFlowGraph(
     startResource: any,
     allResources: Record<string, any[]>,
+    reverseIndex?: Map<string, Array<{ res: any; entry: RefEntry }>>,
 ): { nodes: Map<string, FlowNode>; edges: FlowEdge[] } {
     const nodes = new Map<string, FlowNode>();
     const edges: FlowEdge[] = [];
@@ -360,36 +361,21 @@ export function buildFlowGraph(
 
     // ── Backward walk: find resources that reference startResource ───────────
     // (e.g. DiagnosticReport.result → this Observation)
+    // Uses pre-built reverse index for O(1) lookup instead of scanning all resources.
     if (nodes.size < MAX_NODES) {
-        const startType = startResource.resourceType;
-        const startRawId = startResource.id;
-        const refPattern = `${startType}/${startRawId}`;
+        const refPattern = `${startResource.resourceType}/${startResource.id}`;
+        const backrefs = reverseIndex?.get(refPattern) ?? [];
 
-        for (const [, bucket] of Object.entries(allResources)) {
+        for (const { res, entry } of backrefs) {
             if (nodes.size >= MAX_NODES) break;
-            for (const res of bucket) {
-                if (nodes.size >= MAX_NODES) break;
-                const rid = resourceId(res);
-                if (rid === startId) continue;
-
-                // Does this resource reference our start?
-                const refs: RefEntry[] = [];
-                extractReferences(res, '', 0, refs);
-                const matching = refs.filter(r => r.ref === refPattern && r.fieldName !== '');
-                if (matching.length === 0) continue;
-
-                addNode(res);
-                for (const m of matching) {
-                    const edgeLabel = resolveEdgeLabel(m.fieldName, startResource.resourceType);
-                    if (REVERSE_FIELDS.has(m.fieldName)) {
-                        // res.encounter = start → encounter caused this → encounter→start (but now res→start means res is the parent)
-                        // This means res is actually a sibling whose parent is start; draw res→start only if structurally meaningful
-                        addEdge(startId, rid, edgeLabel);
-                    } else {
-                        // res.result = start → res produced start → res→start
-                        addEdge(rid, startId, edgeLabel);
-                    }
-                }
+            const rid = resourceId(res);
+            if (rid === startId) continue;
+            addNode(res);
+            const edgeLabel = resolveEdgeLabel(entry.fieldName, startResource.resourceType);
+            if (REVERSE_FIELDS.has(entry.fieldName)) {
+                addEdge(startId, rid, edgeLabel);
+            } else {
+                addEdge(rid, startId, edgeLabel);
             }
         }
     }
@@ -503,14 +489,33 @@ export default function ResourceFlowDiagram({
     const containerRef = useRef<HTMLDivElement>(null);
     const tooltipRef   = useRef<HTMLDivElement>(null);
 
+    // Pre-build reverse reference index once per allResources change so the
+    // backward walk in buildFlowGraph is O(1) instead of O(n * depth).
+    const reverseIndex = useMemo(() => {
+        const index = new Map<string, Array<{ res: any; entry: RefEntry }>>();
+        for (const bucket of Object.values(allResources)) {
+            for (const res of bucket) {
+                const refs: RefEntry[] = [];
+                extractReferences(res, '', 0, refs);
+                for (const entry of refs) {
+                    if (!entry.ref || entry.fieldName === '') continue;
+                    const arr = index.get(entry.ref);
+                    if (arr) arr.push({ res, entry });
+                    else index.set(entry.ref, [{ res, entry }]);
+                }
+            }
+        }
+        return index;
+    }, [allResources]);
+
     const chart = useMemo(() => {
         if (!event?.raw) return null;
-        const { nodes, edges } = buildFlowGraph(event.raw, allResources);
+        const { nodes, edges } = buildFlowGraph(event.raw, allResources, reverseIndex);
         if (nodes.size <= 1 && edges.length === 0) return null;
         nodeIdMap.current      = new Map([...nodes.values()].map(n => [safeMermaidId(n.id), n.id]));
         nodeTooltipMap.current = new Map([...nodes.values()].map(n => [safeMermaidId(n.id), n.tooltip]));
         return graphToMermaid(nodes, edges, { clickCallbackName: undefined, fontSize });
-    }, [event, allResources, fontSize]);
+    }, [event, allResources, reverseIndex, fontSize]);
 
     // Reset selection when the start event changes
     useEffect(() => { setSelectedNodeId(null); }, [event]);

@@ -277,13 +277,13 @@ export default function TreatmentOutcomeChart({
     onSelectionChange = () => {},
     onEventClick      = () => {},
 }: {
-    data:               TimelineEvent[];
-    navigatorData:      TimelineEvent[];
-    lensStart:          number;
-    lensEnd:            number;
-    clickedEvent?:      TimelineEvent | null;
-    onSelectionChange?: (events: TimelineEvent[]) => void;
-    onEventClick?:      (event: TimelineEvent | null) => void;
+    data:                       TimelineEvent[];
+    navigatorData:               TimelineEvent[];
+    lensStart:                   number;
+    lensEnd:                     number;
+    clickedEvent?:               TimelineEvent | null;
+    onSelectionChange?:          (events: TimelineEvent[]) => void;
+    onEventClick?:               (event: TimelineEvent | null) => void;
 }) {
     const treatRef        = useRef<any>(null);
     const outcomeRef      = useRef<any>(null);
@@ -428,6 +428,13 @@ export default function TreatmentOutcomeChart({
         computeConnectorRef.current();
     }, [clickedEvent]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Recompute connector on window resize — getBoundingClientRect values change
+    useEffect(() => {
+        const onResize = () => computeConnectorRef.current();
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
     // Recompute connector after metric visibility changes — chart remounts with new plotHeight
     useEffect(() => {
         const id = setTimeout(() => computeConnectorRef.current(), 50);
@@ -442,6 +449,7 @@ export default function TreatmentOutcomeChart({
         setFocusedTreatment(e);
         setHiddenMetrics(new Set(sorted.slice(5).map(([l]) => l)));
     };
+
     // Clear focus and restore default (top 5 by observation count)
     const clearFocus = () => {
         setFocusedTreatment(null);
@@ -457,7 +465,11 @@ export default function TreatmentOutcomeChart({
             panning: { enabled: false },
             zooming: { type: 'x', mouseWheel: { enabled: false } },
             events: {
-                click() { clearFocus(); onSelectionChange([]); onEventClick(null); },
+                click(this: any, event: any) {
+                    // Reset Zoom button clicks bubble to chart.events.click — ignore them
+                    if ((event?.target as Element | null)?.closest?.('.highcharts-reset-zoom')) return;
+                    clearFocus(); onSelectionChange([]); onEventClick(null);
+                },
                 render() { computeConnectorRef.current(); },
             },
         },
@@ -618,6 +630,9 @@ export default function TreatmentOutcomeChart({
             marginLeft: ML, marginRight: 20, marginTop: 8, marginBottom: 28,
             animation: false, backgroundColor: '#FFF', borderWidth: 0, plotBorderWidth: 0,
             panning: { enabled: true, type: 'x' },
+            events: {
+                render() { computeConnectorRef.current(); },
+            },
         },
         exporting: { enabled: false }, credits: { enabled: false },
         title: { text: '' }, subtitle: { text: '' },

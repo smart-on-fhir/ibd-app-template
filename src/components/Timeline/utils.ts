@@ -38,6 +38,9 @@ export type TimelineEvent = {
   encounterId?: string
   display?: string        // optional short label
   raw: FhirResource      // original resource
+  // Lens-applied overrides (set by view mode lenses, not by normalization)
+  yLabel?: string         // Y-axis row label override (e.g. medication name, procedure code)
+  color?: string          // per-point color override (e.g. status-based)
 }
 
 /**
@@ -76,6 +79,7 @@ function resolveDate(
 
     { type: "instant", value: res.date },
     { type: "instant", value: res.issued },
+    { type: "instant", value: res.authoredOn },
     { type: "instant", value: res.recordedDate }
   ]
 
@@ -108,8 +112,10 @@ function categorize(resourceType: string): string {
       return "observation"
     case "Procedure":
       return "procedure"
+    case "MedicationRequest":
     case "MedicationStatement":
     case "MedicationAdministration":
+    case "MedicationDispense":
       return "medication"
     case "Immunization":
       return "immunization"
@@ -142,7 +148,7 @@ export function getIconForResourceType(resourceType: string): string {
   }
 }
 
-function resolveDisplay(resource: FhirResource): string {
+export function resolveDisplay(resource: FhirResource): string {
   switch (resource.resourceType) {
     case 'Immunization':
       return resource.vaccineCode?.text
@@ -153,6 +159,19 @@ function resolveDisplay(resource: FhirResource): string {
         || resource.type?.[0]?.coding?.[0]?.display
         || resource.class?.display
         || resource.class?.code
+        || '';
+    case 'MedicationRequest':
+    case 'MedicationStatement':
+    case 'MedicationAdministration':
+    case 'MedicationDispense':
+      return resource.medicationCodeableConcept?.text
+        || resource.medicationCodeableConcept?.coding?.[0]?.display
+        || resource.medicationCodeableConcept?.coding?.[0]?.code
+        || resource.medicationReference?.display
+        || resource.medication?.concept?.text
+        || resource.medication?.concept?.coding?.[0]?.display
+        || resource.medication?.reference?.display
+        || resource.medication?.display
         || '';
     default:
       return resource.code?.text
