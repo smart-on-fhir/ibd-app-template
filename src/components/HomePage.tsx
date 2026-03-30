@@ -4,12 +4,16 @@ import PatientList           from "./PatientList";
 import { usePatientContext } from "../contexts/PatientContext";
 
 
+const LOCAL_SANDBOX_URL = import.meta.env.VITE_LOCAL_SANDBOX_URL as string | undefined;
+
 const SOURCES = {
-    localSandbox: {
-        label: 'Local Sandbox',
-        url: 'https://192.168.66.3',
-        description: 'Connect to a local FHIR sandbox server (e.g. HAPI FHIR running in Docker)'
-    },
+    ...(LOCAL_SANDBOX_URL ? {
+        localSandbox: {
+            label: 'Local Sandbox',
+            url: LOCAL_SANDBOX_URL,
+            description: 'Connect to a local FHIR sandbox server (e.g. HAPI FHIR running in Docker)'
+        }
+    } : {}),
     publicSandbox: {
         label: 'Public Sandbox',
         url: 'https://r4.smarthealthit.org',
@@ -24,7 +28,7 @@ const SOURCES = {
 
 export default function HomePage() {
 
-    const [source, setSource] = useState<keyof typeof SOURCES>('upload');
+    const [source, setSource] = useState<string>('upload');
 
     return (
         <div className="d-flex flex-column align-items-center h-100 pt-4">
@@ -34,9 +38,11 @@ export default function HomePage() {
                 <li className="nav-item" onClick={() => setSource("upload")}>
                     <span className={`nav-link ${source === 'upload' ? 'active' : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>Upload Patient Bundle</span>
                 </li>
-                <li className="nav-item" onClick={() => setSource("localSandbox")}>
-                    <span className={`nav-link ${source === 'localSandbox' ? 'active' : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>Local Sandbox</span>
-                </li>
+                {LOCAL_SANDBOX_URL && (
+                    <li className="nav-item" onClick={() => setSource("localSandbox")}>
+                        <span className={`nav-link ${source === 'localSandbox' ? 'active' : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>Local Sandbox</span>
+                    </li>
+                )}
                 <li className="nav-item" onClick={() => setSource("publicSandbox")}>
                     <span className={`nav-link ${source === 'publicSandbox' ? 'active' : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>Public Sandbox</span>
                 </li>
@@ -44,9 +50,9 @@ export default function HomePage() {
             
             { source === 'upload' && <BundleImporter /> }
             
-            { source === 'localSandbox' && (
+            { source === 'localSandbox' && LOCAL_SANDBOX_URL && (
                 <div className="w-100">
-                    <PatientList baseUrl={SOURCES.localSandbox.url} />
+                    <PatientList baseUrl={LOCAL_SANDBOX_URL} />
                 </div>
             )}
 

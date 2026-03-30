@@ -1,4 +1,4 @@
-import type { ConditionPreset } from '../../data/conditionPresets';
+import type { ConditionPreset } from './conditionPresets';
 
 export default function ConditionPresetFilter({
     presets,

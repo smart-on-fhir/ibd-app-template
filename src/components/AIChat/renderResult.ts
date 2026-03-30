@@ -6,6 +6,7 @@ export async function renderResult(
   userQuestion: string,
   resultData: any
 ) {
+  if (!openai) throw new Error('OpenAI not configured');
   const response = await openai.chat.completions.create({
     model: "gpt-oss-120b",
     temperature: 0.2,

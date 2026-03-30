@@ -18,7 +18,11 @@ export class MedicationRequestModel extends Model<MedicationRequestAttributes> {
         this.attributes.id         = medicationRequest.id || null;
         this.attributes.status     = medicationRequest.status || null;
         this.attributes.intent     = medicationRequest.intent || null;
-        this.attributes.medication = medicationRequest.medicationCodeableConcept?.text || medicationRequest.medicationReference?.display || null;
+        this.attributes.medication = medicationRequest.medicationCodeableConcept?.text
+            || medicationRequest.medicationCodeableConcept?.coding?.[0]?.display
+            || medicationRequest.medicationCodeableConcept?.coding?.[0]?.code
+            || medicationRequest.medicationReference?.display
+            || null;
         this.attributes.authoredOn = medicationRequest.authoredOn || null;
     }
 }

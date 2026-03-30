@@ -3,6 +3,8 @@ import { useEffect }                  from 'react';
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 import { usePatientContext }          from '../contexts/PatientContext';
 
+const OPENAI_ENABLED = !!import.meta.env.VITE_OPENAI_API_KEY;
+
 
 export default function PatientView() {
     const { id } = useParams();
@@ -32,10 +34,12 @@ export default function PatientView() {
                         <i className="bi bi-person-lines-fill" />
                         <span>Patient Timeline</span>
                     </NavLink>
+                    {OPENAI_ENABLED && (
                     <NavLink to={`./chat`} className='d-flex gap-2 text-decoration-none nav-link py-1 fw-bold'>
                         <i className="bi bi-chat-dots" />
                         <span>AI Chat</span>
                     </NavLink>
+                    )}
                     <div className='d-flex gap-2 text-decoration-none px-3 py-1 fw-bold text-secondary'>
                         <i className="bi bi-folder2-open" />
                         <span className='flex-grow-1'>Resources:</span>
@@ -62,7 +66,7 @@ export default function PatientView() {
                     </div>
                 </div>
             </div>
-            <div className="overflow-auto d-flex flex-column flex-grow-1 p-1">
+            <div className="overflow-auto d-flex flex-column flex-grow-1 ps-3">
                 { selectedPatientSummary && <Outlet /> }
             </div>
         </div>

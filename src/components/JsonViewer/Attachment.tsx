@@ -26,7 +26,30 @@ export default function AttachmentPreview({ attachment }: { attachment: Attachme
         }
     }, [attachment && attachment.data, attachment && attachment.contentType]);
 
-    if (!attachment || !attachment.data) return <span className="text-muted">No attachment data</span>;
+
+    if (!attachment || !attachment.data) {
+        // If we know the type or url, show a friendlier message
+        const type = attachment?.contentType?.split(';')[0].trim() || '';
+        const url  = attachment?.url;
+        let label = 'file';
+        if (type === 'application/pdf') label = 'PDF file';
+        else if (type.startsWith('image/')) label = 'image';
+        else if (type === 'text/html') label = 'HTML document';
+        else if (type === 'text/plain') label = 'text file';
+        else if (type) label = type;
+        if (url) {
+            return <span className="text-muted">
+                There is a <span className="badge bg-secondary">{label}</span> attached but the file is not present in this bundle.<br />
+                URL: <code>{url}</code>
+            </span>;
+        }
+        if (type) {
+            return <span className="text-muted">
+                There is a <span className="badge bg-secondary">{label}</span> attached but the file is not present in this bundle.
+            </span>;
+        }
+        return <span className="text-muted">No attachment data</span>;
+    }
 
     const contentType = attachment.contentType?.split(';')[0].trim() || '';
 
@@ -62,7 +85,9 @@ export default function AttachmentPreview({ attachment }: { attachment: Attachme
 
     // Plain text
     if (contentType === 'text/plain') {
-        return <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9em' }}>{attachment.data ? atob(attachment.data) : 'No data'}</pre>;
+        return <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+            {attachment.data ? atob(attachment.data) : 'No data'}
+        </pre>;
     }
 
     // Fallback: offer download and try to embed in an iframe

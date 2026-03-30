@@ -1,5 +1,4 @@
-// import Highcharts from "highcharts/highstock"
-import Highcharts from "highcharts"
+import Highcharts from "highcharts/highstock"
 import "highcharts/highcharts-more"
 import "highcharts/highcharts-3d"
 import "highcharts/modules/exporting"
@@ -34,5 +33,4 @@ Highcharts.wrap(Highcharts.Tooltip.prototype, 'hide', function(p, delay) {
     }
 });
 
-export type * from "highcharts"
 export default Highcharts

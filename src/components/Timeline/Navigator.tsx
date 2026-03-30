@@ -10,12 +10,14 @@ export default function Navigator({
     selectedResourceTypes,
     start,
     end,
+    useEventColors = false,
 }: {
     data: any[];
     onChange: (min: number, max: number) => void,
     selectedResourceTypes?: string[];
     start: number;
     end: number;
+    useEventColors?: boolean;
 }) {
     const chartRef     = useRef<any>(null);
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -25,9 +27,11 @@ export default function Navigator({
         debounceTimer.current = setTimeout(() => onChange(min, max), 150);
     }, [onChange]);
 
-    const getPointColor = (ev: any) =>
-        (!selectedResourceTypes || selectedResourceTypes.length === 0 || selectedResourceTypes.includes(ev.resourceType))
+    const getPointColor = (ev: any) => {
+        if (useEventColors) return ev.color ?? '#C608';
+        return (!selectedResourceTypes || selectedResourceTypes.length === 0 || selectedResourceTypes.includes(ev.resourceType))
             ? '#C608' : '#EEE';
+    };
 
     const options: Highcharts.Options = {
         chart: {
@@ -189,6 +193,9 @@ export default function Navigator({
                     }
                 }
             },
+            min        : Number.isFinite(start) ? start : undefined,
+            max        : Number.isFinite(end)   ? end   : undefined,
+            minRange   : 1,      // allow selecting any width down to 1ms
             visible    : false,
             title      : { text: '' },
             height     : 0,
