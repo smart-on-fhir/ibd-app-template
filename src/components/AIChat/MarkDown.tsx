@@ -117,48 +117,48 @@ export default function MarkDown({ children }: { children: string }) {
                     const lang       = match ? match[1] : null;
                     
                     // Try to detect a Highcharts config and parse it to JSON.
-                    function tryParseHighchartsOptions(src: string): any | null {
-                        const s = src.trim();
-                        // If starts with an object literal, try JSON.parse first
-                        let candidate = s;
-                        if (s.startsWith('{')) {
-                            try {
-                                return JSON.parse(candidate);
-                            } catch (_) {
-                                // fallthrough to heuristic cleanup
-                            }
-                        }
+                    // function tryParseHighchartsOptions(src: string): any | null {
+                    //     const s = src.trim();
+                    //     // If starts with an object literal, try JSON.parse first
+                    //     let candidate = s;
+                    //     if (s.startsWith('{')) {
+                    //         try {
+                    //             return JSON.parse(candidate);
+                    //         } catch (_) {
+                    //             // fallthrough to heuristic cleanup
+                    //         }
+                    //     }
 
-                        // Extract first top-level {...} block
-                        const firstBrace = s.indexOf('{');
-                        if (firstBrace === -1) return null;
-                        let depth = 0;
-                        let end = -1;
-                        for (let i = firstBrace; i < s.length; i++) {
-                            const ch = s[i];
-                            if (ch === '{') depth++;
-                            else if (ch === '}') {
-                                depth--;
-                                if (depth === 0) { end = i; break; }
-                            }
-                        }
-                        if (end === -1) return null;
-                        candidate = s.slice(firstBrace, end + 1);
+                    //     // Extract first top-level {...} block
+                    //     const firstBrace = s.indexOf('{');
+                    //     if (firstBrace === -1) return null;
+                    //     let depth = 0;
+                    //     let end = -1;
+                    //     for (let i = firstBrace; i < s.length; i++) {
+                    //         const ch = s[i];
+                    //         if (ch === '{') depth++;
+                    //         else if (ch === '}') {
+                    //             depth--;
+                    //             if (depth === 0) { end = i; break; }
+                    //         }
+                    //     }
+                    //     if (end === -1) return null;
+                    //     candidate = s.slice(firstBrace, end + 1);
 
-                        // Heuristic cleanup: replace single quotes with double quotes,
-                        // remove trailing commas before `}` or `]`.
-                        let cleaned = candidate.replace(/\n/g, ' ')
-                                               .replace(/(['"])\s*:\s*(['"])?/g, '"$2":$3')
-                                               .replace(/,\s*(}[,\]])/g, '$1');
-                        // fallback simple single->double quote replacement
-                        cleaned = cleaned.replace(/'/g, '"');
-                        cleaned = cleaned.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
-                        try {
-                            return JSON.parse(cleaned);
-                        } catch (e) {
-                            return null;
-                        }
-                    }
+                    //     // Heuristic cleanup: replace single quotes with double quotes,
+                    //     // remove trailing commas before `}` or `]`.
+                    //     let cleaned = candidate.replace(/\n/g, ' ')
+                    //                            .replace(/(['"])\s*:\s*(['"])?/g, '"$2":$3')
+                    //                            .replace(/,\s*(}[,\]])/g, '$1');
+                    //     // fallback simple single->double quote replacement
+                    //     cleaned = cleaned.replace(/'/g, '"');
+                    //     cleaned = cleaned.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
+                    //     try {
+                    //         return JSON.parse(cleaned);
+                    //     } catch (e) {
+                    //         return null;
+                    //     }
+                    // }
                     
                     if (!inline && lang === 'mermaid') {
                         const cleaned = codeString.replace(/^---[\s\S]*?---\s*/m, '').trim();

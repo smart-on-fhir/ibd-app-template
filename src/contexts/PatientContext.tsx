@@ -176,7 +176,7 @@ export function PatientProvider({ children }: { children: React.ReactNode }) {
                     });
 
                     setAiContext((prev) => { 
-                        const texts = items.map((it) => summarize(it)).filter((t) => t && t.length > 0);
+                        const texts = items.map((it) => summarize(it)).filter((t) => t && t.length > 0) as string[];
                         return { ...prev, [type]: (prev[type] || []).concat(texts) };
                     });
                 },
@@ -226,7 +226,7 @@ export function PatientProvider({ children }: { children: React.ReactNode }) {
             setSelectedPatientResources(Object.fromEntries(Object.entries(resources).map(([k, m]) => [k, Array.from(m.values())])));
 
             const newDb = {} as Database;
-            Object.entries(resources).forEach(([type, resMap]) => {
+            Object.entries(resources).forEach(([_, resMap]) => {
                 resMap.forEach((resource) => {
                     const model = modelFactory(resource);
                     if (model) {

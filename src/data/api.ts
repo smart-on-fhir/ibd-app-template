@@ -33,21 +33,21 @@ export function getClinicalAPI(DB: Database): ClinicalAPI {
         getConditionsByOnsetDateTime: (start: string, end: string): ConditionAttributes[] => {
             return DB.Condition.filter(condition => {
                 if (!condition.onsetDateTime) return false;
-                return condition.onsetDateTime >= start && condition.onsetDateTime <= end;
+                return +condition.onsetDateTime >= +new Date(start) && +condition.onsetDateTime <= +new Date(end);
             });
         },
 
         getConditionsByAbatementDateTime: (start: string, end: string): ConditionAttributes[] => {
             return DB.Condition.filter(condition => {
                 if (!condition.abatementDateTime) return false;
-                return condition.abatementDateTime >= start && condition.abatementDateTime <= end;
+                return +condition.abatementDateTime >= +new Date(start) && +condition.abatementDateTime <= +new Date(end);
             });
         },
 
         getConditionsByRecordedDate: (start: string, end: string): ConditionAttributes[] => {
             return DB.Condition.filter(condition => {
                 if (!condition.recordedDate) return false;
-                return condition.recordedDate >= start && condition.recordedDate <= end;
+                return +condition.recordedDate >= +new Date(start) && +condition.recordedDate <= +new Date(end);
             });
         },
 
@@ -74,7 +74,7 @@ export function getClinicalAPI(DB: Database): ClinicalAPI {
         getObservationsByEffectiveDateTime: (start: string, end: string): ObservationAttributes[] => {
             return DB.Observation.filter(obs => {
                 if (!obs.effectiveDateTime) return false;
-                return obs.effectiveDateTime >= start && obs.effectiveDateTime <= end;
+                return +obs.effectiveDateTime >= +new Date(start) && +obs.effectiveDateTime <= +new Date(end);
             });
         },
 

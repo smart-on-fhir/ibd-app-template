@@ -44,7 +44,7 @@ function findReferencedNotes(raw: any, allResources: Record<string, any[]>): any
     return notes;
 }
 
-export default function TimelineEventsPanel({ events, allResources, clickedEvent, onNodeClick: onNodeClickProp }: {
+export default function TimelineEventsPanel({ events, allResources, clickedEvent/*, onNodeClick*/ }: {
     events:        TimelineEvent[];
     allResources:  Record<string, any[]>;
     clickedEvent?: TimelineEvent | null;

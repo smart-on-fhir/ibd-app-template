@@ -1,6 +1,7 @@
 import { generateQueryCode } from "./generatePlan";
-import { execute }           from "../../data/Sandbox/index";
 import { renderResult }      from "./renderResult";
+import { execute }           from "../../data/Sandbox/index";
+import type { Database }     from "../../data/types";
 
 
 export async function askLLM(

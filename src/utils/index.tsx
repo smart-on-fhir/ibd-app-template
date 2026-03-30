@@ -226,7 +226,7 @@ export function resourceLabel(res?: Resource | null): string {
             }
             case 'Claim': {
                 const c: any = res;
-                const id = c.id || '';
+                // const id = c.id || '';
                 const status = c.status || '';
                 const typ = codeText(c.type) || '';
                 const created = c.created || c.billablePeriod?.start || (c.item && c.item[0]?.servicedDate) || '';

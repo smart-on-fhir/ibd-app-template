@@ -89,41 +89,41 @@ export function validateAST(code: string) {
         // Allow Identifiers, MemberExpressions, ArrayExpressions, or
         // CallExpressions whose callee is a MemberExpression with an
         // allowed object (this enables chained calls like arr.filter().sort()).
-        function isAllowedCalleeObject(obj: t.Node | null | undefined): boolean {
-          if (!obj) return false;
-          // Common allowed shapes: simple identifier, member access, array literal
-          if (t.isIdentifier(obj) || t.isMemberExpression(obj) || t.isArrayExpression(obj)) return true;
-          // Calls that return a value we can chain on: e.g. api.getX().filter()
-          if (t.isCallExpression(obj)) {
-            const inner = obj.callee;
-            // If the call's callee is a member expression, inspect its object (e.g., foo().bar())
-            if (t.isMemberExpression(inner)) return isAllowedCalleeObject(inner.object as t.Node);
-            // If the call's callee is an identifier, allow chaining (e.g., Date factory calls)
-            if (t.isIdentifier(inner)) return true;
-            // Parenthesized or other shapes: try to recurse
-            if ((inner as any)?.expression) return isAllowedCalleeObject((inner as any).expression as t.Node);
-          }
-          // Allow `new` expressions whose callee is a safe identifier/member (e.g., `new Date(...)`)
-          if (t.isNewExpression(obj)) {
-            const inner = (obj as any).callee;
-            if (t.isIdentifier(inner)) return true;
-            if (t.isMemberExpression(inner)) return isAllowedCalleeObject(inner.object as t.Node);
-            if ((inner as any)?.expression) return isAllowedCalleeObject((inner as any).expression as t.Node);
-          }
-          // Allow parenthesized/ grouped expressions like (observations || [])
-          if (t.isParenthesizedExpression(obj) && (obj as any).expression) {
-            return isAllowedCalleeObject((obj as any).expression as t.Node);
-          }
-          // Allow logical expressions commonly used to provide a fallback: (observations || [])
-          if (t.isLogicalExpression(obj)) {
-            return isAllowedCalleeObject(obj.left as t.Node) || isAllowedCalleeObject(obj.right as t.Node);
-          }
-          // Allow conditional expressions (ternary) like (cond ? a : b)
-          if (t.isConditionalExpression(obj)) {
-            return isAllowedCalleeObject(obj.consequent as t.Node) || isAllowedCalleeObject(obj.alternate as t.Node);
-          }
-          return false;
-        }
+        // function isAllowedCalleeObject(obj: t.Node | null | undefined): boolean {
+        //   if (!obj) return false;
+        //   // Common allowed shapes: simple identifier, member access, array literal
+        //   if (t.isIdentifier(obj) || t.isMemberExpression(obj) || t.isArrayExpression(obj)) return true;
+        //   // Calls that return a value we can chain on: e.g. api.getX().filter()
+        //   if (t.isCallExpression(obj)) {
+        //     const inner = obj.callee;
+        //     // If the call's callee is a member expression, inspect its object (e.g., foo().bar())
+        //     if (t.isMemberExpression(inner)) return isAllowedCalleeObject(inner.object as t.Node);
+        //     // If the call's callee is an identifier, allow chaining (e.g., Date factory calls)
+        //     if (t.isIdentifier(inner)) return true;
+        //     // Parenthesized or other shapes: try to recurse
+        //     if ((inner as any)?.expression) return isAllowedCalleeObject((inner as any).expression as t.Node);
+        //   }
+        //   // Allow `new` expressions whose callee is a safe identifier/member (e.g., `new Date(...)`)
+        //   if (t.isNewExpression(obj)) {
+        //     const inner = (obj as any).callee;
+        //     if (t.isIdentifier(inner)) return true;
+        //     if (t.isMemberExpression(inner)) return isAllowedCalleeObject(inner.object as t.Node);
+        //     if ((inner as any)?.expression) return isAllowedCalleeObject((inner as any).expression as t.Node);
+        //   }
+        //   // Allow parenthesized/ grouped expressions like (observations || [])
+        //   if (t.isParenthesizedExpression(obj) && (obj as any).expression) {
+        //     return isAllowedCalleeObject((obj as any).expression as t.Node);
+        //   }
+        //   // Allow logical expressions commonly used to provide a fallback: (observations || [])
+        //   if (t.isLogicalExpression(obj)) {
+        //     return isAllowedCalleeObject(obj.left as t.Node) || isAllowedCalleeObject(obj.right as t.Node);
+        //   }
+        //   // Allow conditional expressions (ternary) like (cond ? a : b)
+        //   if (t.isConditionalExpression(obj)) {
+        //     return isAllowedCalleeObject(obj.consequent as t.Node) || isAllowedCalleeObject(obj.alternate as t.Node);
+        //   }
+        //   return false;
+        // }
 
         // Helper: walk the callee to determine if the chain is ultimately
         // rooted on `api` (e.g., api.getX().map()). If so, the outer call

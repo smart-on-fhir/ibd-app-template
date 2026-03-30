@@ -184,9 +184,6 @@ function getDisplayLabel(resource: any): string {
         case 'ExplanationOfBenefit':
             name = [codingText(resource.type)|| '', resource.use || 'claim'].filter(Boolean).join(' ');
             break;
-        case 'ServiceRequest':
-            name = codingText(resource.code);
-            break;
         case 'CarePlan':
             name = resource.title ?? codingText(resource.category?.[0]) ?? 'CarePlan';
             break;
@@ -200,9 +197,6 @@ function getDisplayLabel(resource: any): string {
             break;
         case 'Organization':
             name = summarizeOrganization(resource);
-            break;
-        case 'ExplanationOfBenefit':
-            name = codingText(resource.type) || 'EOB';
             break;
         case 'Goal':
             name = resource.description?.text || 'Goal';
