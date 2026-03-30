@@ -8,3 +8,4 @@ dist
 *.sw?
 .env
 .context
+.claude
