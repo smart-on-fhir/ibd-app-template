@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const SHOW        = import.meta.env.VITE_SHOW_PHI_DISCLAMER === 'true';
+const SHOW        = import.meta.env.VITE_SHOW_PHI_DISCLAIMER === 'true';
 const COOKIE_NAME = 'phi_disclaimer_accepted';
 
 function hasCookie(): boolean {
