@@ -1,7 +1,6 @@
-import { useRef, useCallback, useEffect } from "react";
-import { HighchartsReact }                from "highcharts-react-official";
-import Highcharts                         from 'highcharts/highstock';
-import "highcharts/modules/accessibility"
+import { useRef, useCallback, useEffect, useMemo } from "react";
+import { HighchartsReact }                          from "highcharts-react-official";
+import Highcharts                                   from '../../highcharts';
 
 
 export default function Navigator({
@@ -19,7 +18,7 @@ export default function Navigator({
     end: number;
     useEventColors?: boolean;
 }) {
-    const chartRef     = useRef<any>(null);
+    const chartRef      = useRef<any>(null);
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const debouncedOnChange = useCallback((min: number, max: number) => {
@@ -27,11 +26,41 @@ export default function Navigator({
         debounceTimer.current = setTimeout(() => onChange(min, max), 150);
     }, [onChange]);
 
-    const getPointColor = (ev: any) => {
-        if (useEventColors) return ev.color ?? '#C608';
-        return (!selectedResourceTypes || selectedResourceTypes.length === 0 || selectedResourceTypes.includes(ev.resourceType))
-            ? '#C608' : '#EEE';
-    };
+    // Pre-aggregate events into ~150 time buckets so we render a small, fixed
+    // number of column bars instead of one per event (potentially thousands).
+    const BUCKETS = 150;
+    const { highlightedData, backgroundData } = useMemo(() => {
+        if (data.length === 0) return { highlightedData: [], backgroundData: [] };
+        const noFilter = !selectedResourceTypes || selectedResourceTypes.length === 0;
+
+        // Determine full time extent from the data.
+        let tMin = Infinity, tMax = -Infinity;
+        for (const ev of data) {
+            const t = +new Date(ev.date);
+            if (t < tMin) tMin = t;
+            if (t > tMax) tMax = t;
+        }
+        const span     = tMax - tMin || 1;
+        const bucketMs = span / BUCKETS;
+
+        const hiCounts = new Float64Array(BUCKETS);
+        const bgCounts = new Float64Array(BUCKETS);
+        for (const ev of data) {
+            const t   = +new Date(ev.date);
+            const idx = Math.min(BUCKETS - 1, Math.floor((t - tMin) / bucketMs));
+            const hi  = useEventColors || noFilter || selectedResourceTypes!.includes(ev.resourceType);
+            if (hi) hiCounts[idx]++; else bgCounts[idx]++;
+        }
+
+        const highlighted: { x: number; y: number }[] = [];
+        const background:  { x: number; y: number }[] = [];
+        for (let i = 0; i < BUCKETS; i++) {
+            const x = tMin + i * bucketMs;
+            if (hiCounts[i] > 0) highlighted.push({ x, y: hiCounts[i] });
+            if (bgCounts[i] > 0) background.push({ x, y: bgCounts[i] });
+        }
+        return { highlightedData: highlighted, backgroundData: background };
+    }, [data, selectedResourceTypes, useEventColors]);
 
     const options: Highcharts.Options = {
         chart: {
@@ -181,15 +210,13 @@ export default function Navigator({
             }
         },
         scrollbar: {
-            liveRedraw: true,
+            liveRedraw: false,
         },
         xAxis: {
             events: {
                 afterSetExtremes: function (e) {
                     if (e.trigger === 'navigator' || e.trigger === 'rangeSelectorButton' || e.trigger === 'pan') {
-                        const min = (e.userMin ?? e.min) as number;
-                        const max = (e.userMax ?? e.max) as number;
-                        debouncedOnChange(min, max);
+                        debouncedOnChange(e.min as number, e.max as number);
                     }
                 }
             },
@@ -221,39 +248,68 @@ export default function Navigator({
             height: 0,
             categories: ['Events'],
         },
-        series: [{
-            type           : 'column',
-            visible        : true,
-            opacity        : 1,
-            showInLegend   : false,
-            showInNavigator: true,
-            colorByPoint   : true,
-            dataGrouping   : { enabled: false },
-            data: data.map(ev => ({
-                x     : +new Date(ev.date),
-                y     : 1,
-                color : getPointColor(ev),
-                zIndex: getPointColor(ev) === '#C608' ? 2 : 1
-            })),
-        }],
+        series: [
+            // Series 0 – highlighted events (selected resource types or all when no filter)
+            {
+                type           : 'column',
+                color          : '#C608',
+                visible        : true,
+                opacity        : 1,
+                showInLegend   : false,
+                showInNavigator: true,
+                colorByPoint   : false,
+                dataGrouping   : { enabled: false },
+                minPointLength : 6,
+                pointPadding   : 0,
+                groupPadding   : 0,
+                borderWidth    : 0,
+                borderRadius   : 0,
+                maxPointWidth  : 6,
+                centerInCategory: true,
+                animation      : false,
+                data           : highlightedData,
+            },
+            // Series 1 – background (deselected) events
+            {
+                type           : 'column',
+                color          : '#DDD8',
+                visible        : true,
+                opacity        : 1,
+                showInLegend   : false,
+                showInNavigator: false,
+                colorByPoint   : false,
+                dataGrouping   : { enabled: false },
+                minPointLength : 6,
+                pointPadding   : 0,
+                groupPadding   : 0,
+                borderWidth    : 0,
+                borderRadius   : 0,
+                maxPointWidth  : 6,
+                centerInCategory: true,
+                animation      : false,
+                data           : backgroundData,
+            },
+        ],
     };
 
+    // Push updated split-series data to the live chart when it changes
     useEffect(() => {
         const chart = chartRef.current?.chart;
         if (!chart) return;
-        const newData = data.map(ev => ({
-            x     : +new Date(ev.date),
-            y     : 1,
-            color : getPointColor(ev),
-            zIndex: getPointColor(ev) === '#C608' ? 2 : 1,
-        }));
-        chart.series[0]?.setData(newData, true, false, false);
-        (chart as any).navigator?.series?.[0]?.setData(newData, true, false, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(selectedResourceTypes)]);
+        chart.series[0]?.setData(highlightedData, false, false, false);
+        chart.series[1]?.setData(backgroundData,  true,  false, false);
+        (chart as any).navigator?.series?.[0]?.setData(highlightedData, true, false, false);
+    }, [highlightedData, backgroundData]);
+
+    useEffect(() => {
+        if (!Number.isFinite(start) || !Number.isFinite(end)) return;
+        const id = setTimeout(() => {
+            try { chartRef.current?.chart?.xAxis[0]?.setExtremes(start, end, true, false); } catch {}
+        }, 0);
+        return () => clearTimeout(id);
+    }, [start, end]);
 
     return <HighchartsReact
-        key={String(start)}
         highcharts={Highcharts}
         constructorType="stockChart"
         options={options}
