@@ -1,7 +1,8 @@
 
-import { useEffect }                  from 'react';
+import { useEffect, useMemo }         from 'react';
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 import { usePatientContext }          from '../contexts/PatientContext';
+import { MODULE_REGISTRY }            from '../modules/registry';
 
 const OPENAI_ENABLED = !!import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -22,6 +23,11 @@ export default function PatientView() {
 
     const totalItems = Object.values(selectedPatientResources).reduce((s, arr) => s + (arr?.length || 0), 0);
 
+    const activeModules = useMemo(
+        () => MODULE_REGISTRY.filter(m => m.detect(selectedPatientResources)),
+        [selectedPatientResources]
+    );
+
     return (
         <div className='d-flex gap-2 flex-nowrap'>
             <div className='flex-auto small' style={{ minWidth: '300px' }}>
@@ -40,6 +46,18 @@ export default function PatientView() {
                         <span>AI Chat</span>
                     </NavLink>
                     )}
+                    {activeModules.length > 0 && (<>
+                        <div className='px-3 py-1 text-muted fw-bold mt-2' style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            Disease Views
+                        </div>
+                        {activeModules.map(mod => (
+                            <NavLink key={mod.id} to={`./${mod.basePath}`} className='d-flex gap-2 text-decoration-none nav-link py-1 fw-bold'>
+                                <i className={`bi ${mod.icon}`} style={{ color: mod.color }} />
+                                <span>{mod.label}</span>
+                            </NavLink>
+                        ))}
+                        <hr />
+                    </>)}
                     <div className='d-flex gap-2 text-decoration-none px-3 py-1 fw-bold text-secondary'>
                         <i className="bi bi-folder2-open" />
                         <span className='flex-grow-1'>Resources:</span>

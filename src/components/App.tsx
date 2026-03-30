@@ -11,6 +11,7 @@ import AIChat                           from './AIChat';
 import HomePage                         from './HomePage';
 import { PatientProvider }              from '../contexts/PatientContext';
 import PhiDisclaimerModal               from './PhiDisclaimerModal';
+import { MODULE_REGISTRY }              from '../modules/registry';
 
 const OPENAI_ENABLED = !!import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -25,6 +26,18 @@ export default function App() {
                     <Routes>
                         <Route path="/"           element={<HomePage />} />
                         <Route path="patients"    element={<PatientList />} />
+
+                        {/* Disease module routes — more specific, matched before the generic :id route */}
+                        {MODULE_REGISTRY.map(mod => (
+                            <Route key={mod.id} path={`patients/:id/${mod.basePath}`} element={mod.layout}>
+                                {mod.routes.map((r, i) =>
+                                    r.index
+                                        ? <Route key={i} index element={r.element} />
+                                        : <Route key={r.path} path={r.path} element={r.element} />
+                                )}
+                            </Route>
+                        ))}
+
                         <Route path="patients/:id" element={<PatientView />}>
                             <Route index element={<PatientSummaryView  />} />
                             {OPENAI_ENABLED && <Route path="chat" element={<AIChat />} />}
