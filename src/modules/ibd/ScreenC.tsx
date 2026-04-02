@@ -98,9 +98,24 @@ function CRPSparkline({ trajectory }: { trajectory: TrajectoryPoint[] }) {
     const py = (c: number) => H - (c / (maxY || 1)) * (H - 6);
     const pts = trajectory.map(p => `${px(p.day).toFixed(1)},${py(p.crp).toFixed(1)}`).join(' ');
     return (
-        <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', overflow: 'visible' }}>
+        <svg width="100%" viewBox={`0 -14 ${W} ${H + 14}`} style={{ display: 'block', overflow: 'visible' }}>
             <polyline points={pts} fill="none" stroke="#0d6efd" strokeWidth="1.5" strokeLinejoin="round" />
             <line x1={px(0).toFixed(1)} y1="0" x2={px(0).toFixed(1)} y2={H} stroke="#C00" strokeWidth="1" strokeDasharray="3,2" />
+            {trajectory.map((p, i) => {
+                const x = px(p.day);
+                const y = py(p.crp);
+                const labelY = y < 5 ? y + 5 : y - 5;
+                const labelX = x < 7 ? x + 7 : x;
+                return (
+                    <g key={i}>
+                        <circle cx={x.toFixed(1)} cy={y.toFixed(1)} r="2.5" fill="#0d6efd" />
+                        <text x={labelX.toFixed(1)} y={labelY.toFixed(1)}
+                              textAnchor="middle" fontSize="5" fill="#495057" style={{ background: '#FFF' }}>
+                            {p.crp}
+                        </text>
+                    </g>
+                );
+            })}
         </svg>
     );
 }
