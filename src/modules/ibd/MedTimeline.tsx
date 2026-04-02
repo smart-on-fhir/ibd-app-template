@@ -17,7 +17,7 @@ import cohortData                                from './mockCohort.json';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const ROW_H          = 22;   // px per Gantt row
-const MARGIN_L       = 200;  // px for y-axis labels
+const MARGIN_L       = 170;  // px for y-axis labels
 const PATIENT_HEADER = '▼ Present patient';
 const COHORT_HEADER  = '▼ Matched cohort';
 
@@ -26,6 +26,17 @@ interface MedBar {
     drug_class: string;
     start_day:  number;
     end_day:    number;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Extract a clean generic name: first alphabetic token, title-cased.
+ *  "INFLIXIMAB 100 MG powder" → "Infliximab"
+ *  "adalimumab 40 MG/0.4 ML" → "Adalimumab"
+ */
+function normalizeMedName(raw: string): string {
+    const first = raw.trim().split(/[\s,/()]+/).find(t => /^[A-Za-z]/.test(t)) ?? raw;
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
 }
 
 // ── Lane-splitting ────────────────────────────────────────────────────────────
@@ -105,7 +116,7 @@ export default function MedTimeline() {
                     }));
                 splitIntoLanes(bars).forEach((lane, laneIdx) => {
                     const rowIdx = categories.length;
-                    categories.push(laneIdx === 0 ? name : '');
+                    categories.push(laneIdx === 0 ? normalizeMedName(name) : '');
                     lane.forEach(({ start, end, med: m }) => {
                         seriesData.push({
                             x:      start,
