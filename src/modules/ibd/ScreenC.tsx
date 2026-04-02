@@ -46,15 +46,23 @@ interface TreatmentDist {
     median_trajectory:   MedianTrajectoryPoint[];
 }
 
+interface MedBarEntry {
+    drug:       string;
+    drug_class: string;
+    start_day:  number;
+    end_day:    number;
+}
+
 interface Episode {
-    episode_id:        string;
-    patient_id:        string;
-    similarity:        number;
-    treatment:         string;
-    outcome:           string;
-    days_to_outcome:   number;
-    matching_features: string[];
-    trajectory:        TrajectoryPoint[];
+    episode_id:         string;
+    patient_id:         string;
+    similarity:         number;
+    treatment:          string;
+    outcome:            string;
+    days_to_outcome:    number;
+    matching_features:  string[];
+    trajectory:         TrajectoryPoint[];
+    medication_history: MedBarEntry[];
 }
 
 // ── Small helpers ─────────────────────────────────────────────────────────────
@@ -77,6 +85,23 @@ function OutcomeStat({ label, value, sub, color = '#000' }: { label: string; val
                 <div className="text-muted" style={{ fontSize: '0.65rem' }}>{sub}</div>
             </div>
         </div>
+    );
+}
+
+function CRPSparkline({ trajectory }: { trajectory: TrajectoryPoint[] }) {
+    const W = 260, H = 52;
+    const days = trajectory.map(p => p.day);
+    const crps = trajectory.map(p => p.crp);
+    const minX = Math.min(...days), maxX = Math.max(...days);
+    const maxY = Math.max(...crps);
+    const px = (d: number) => ((d - minX) / (maxX - minX || 1)) * W;
+    const py = (c: number) => H - (c / (maxY || 1)) * (H - 6);
+    const pts = trajectory.map(p => `${px(p.day).toFixed(1)},${py(p.crp).toFixed(1)}`).join(' ');
+    return (
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', overflow: 'visible' }}>
+            <polyline points={pts} fill="none" stroke="#0d6efd" strokeWidth="1.5" strokeLinejoin="round" />
+            <line x1={px(0).toFixed(1)} y1="0" x2={px(0).toFixed(1)} y2={H} stroke="#C00" strokeWidth="1" strokeDasharray="3,2" />
+        </svg>
     );
 }
 
@@ -346,22 +371,6 @@ export default function IBDScreenC() {
                 {/* ── Right ───────────────────────────────────────────── */}
                 <div className="col col-9">
 
-                    {/* Selected episode detail */}
-                    {selected && (
-                        <div className="alert alert-primary py-2 small mb-3 d-flex justify-content-between align-items-start">
-                            <div>
-                                <span className="fw-semibold">{selected.patient_id}</span>
-                                <span className="ms-2 text-muted">{selected.episode_id} · similarity {selected.similarity.toFixed(2)}</span>
-                                <span className="ms-3">Tx: <strong>{selected.treatment}</strong></span>
-                                <span className="ms-3">Outcome: <strong className={OUTCOME_META[selected.outcome]?.cls}>{OUTCOME_META[selected.outcome]?.label}</strong> in {selected.days_to_outcome}d</span>
-                                <div className="mt-1 text-muted">
-                                    Matched on: {selected.matching_features.join(' · ')}
-                                </div>
-                            </div>
-                            <button className="btn-close btn-sm" onClick={() => setSelected(null)} />
-                        </div>
-                    )}
-
                     {/* Outcome distributions */}
                     <div className="card mb-3">
                         <div className="card-body p-3 small">
@@ -402,29 +411,55 @@ export default function IBDScreenC() {
                         <div className="col-md-6">
                             <div className="card h-100">
                                 <div className="card-body p-3 small">
-                                    <div className="fw-bold mb-2">Source evidence drawer preview</div>
-                                    <div className="text-muted fst-italic mb-2" style={{ fontSize: '0.68rem' }}>
-                                        {selected
-                                            ? `Showing context for ${selected.patient_id} (${selected.episode_id})`
-                                            : 'Select a patient row to inspect source evidence'}
+                                    <div className="fw-bold mb-2 d-flex justify-content-between align-items-start">
+                                        <span>Episode detail</span>
+                                        {selected && <button className="btn-close btn-sm" onClick={() => setSelected(null)} />}
                                     </div>
-                                    {[
-                                        { icon: 'bi-file-medical',  type: 'DiagnosticReport',  text: 'Endoscopy — persistent ileocolonic inflammation; no mucosal healing' },
-                                        { icon: 'bi-journal-text',  type: 'DocumentReference', text: 'Progress note — 6 stools/day, nocturnal stool, and poor response documented' },
-                                        { icon: 'bi-activity',      type: 'Observation',       text: 'CRP 18 mg/L · ESR 36 · Albumin 3.3 g/dL · Calprotectin 780 μg/g' },
-                                    ].map(item => (
-                                        <div key={item.type} className={`d-flex gap-2 mb-2 align-items-baseline ${selected ? '' : 'opacity-35'}`}>
-                                            <i className={`bi ${item.icon} text-primary flex-shrink-0 mt-0`} style={{ fontSize: '0.9em' }} />
-                                            <div>
-                                                <div className="text-primary fw-semibold" style={{ fontSize: '0.9em' }}>{item.type}</div>
-                                                <div style={{ fontSize: '0.8em' }}>{item.text}</div>
+                                    {selected ? (<>
+                                        <div className="mb-2" style={{ fontSize: '0.68rem' }}>
+                                            <span className="text-muted">{selected.episode_id} · similarity {selected.similarity.toFixed(2)}</span>
+                                            <span className="ms-3">Tx: <strong>{selected.treatment}</strong></span>
+                                            <span className="ms-3">Outcome: <strong className={OUTCOME_META[selected.outcome]?.cls}>{OUTCOME_META[selected.outcome]?.label}</strong> in {selected.days_to_outcome}d</span>
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <div className="text-uppercase text-muted fw-semibold mb-1" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Matched on</div>
+                                            <div className="d-flex flex-wrap gap-1">
+                                                {selected.matching_features.map(f => (
+                                                    <Chip key={f} label={f} />
+                                                ))}
                                             </div>
                                         </div>
-                                    ))}
-                                    <button className={`btn btn-outline-primary btn-sm w-100 mt-1 ${selected ? '' : 'disabled'}`}
-                                            style={{ fontSize: '0.7rem' }}>
-                                        Open full evidence panel
-                                    </button>
+
+                                        {selected.medication_history?.length > 0 && (
+                                            <div className="mb-2">
+                                                <div className="text-uppercase text-muted fw-semibold mb-1" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Medications</div>
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '4px' }}>
+                                                    {selected.medication_history.map((m, i) => (
+                                                        <div key={i} className="border rounded px-2 py-1" style={{ fontSize: '0.65rem', background: '#f8f9fa' }}>
+                                                            <div className="fw-semibold text-truncate">{m.drug}</div>
+                                                            <div className="text-muted">D{m.start_day} → {m.end_day}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {selected.trajectory?.length > 0 && (
+                                            <div>
+                                                <div className="text-uppercase text-muted fw-semibold mb-1" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>CRP trajectory</div>
+                                                <CRPSparkline trajectory={selected.trajectory} />
+                                                <div className="d-flex justify-content-between text-muted" style={{ fontSize: '0.6rem' }}>
+                                                    <span>Day {selected.trajectory[0].day}</span>
+                                                    <span>Day {selected.trajectory[selected.trajectory.length - 1].day}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>) : (
+                                        <div className="text-muted fst-italic" style={{ fontSize: '0.68rem' }}>
+                                            Select a patient row to inspect episode details
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
