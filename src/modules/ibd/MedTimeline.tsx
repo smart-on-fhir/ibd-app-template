@@ -296,9 +296,6 @@ export default function MedTimeline() {
                             {cls.charAt(0).toUpperCase() + cls.slice(1)}
                         </span>
                     ))}
-                <span className="text-muted ms-2" style={{ fontSize: '0.68rem' }}>
-                    Dashed end = estimated duration
-                </span>
             </div>
 
             {!patientMeds.length && (
