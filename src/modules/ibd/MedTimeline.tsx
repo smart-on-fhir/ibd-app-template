@@ -28,6 +28,24 @@ interface MedBar {
     end_day:    number;
 }
 
+// ── Lane-splitting ────────────────────────────────────────────────────────────
+
+/**
+ * Greedy bin-packing: distribute bars into the minimum number of non-overlapping
+ * lanes. Items are sorted by start; each bar goes into the first lane where it
+ * fits (i.e. starts at or after that lane's current end).
+ */
+function splitIntoLanes<T extends { start: number; end: number }>(items: T[]): T[][] {
+    const lanes: T[][] = [];
+    const laneEnds: number[] = [];
+    for (const item of [...items].sort((a, b) => a.start - b.start)) {
+        const i = laneEnds.findIndex(e => item.start >= e);
+        if (i >= 0) { lanes[i].push(item); laneEnds[i] = item.end; }
+        else         { lanes.push([item]);  laneEnds.push(item.end); }
+    }
+    return lanes;
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function MedTimeline() {
@@ -78,16 +96,22 @@ export default function MedTimeline() {
             }
 
             uniqueNames.forEach(name => {
-                const rowIdx = categories.length;
-                categories.push(name);
-                patientMeds
+                const bars = patientMeds
                     .filter(m => m.name === name)
-                    .forEach(m => {
+                    .map(m => ({
+                        start: (m.startMs - day0Ms) / 864e5,
+                        end:   (m.endMs   - day0Ms) / 864e5,
+                        med:   m,
+                    }));
+                splitIntoLanes(bars).forEach((lane, laneIdx) => {
+                    const rowIdx = categories.length;
+                    categories.push(laneIdx === 0 ? name : '');
+                    lane.forEach(({ start, end, med: m }) => {
                         seriesData.push({
-                            x:      (m.startMs - day0Ms) / 864e5,
-                            x2:     (m.endMs   - day0Ms) / 864e5,
+                            x:      start,
+                            x2:     end,
                             y:      rowIdx,
-                            color:  IBD_MED_CLASS_COLORS[m.class] ?? IBD_MED_CLASS_COLORS.other,
+                            color:  (IBD_MED_CLASS_COLORS[m.class] ?? IBD_MED_CLASS_COLORS.other) + '88',
                             name:   m.name,
                             custom: {
                                 class:        m.class,
@@ -97,6 +121,7 @@ export default function MedTimeline() {
                             },
                         });
                     });
+                });
             });
         } else {
             categories.push('(no FHIR med data)');
@@ -107,18 +132,25 @@ export default function MedTimeline() {
         const cohortHeaderRow = categories.length;
         categories.push(COHORT_HEADER);    // styled header, no bars
 
-        // ── Cohort episode rows ───────────────────────────────────────────────
+        // ── Cohort episode rows (lane-split to avoid overlaps) ───────────────
         cohortData.episodes.forEach(ep => {
-            const rowIdx = categories.length;
-            categories.push(`${ep.episode_id}  ${ep.outcome}`);
-            (ep.medication_history as MedBar[]).forEach(m => {
-                seriesData.push({
-                    x:      m.start_day,
-                    x2:     m.end_day,
-                    y:      rowIdx,
-                    color:  IBD_MED_CLASS_COLORS[m.drug_class] ?? IBD_MED_CLASS_COLORS.other,
-                    name:   m.drug,
-                    custom: { class: m.drug_class },
+            const bars = (ep.medication_history as MedBar[]).map(m => ({
+                start: m.start_day,
+                end:   m.end_day,
+                bar:   m,
+            }));
+            splitIntoLanes(bars).forEach((lane, laneIdx) => {
+                const rowIdx = categories.length;
+                categories.push(laneIdx === 0 ? `${ep.episode_id}  ${ep.outcome}` : '');
+                lane.forEach(({ bar: m }) => {
+                    seriesData.push({
+                        x:      m.start_day,
+                        x2:     m.end_day,
+                        y:      rowIdx,
+                        color:  (IBD_MED_CLASS_COLORS[m.drug_class] ?? IBD_MED_CLASS_COLORS.other) + '66',
+                        name:   m.drug,
+                        custom: { class: m.drug_class },
+                    });
                 });
             });
         });
@@ -134,9 +166,10 @@ export default function MedTimeline() {
 
     const options: Highcharts.Options = {
         chart: {
-            type:            'xrange',
-            animation:       false,
-            backgroundColor: 'transparent',
+            type:                'xrange',
+            animation:           false,
+            backgroundColor:     'transparent',
+            plotBackgroundColor: '#ffffff',
             style:           { fontFamily: 'inherit' },
             height:          chartHeight,
             marginLeft:      MARGIN_L,
@@ -216,14 +249,18 @@ export default function MedTimeline() {
             data:        seriesData,
             pointWidth:  ROW_H - 6,
             borderRadius: 3,
-            borderWidth:  0,
+            borderWidth:  0.5,
             dataLabels: {
                 enabled:  true,
                 inside:   true,
-                overflow: 'allow' as any,
-                crop:     false,
-                style: { fontSize: '0.58rem', fontWeight: 'normal', textOutline: 'none' },
-                color:    '#fff',
+                overflow: 'justify',
+                crop:     true,
+                color:    '#000000',
+                style: {
+                    fontSize:    '0.58rem',
+                    fontWeight:  '600',
+                    textOutline: '1px #FFF8',
+                },
                 formatter(this: any) {
                     const p = this.point as any;
                     const w = (p.x2 - p.x) as number;
@@ -253,7 +290,8 @@ export default function MedTimeline() {
                         <span key={cls} className="d-flex align-items-center gap-1" style={{ fontSize: '0.7rem' }}>
                             <span style={{
                                 width: 10, height: 10, borderRadius: 2,
-                                background: color, display: 'inline-block', flexShrink: 0,
+                                background: color + '66', display: 'inline-block', flexShrink: 0,
+                                border: '1px solid ' + color
                             }} />
                             {cls.charAt(0).toUpperCase() + cls.slice(1)}
                         </span>
