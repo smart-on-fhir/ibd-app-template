@@ -46,7 +46,7 @@ export default function ModuleLayout({ basePath, label, icon, color, navLinks }:
                 </div>
             </div>
 
-            <div className="overflow-auto d-flex flex-column flex-grow-1 ps-3">
+            <div className="d-flex flex-column flex-grow-1 ps-3 min-w-0" style={{ minWidth: 0 }}>
                 <Outlet />
             </div>
         </div>

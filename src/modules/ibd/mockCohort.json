@@ -1,0 +1,259 @@
+{
+  "cohort_size": 84,
+  "matching_chips": ["Crohn's disease", "Age 10–17", "Perianal disease", "Prior anti-TNF exposure", "Prior immunomodulator", "Same hospital", "Historical only"],
+  "treatment_start_rule": "medication_order",
+  "outcomes": {
+    "sfr_12m_rate":  0.57,
+    "endo_12m_rate": 0.43,
+    "surg_12m_rate": 0.18
+  },
+  "treatment_distributions": [
+    {
+      "treatment": "UST", "label": "Ustekinumab", "n": 38,
+      "sfr_12m_rate": 0.57, "median_days_to_sfr": 71, "iqr": [45, 128], "note": "best overall",
+      "median_trajectory": [
+        { "day": 0,   "crp": 21, "q25_crp": 15, "q75_crp": 28 },
+        { "day": 14,  "crp": 16, "q25_crp": 10, "q75_crp": 23 },
+        { "day": 30,  "crp": 11, "q25_crp":  6, "q75_crp": 18 },
+        { "day": 60,  "crp":  6, "q25_crp":  3, "q75_crp": 13 },
+        { "day": 90,  "crp":  4, "q25_crp":  2, "q75_crp":  8 },
+        { "day": 120, "crp":  3, "q25_crp":  1, "q75_crp":  6 },
+        { "day": 180, "crp":  3, "q25_crp":  1, "q75_crp":  5 }
+      ]
+    },
+    {
+      "treatment": "VDZ", "label": "Vedolizumab", "n": 21,
+      "sfr_12m_rate": 0.38, "median_days_to_sfr": 94, "iqr": [51, 180], "note": "more variable",
+      "median_trajectory": [
+        { "day": 0,   "crp": 19, "q25_crp": 13, "q75_crp": 30 },
+        { "day": 14,  "crp": 17, "q25_crp": 11, "q75_crp": 27 },
+        { "day": 30,  "crp": 14, "q25_crp":  8, "q75_crp": 24 },
+        { "day": 60,  "crp": 10, "q25_crp":  5, "q75_crp": 19 },
+        { "day": 90,  "crp":  7, "q25_crp":  3, "q75_crp": 15 },
+        { "day": 120, "crp":  5, "q25_crp":  2, "q75_crp": 12 },
+        { "day": 180, "crp":  4, "q25_crp":  2, "q75_crp": 10 }
+      ]
+    },
+    {
+      "treatment": "IFX", "label": "Infliximab retry", "n": 14,
+      "sfr_12m_rate": 0.29, "median_days_to_sfr": 112, "iqr": [60, 210], "note": "prior exposure",
+      "median_trajectory": [
+        { "day": 0,   "crp": 26, "q25_crp": 18, "q75_crp": 37 },
+        { "day": 14,  "crp": 22, "q25_crp": 14, "q75_crp": 33 },
+        { "day": 30,  "crp": 17, "q25_crp": 10, "q75_crp": 28 },
+        { "day": 60,  "crp": 13, "q25_crp":  6, "q75_crp": 23 },
+        { "day": 90,  "crp": 10, "q25_crp":  4, "q75_crp": 19 },
+        { "day": 120, "crp":  8, "q25_crp":  3, "q75_crp": 16 },
+        { "day": 180, "crp":  7, "q25_crp":  2, "q75_crp": 14 }
+      ]
+    },
+    {
+      "treatment": "ADA", "label": "Adalimumab", "n": 11,
+      "sfr_12m_rate": 0.32, "median_days_to_sfr": 98, "iqr": [44, 195], "note": "mixed response",
+      "median_trajectory": [
+        { "day": 0,   "crp": 22, "q25_crp": 15, "q75_crp": 31 },
+        { "day": 14,  "crp": 19, "q25_crp": 12, "q75_crp": 28 },
+        { "day": 30,  "crp": 15, "q25_crp":  8, "q75_crp": 24 },
+        { "day": 60,  "crp": 12, "q25_crp":  5, "q75_crp": 21 },
+        { "day": 90,  "crp":  9, "q25_crp":  3, "q75_crp": 17 },
+        { "day": 120, "crp":  7, "q25_crp":  2, "q75_crp": 14 },
+        { "day": 180, "crp":  6, "q25_crp":  2, "q75_crp": 12 }
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "episode_id": "EP-1038-1", "patient_id": "PT-1038", "similarity": 0.93,
+      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 62,
+      "matching_features": ["CD", "perianal", "age 14", "prior IFX", "CRP 18"],
+      "trajectory": [
+        { "day": 0,  "crp": 18 },
+        { "day": 14, "crp": 11 },
+        { "day": 30, "crp":  6 },
+        { "day": 62, "crp":  3 }
+      ],
+      "medication_history": [
+        { "drug": "Azathioprine",  "drug_class": "immunomodulator", "start_day": -420, "end_day":  -90 },
+        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -380, "end_day":  -90 },
+        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
+        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   62 }
+      ]
+    },
+    {
+      "episode_id": "EP-2441-1", "patient_id": "PT-2441", "similarity": 0.91,
+      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 74,
+      "matching_features": ["CD", "perianal", "age 13", "prior IFX+AZA", "CRP 22"],
+      "trajectory": [
+        { "day": 0,  "crp": 22 },
+        { "day": 14, "crp": 15 },
+        { "day": 30, "crp":  9 },
+        { "day": 60, "crp":  4 },
+        { "day": 74, "crp":  3 }
+      ],
+      "medication_history": [
+        { "drug": "Azathioprine",  "drug_class": "immunomodulator", "start_day": -500, "end_day":  -60 },
+        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -420, "end_day":  -60 },
+        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -21, "end_day":    0 },
+        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   74 }
+      ]
+    },
+    {
+      "episode_id": "EP-1884-1", "patient_id": "PT-1884", "similarity": 0.90,
+      "treatment": "UST", "outcome": "ENDO", "days_to_outcome": 98,
+      "matching_features": ["CD", "perianal", "age 16", "prior IFX", "albumin 3.1"],
+      "trajectory": [
+        { "day": 0,  "crp": 17 },
+        { "day": 30, "crp": 10 },
+        { "day": 60, "crp":  7 },
+        { "day": 98, "crp":  5 }
+      ],
+      "medication_history": [
+        { "drug": "Infliximab",    "drug_class": "biologic", "start_day": -310, "end_day": -120 },
+        { "drug": "Prednisone",    "drug_class": "steroid",  "start_day":  -30, "end_day":    0 },
+        { "drug": "Ustekinumab",   "drug_class": "biologic", "start_day":    0, "end_day":   98 }
+      ]
+    },
+    {
+      "episode_id": "EP-1172-1", "patient_id": "PT-1172", "similarity": 0.88,
+      "treatment": "VDZ", "outcome": "ESC", "days_to_outcome": 41,
+      "matching_features": ["CD", "age 15", "prior IFX+MTX", "CRP 31"],
+      "trajectory": [
+        { "day": 0,  "crp": 31 },
+        { "day": 14, "crp": 29 },
+        { "day": 30, "crp": 33 },
+        { "day": 41, "crp": 38 }
+      ],
+      "medication_history": [
+        { "drug": "Methotrexate",  "drug_class": "immunomodulator", "start_day": -450, "end_day":  -30 },
+        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -420, "end_day":  -60 },
+        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -14, "end_day":    0 },
+        { "drug": "Vedolizumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   41 }
+      ]
+    },
+    {
+      "episode_id": "EP-2971-1", "patient_id": "PT-2971", "similarity": 0.88,
+      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 182,
+      "matching_features": ["CD", "perianal", "age 17", "prior ADA", "CRP 14"],
+      "trajectory": [
+        { "day": 0,   "crp": 14 },
+        { "day": 30,  "crp": 10 },
+        { "day": 60,  "crp":  7 },
+        { "day": 90,  "crp":  5 },
+        { "day": 120, "crp":  4 },
+        { "day": 182, "crp":  3 }
+      ],
+      "medication_history": [
+        { "drug": "Mesalamine",    "drug_class": "aminosalicylate", "start_day": -540, "end_day":  -30 },
+        { "drug": "Adalimumab",    "drug_class": "biologic",        "start_day": -320, "end_day":  -60 },
+        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
+        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":  182 }
+      ]
+    },
+    {
+      "episode_id": "EP-3199-1", "patient_id": "PT-3199", "similarity": 0.87,
+      "treatment": "IFX", "outcome": "NO", "days_to_outcome": 365,
+      "matching_features": ["CD", "age 12", "prior IFX (washout)", "CRP 28"],
+      "trajectory": [
+        { "day": 0,   "crp": 28 },
+        { "day": 30,  "crp": 19 },
+        { "day": 60,  "crp": 14 },
+        { "day": 90,  "crp": 12 },
+        { "day": 180, "crp": 11 },
+        { "day": 365, "crp": 10 }
+      ],
+      "medication_history": [
+        { "drug": "Azathioprine",        "drug_class": "immunomodulator", "start_day": -540, "end_day": -100 },
+        { "drug": "Infliximab (1st line)","drug_class": "biologic",        "start_day": -500, "end_day": -180 },
+        { "drug": "Prednisone",          "drug_class": "steroid",         "start_day":  -60, "end_day":    0 },
+        { "drug": "Infliximab",          "drug_class": "biologic",        "start_day":    0, "end_day":  365 }
+      ]
+    },
+    {
+      "episode_id": "EP-1038-2", "patient_id": "PT-1038", "similarity": 0.86,
+      "treatment": "ADA", "outcome": "ESC", "days_to_outcome": 38,
+      "matching_features": ["CD", "perianal", "age 11", "prior IFX", "CRP 24"],
+      "trajectory": [
+        { "day": 0,  "crp": 24 },
+        { "day": 14, "crp": 22 },
+        { "day": 30, "crp": 27 },
+        { "day": 38, "crp": 31 }
+      ],
+      "medication_history": [
+        { "drug": "Infliximab",  "drug_class": "biologic", "start_day": -420, "end_day": -120 },
+        { "drug": "Prednisone",  "drug_class": "steroid",  "start_day":  -30, "end_day":    0 },
+        { "drug": "Adalimumab",  "drug_class": "biologic", "start_day":    0, "end_day":   38 }
+      ]
+    },
+    {
+      "episode_id": "EP-2055-1", "patient_id": "PT-2055", "similarity": 0.86,
+      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 55,
+      "matching_features": ["CD", "perianal", "age 15", "prior IFX+6MP"],
+      "trajectory": [
+        { "day": 0,  "crp": 20 },
+        { "day": 14, "crp": 11 },
+        { "day": 30, "crp":  5 },
+        { "day": 55, "crp":  2 }
+      ],
+      "medication_history": [
+        { "drug": "Mercaptopurine", "drug_class": "immunomodulator", "start_day": -620, "end_day":  -60 },
+        { "drug": "Infliximab",     "drug_class": "biologic",        "start_day": -510, "end_day":  -90 },
+        { "drug": "Prednisone",     "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
+        { "drug": "Ustekinumab",    "drug_class": "biologic",        "start_day":    0, "end_day":   55 }
+      ]
+    },
+    {
+      "episode_id": "EP-2670-1", "patient_id": "PT-2670", "similarity": 0.84,
+      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 84,
+      "matching_features": ["CD", "perianal", "age 14", "prior IFX+ADA"],
+      "trajectory": [
+        { "day": 0,  "crp": 25 },
+        { "day": 30, "crp": 14 },
+        { "day": 60, "crp":  6 },
+        { "day": 84, "crp":  3 }
+      ],
+      "medication_history": [
+        { "drug": "Infliximab",  "drug_class": "biologic", "start_day": -620, "end_day": -300 },
+        { "drug": "Adalimumab",  "drug_class": "biologic", "start_day": -260, "end_day":  -60 },
+        { "drug": "Prednisone",  "drug_class": "steroid",  "start_day":  -28, "end_day":    0 },
+        { "drug": "Ustekinumab", "drug_class": "biologic", "start_day":    0, "end_day":   84 }
+      ]
+    },
+    {
+      "episode_id": "EP-3302-1", "patient_id": "PT-3302", "similarity": 0.83,
+      "treatment": "VDZ", "outcome": "NO", "days_to_outcome": 365,
+      "matching_features": ["CD", "age 13", "prior IFX", "CRP 11"],
+      "trajectory": [
+        { "day": 0,   "crp": 11 },
+        { "day": 30,  "crp":  8 },
+        { "day": 60,  "crp":  7 },
+        { "day": 90,  "crp":  6 },
+        { "day": 180, "crp":  6 },
+        { "day": 365, "crp":  5 }
+      ],
+      "medication_history": [
+        { "drug": "Mesalamine",  "drug_class": "aminosalicylate", "start_day": -510, "end_day": -200 },
+        { "drug": "Infliximab",  "drug_class": "biologic",        "start_day": -400, "end_day": -120 },
+        { "drug": "Prednisone",  "drug_class": "steroid",         "start_day":  -30, "end_day":    0 },
+        { "drug": "Vedolizumab", "drug_class": "biologic",        "start_day":    0, "end_day":  365 }
+      ]
+    },
+    {
+      "episode_id": "EP-2309-1", "patient_id": "PT-2309", "similarity": 0.81,
+      "treatment": "UST", "outcome": "ENDO", "days_to_outcome": 103,
+      "matching_features": ["CD", "perianal", "age 17", "prior IFX+6MP", "CRP 24"],
+      "trajectory": [
+        { "day": 0,   "crp": 24 },
+        { "day": 30,  "crp": 16 },
+        { "day": 60,  "crp": 10 },
+        { "day": 90,  "crp":  7 },
+        { "day": 103, "crp":  5 }
+      ],
+      "medication_history": [
+        { "drug": "Azathioprine", "drug_class": "immunomodulator", "start_day": -620, "end_day":  -30 },
+        { "drug": "Infliximab",   "drug_class": "biologic",        "start_day": -510, "end_day": -120 },
+        { "drug": "Prednisone",   "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
+        { "drug": "Ustekinumab",  "drug_class": "biologic",        "start_day":    0, "end_day":  103 }
+      ]
+    }
+  ]
+}

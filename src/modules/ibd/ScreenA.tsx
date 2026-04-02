@@ -10,6 +10,7 @@ import { Link, useParams }    from 'react-router-dom';
 import { usePatientContext }  from '../../contexts/PatientContext';
 import ActivityTimeline       from './ActivityTimeline';
 import { formatDate }         from '../../utils';
+import cohortData             from './mockCohort.json';
 import {
     getIBDConditions,
     getIBDSubtype,
@@ -24,11 +25,14 @@ import {
 
 // ── Small helpers ─────────────────────────────────────────────────────────────
 
-function TrendIcon({ trend }: { trend: LabResult['trend'] }) {
-    if (trend === 'up')     return <i className="bi bi-arrow-up-short text-danger"    title="Increasing"  />;
-    if (trend === 'down')   return <i className="bi bi-arrow-down-short text-success" title="Decreasing" />;
-    if (trend === 'stable') return <i className="bi bi-dash text-muted"               title="Stable"      />;
-    return null;
+function TrendIcon({ trend, goodDirection }: { trend: LabResult['trend']; goodDirection: LabResult['goodDirection'] }) {
+    if (!trend || trend === 'stable')
+        return trend === 'stable' ? <i className="ms-1 bi bi-stop-fill text-secondary opacity-50" title="Stable" /> : null;
+    const good = goodDirection === null ? null : trend === goodDirection;
+    const cls  = good === null ? 'text-secondary' : good ? 'text-success' : 'text-danger';
+    return trend === 'up'
+        ? <i className={`ms-1 bi bi-caret-up-fill ${cls}`}   title="Increasing" />
+        : <i className={`ms-1 bi bi-caret-down-fill ${cls}`} title="Decreasing" />;
 }
 
 function DataRow({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
@@ -46,7 +50,7 @@ function LabRow({ label, result }: { label: string; result: LabResult | null }) 
             {result ? (
                 <span title={formatDate(result.date, { month: 'short', year: 'numeric' })}>
                     {result.value}
-                    <TrendIcon trend={result.trend} />
+                    <TrendIcon trend={result.trend} goodDirection={result.goodDirection} />
                     {/* <span className="text-muted ms-1" style={{ fontSize: '0.65rem' }}>
                         {formatDate(result.date, { month: 'numeric', year: 'numeric' })}
                     </span> */}
@@ -89,6 +93,11 @@ export default function IBDScreenA() {
         if (steroidExp.totalCourses === 1) return '1 course historically';
         return 'None identified';
     })();
+
+    const bestTx = cohortData.treatment_distributions.reduce((a, b) =>
+        b.sfr_12m_rate > a.sfr_12m_rate ? b : a
+    );
+    const surgRate = Math.round(cohortData.outcomes.surg_12m_rate * 100);
 
     return (
         <div className="container-fluid">
@@ -134,6 +143,14 @@ export default function IBDScreenA() {
                                 <LabRow label="ESR"          result={labs.ESR} />
                                 <LabRow label="Albumin"      result={labs.Albumin} />
                                 <LabRow label="Calprotectin" result={labs.Calprotectin} />
+                            </div>
+
+                            <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Growth / nutrition</p>
+                            <div className="mb-3">
+                                <LabRow label="Weight"      result={labs.Weight} />
+                                <LabRow label="Height"      result={labs.Height} />
+                                <LabRow label="BMI"         result={labs.BMI} />
+                                <LabRow label="Pre-albumin" result={labs.PreAlbumin} />
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Key facts</p>
@@ -185,25 +202,52 @@ export default function IBDScreenA() {
                             </div>
                         </div>
 
-                        {/* Historical cohort / response / risk — no population data */}
-                        {[
-                            { label: 'Historical cohort',        icon: 'bi-people', className: 'text-success' },
-                            { label: 'Best historical response', icon: 'bi-graph-up', className: 'text-info' },
-                            { label: 'Risk signal',              icon: 'bi-exclamation-triangle', className: 'text-warning' },
-                        ].map(card => (
-                            <div className="col-6 col-xl-3" key={card.label}>
+                        {/* Historical cohort */}
+                        <div className="col-6 col-xl-3">
+                            <Link to="cohort" className="text-decoration-none">
                                 <div className="card h-100">
-                                    <div className="card-body p-2 small">
+                                    <div className="card-body p-2 small" style={{ color: '#A6A' }}>
                                         <div className="d-flex align-items-center gap-2 mb-1">
-                                            <i className={`bi ${card.icon} ${card.className}`} />
-                                            <span className={`${card.className} text-uppercase fw-semibold`} style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>{card.label}</span>
+                                            <i className="bi bi-people" />
+                                            <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</span>
                                         </div>
-                                        <div className="text-muted" style={{ fontSize: '0.78rem' }}>Not available</div>
-                                        <div className="text-muted" style={{ fontSize: '0.68rem' }}>No population data loaded</div>
+                                        <div className="fw-semibold" style={{ fontSize: '1.4rem' }}>{cohortData.cohort_size}</div>
+                                        <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
+
+                        {/* Best historical response */}
+                        <div className="col-6 col-xl-3">
+                            <div className="card h-100">
+                                <div className="card-body p-2 small">
+                                    <div className="d-flex align-items-center gap-2 mb-1 text-success">
+                                        <i className="bi bi-graph-up" />
+                                        <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</span>
+                                    </div>
+                                    <div className="fw-semibold text-success" style={{ fontSize: '1.4rem' }}>{bestTx.label}</div>
+                                    <div style={{ fontSize: '0.72rem' }}>
+                                        <span className="text-muted fw-semibold">{Math.round(bestTx.sfr_12m_rate * 100)}% SFR</span>
+                                        <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Risk signal */}
+                        <div className="col-6 col-xl-3">
+                            <div className="card h-100">
+                                <div className="card-body p-2 small" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
+                                    <div className="d-flex align-items-center gap-2 mb-1">
+                                        <i className="bi bi-exclamation-triangle" />
+                                        <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</span>
+                                    </div>
+                                    <div className="fw-semibold" style={{ fontSize: '1.4rem' }}>{surgRate}%</div>
+                                    <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* ── Current medications detail + Phenotype context ── */}
@@ -229,10 +273,13 @@ export default function IBDScreenA() {
                                 <div className="card-body p-3 small">
                                     <p className="fw-bold mb-2">Recommended next views</p>
                                     {[
-                                        { n: 1, label: 'Compare outcome timelines',     desc: 'Days from treatment start to remission, surgery, or escalation.',      available: false },
-                                        { n: 2, label: 'Inspect matched cohort',         desc: 'Review why patients were considered similar.',                         available: false },
-                                        { n: 3, label: 'Review treatment trajectories',  desc: 'All biologic and steroid transitions before the chosen endpoint.',     available: false },
-                                        { n: 4, label: 'Open source evidence',           desc: 'Inspect FHIR resources behind any label or lab value.',                available: true,
+                                        { n: 1, label: 'Compare outcome timelines',     desc: 'Days from treatment start to remission, surgery, or escalation.',      available: true,
+                                          link: 'timeline' },
+                                        { n: 2, label: 'Inspect matched cohort',         desc: 'Review why patients were considered similar.',                         available: true,
+                                          link: 'cohort' },
+                                        { n: 3, label: 'Review treatment trajectories',  desc: 'All biologic and steroid transitions before the chosen endpoint.',     available: true,
+                                          link: 'meds' },
+                                        { n: 4, label: 'View raw data evidence',           desc: 'Inspect FHIR resources behind any label or lab value.',                available: true,
                                           link: `/patients/${id}/timeline` },
                                     ].map(item => (
                                         <div key={item.n} className={`d-flex gap-2 mb-2 align-items-center lh-sm ${!item.available ? 'opacity-50' : ''}`}>

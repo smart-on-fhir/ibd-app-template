@@ -2,6 +2,9 @@ import type { PatientModule } from '../types';
 import { detectIBD } from './detect';
 import IBDLayout from './IBDLayout';
 import IBDScreenA from './ScreenA';
+import IBDScreenB from './ScreenB';
+import IBDScreenC from './ScreenC';
+import IBDMedTimeline from './MedTimeline';
 
 const ibdModule: PatientModule = {
     id:          'ibd',
@@ -13,7 +16,10 @@ const ibdModule: PatientModule = {
     layout:      <IBDLayout />,
     detect:      detectIBD,
     routes: [
-        { index: true, element: <IBDScreenA /> },
+        { index: true,        element: <IBDScreenA /> },
+        { path: 'timeline',   element: <IBDScreenB /> },
+        { path: 'cohort',     element: <IBDScreenC /> },
+        { path: 'meds',       element: <IBDMedTimeline /> },
     ],
 };
 

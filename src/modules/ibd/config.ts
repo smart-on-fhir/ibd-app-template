@@ -57,13 +57,48 @@ export const IBD_ANTIBIOTICS: string[] = [
 // ── IBD-relevant lab LOINC codes ─────────────────────────────────────────────
 
 export const LAB_DEFS = {
-    CRP:          { loincs: ['1988-5', '14959-1', '71426-1'],  keywords: ['c reactive protein', 'crp'] },
-    ESR:          { loincs: ['30341-2', '4537-7'],              keywords: ['erythrocyte sedimentation', 'esr', 'sed rate', 'sedimentation rate'] },
-    Albumin:      { loincs: ['1751-7', '3519-7', '2862-1'],    keywords: ['albumin'] },
-    Calprotectin: { loincs: ['35896-1', '27818-8'],             keywords: ['calprotectin'] },
-    Hemoglobin:   { loincs: ['718-7', '20509-6'],               keywords: ['hemoglobin', 'haemoglobin'] },
-    Platelets:    { loincs: ['777-3', '26515-7'],               keywords: ['platelet'] },
-    Weight:       { loincs: ['29463-7', '3141-9'],              keywords: ['body weight', 'weight'] },
+    CRP:          { loincs: ['1988-5', '14959-1', '71426-1'],  keywords: ['c reactive protein', 'crp'],                    goodDirection: 'down' as const },
+    ESR:          { loincs: ['30341-2', '4537-7'],              keywords: ['erythrocyte sedimentation', 'esr', 'sed rate', 'sedimentation rate'], goodDirection: 'down' as const },
+    Albumin:      { loincs: ['1751-7', '3519-7', '2862-1'],    keywords: ['albumin'],                                      goodDirection: 'up'   as const },
+    Calprotectin: { loincs: ['35896-1', '27818-8'],             keywords: ['calprotectin'],                                 goodDirection: 'down' as const },
+    Hemoglobin:   { loincs: ['718-7', '20509-6'],               keywords: ['hemoglobin', 'haemoglobin'],                    goodDirection: 'up'   as const },
+    Platelets:    { loincs: ['777-3', '26515-7'],               keywords: ['platelet'],                                     goodDirection: null },
+    Weight:       { loincs: ['29463-7', '3141-9'],              keywords: ['body weight', 'weight'],                        goodDirection: 'up'   as const },
+    Height:       { loincs: ['8302-2', '3137-7'],               keywords: ['body height', 'height'],                        goodDirection: null },
+    BMI:          { loincs: ['39156-5'],                        keywords: ['body mass index', 'bmi'],                       goodDirection: null },
+    PreAlbumin:   { loincs: ['1809-3', '2857-1'],               keywords: ['prealbumin', 'pre-albumin', 'transthyretin'],   goodDirection: 'up'   as const },
 } as const;
 
 export type LabKey = keyof typeof LAB_DEFS;
+
+// ── Medication Gantt ──────────────────────────────────────────────────────────
+
+/** Color per MedClass for use in the medication Gantt chart. */
+export const IBD_MED_CLASS_COLORS: Record<string, string> = {
+    biologic:        '#0d6efd',
+    immunomodulator: '#6f42c1',
+    aminosalicylate: '#20c997',
+    steroid:         '#fd7e14',
+    antibiotic:      '#dc3545',
+    other:           '#adb5bd',
+};
+
+/**
+ * Fallback display duration (days) keyed by drug name fragment for the
+ * medication Gantt chart — used when no FHIR period can be extracted.
+ * Represents realistic IBD treatment windows for chart display.
+ * First match wins (checked case-insensitively).
+ */
+export const IBD_MED_DISPLAY_DAYS: [string[], number][] = [
+    // Short steroid bursts
+    [['prednisone', 'prednisolone', 'methylprednisolone', 'dexamethasone'], 21],
+    [['budesonide'], 28],
+    // Antibiotics
+    [['ciprofloxacin', 'metronidazole', 'rifaximin', 'amoxicillin', 'clarithromycin', 'flagyl'], 14],
+    // Chronic background therapies
+    [['azathioprine', 'mercaptopurine', '6-mp', 'methotrexate'], 365],
+    [['mesalamine', 'mesalazine', 'sulfasalazine', 'balsalazide', 'olsalazine'], 365],
+    // Advanced therapies — 6-month treatment window
+    [['infliximab', 'adalimumab', 'vedolizumab', 'ustekinumab', 'risankizumab',
+      'ozanimod', 'filgotinib', 'tofacitinib', 'upadacitinib', 'etrasimod', 'mirikizumab'], 180],
+];

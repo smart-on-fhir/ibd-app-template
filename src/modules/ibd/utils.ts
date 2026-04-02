@@ -10,6 +10,7 @@ import {
     ICD10_PERIANAL, PERIANAL_KEYWORDS, IBD_SURGERY_KEYWORDS,
     IBD_BIOLOGICS, IBD_IMMUNOMODULATORS, IBD_AMINOSALICYLATES, IBD_STEROIDS, IBD_ANTIBIOTICS,
     LAB_DEFS, type LabKey,
+    IBD_MED_DISPLAY_DAYS,
 } from './config';
 
 // ── IBD conditions ────────────────────────────────────────────────────────────
@@ -153,10 +154,11 @@ export function getSteroidExposure(resources: Record<string, FhirResource[]>): S
 // ── Labs ──────────────────────────────────────────────────────────────────────
 
 export interface LabResult {
-    value:     string;
-    date:      string;
-    numValue?: number;
-    trend:     'up' | 'down' | 'stable' | null;
+    value:         string;
+    date:          string;
+    numValue?:     number;
+    trend:         'up' | 'down' | 'stable' | null;
+    goodDirection: 'up' | 'down' | null;
 }
 
 function obsMatchesLab(obs: any, loincs: readonly string[], keywords: readonly string[]): boolean {
@@ -183,7 +185,7 @@ export function getRecentLab(
     resources: Record<string, FhirResource[]>,
     labKey:    LabKey,
 ): LabResult | null {
-    const { loincs, keywords } = LAB_DEFS[labKey];
+    const { loincs, keywords, goodDirection } = LAB_DEFS[labKey];
     const matching = (resources['Observation'] ?? [])
         .filter((obs: any) => obsMatchesLab(obs, loincs, keywords))
         .map((obs: any) => ({
@@ -203,7 +205,7 @@ export function getRecentLab(
         trend = pct > 0.1 ? 'up' : pct < -0.1 ? 'down' : 'stable';
     }
 
-    return { value: latest.value!, date: latest.date, numValue: latest.numValue, trend };
+    return { value: latest.value!, date: latest.date, numValue: latest.numValue, trend, goodDirection };
 }
 
 export interface LabPoint {
@@ -260,4 +262,83 @@ export function hasPerianialDisease(resources: Record<string, FhirResource[]>): 
             .filter(Boolean).join(' ').toLowerCase();
         return PERIANAL_KEYWORDS.some(kw => text.includes(kw));
     });
+}
+
+// ── Medication history ────────────────────────────────────────────────────────
+
+const DAY_MS = 864e5;
+const TIMING_UNIT_MS: Record<string, number> = {
+    s: 1e3, min: 6e4, h: 36e5, d: 864e5, wk: 6048e5, mo: 2592e6, a: 31536e6,
+};
+
+export interface MedHistoryEntry {
+    name:         string;
+    class:        MedClass;
+    status:       string;
+    startMs:      number;    // Unix ms
+    endMs:        number;    // Unix ms
+    durationDays: number;
+    endIsExact:   boolean;   // false = heuristic fallback
+}
+
+/**
+ * Full IBD medication history with start + end dates, sorted oldest → newest.
+ *
+ * End date resolution order (improved over the generic Timeline version):
+ *   1. dispenseRequest.validityPeriod.end
+ *   2. dosageInstruction[0].timing.repeat.boundsPeriod.end
+ *   3. Derived: count × (period / frequency) × unitMs from timing.repeat
+ *   4. IBD-specific drug display duration heuristic (IBD_MED_DISPLAY_DAYS)
+ */
+export function getMedHistory(resources: Record<string, FhirResource[]>): MedHistoryEntry[] {
+    return (resources['MedicationRequest'] ?? []).flatMap((r: any) => {
+        const name = extractMedName(r);
+        const cls  = classifyMedication(name);
+        if (cls === 'other') return [];
+
+        const startMs = r.authoredOn ? +new Date(r.authoredOn) : NaN;
+        if (isNaN(startMs)) return [];
+
+        let endMs:      number  = NaN;
+        let endIsExact: boolean = false;
+
+        // 1. validityPeriod
+        const vp = r.dispenseRequest?.validityPeriod;
+        if (vp?.end) { endMs = +new Date(vp.end); endIsExact = true; }
+
+        // 2. boundsPeriod
+        if (isNaN(endMs)) {
+            const bp = r.dosageInstruction?.[0]?.timing?.repeat?.boundsPeriod;
+            if (bp?.end) { endMs = +new Date(bp.end); endIsExact = true; }
+        }
+
+        // 3. Derived from timing.repeat count × period / frequency
+        if (isNaN(endMs)) {
+            const rep = r.dosageInstruction?.[0]?.timing?.repeat;
+            if (rep?.count && rep?.period && rep?.periodUnit) {
+                const ms = rep.count * (rep.period / (rep.frequency ?? 1))
+                         * (TIMING_UNIT_MS[rep.periodUnit] ?? DAY_MS);
+                endMs = startMs + ms;
+                endIsExact = true;
+            }
+        }
+
+        // 4. IBD-specific heuristic fallback
+        if (isNaN(endMs) || endMs <= startMs) {
+            const n = name.toLowerCase();
+            let days = 28;
+            for (const [keywords, d] of IBD_MED_DISPLAY_DAYS) {
+                if (keywords.some(k => n.includes(k))) { days = d; break; }
+            }
+            endMs = startMs + days * DAY_MS;
+            endIsExact = false;
+        }
+
+        return [{
+            name, class: cls, status: r.status ?? 'unknown',
+            startMs, endMs,
+            durationDays: Math.round((endMs - startMs) / DAY_MS),
+            endIsExact,
+        }];
+    }).sort((a, b) => a.startMs - b.startMs);
 }
