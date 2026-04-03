@@ -11,6 +11,9 @@ import { usePatientContext }  from '../../contexts/PatientContext';
 import ActivityTimeline       from './ActivityTimeline';
 import { formatDate }         from '../../utils';
 import cohortData             from './mockCohort.json';
+import noteData              from './mockPatientNote.json';
+import './ibd.scss';
+import { Term }             from './Tooltip';
 import {
     getIBDConditions,
     getIBDSubtype,
@@ -20,6 +23,10 @@ import {
     hasPriorIBDSurgery,
     hasPerianialDisease,
     getAllLabs,
+    getDerivedBMI,
+    getParisByFHIR,
+    getLatestEndoscopy,
+    normalizeMedName,
     type LabResult,
 } from './utils';
 
@@ -37,14 +44,14 @@ function TrendIcon({ trend, goodDirection }: { trend: LabResult['trend']; goodDi
 
 function DataRow({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
     return (
-        <div className="d-flex justify-content-between align-items-baseline" style={{ fontSize: '0.78rem', padding: '0.1rem 0', borderBottom: '1px solid #8882' }}>
+        <div className="d-flex justify-content-between align-items-baseline ibd-data-row">
             <span className="text-muted opacity-75 text-truncate" style={{ minWidth: 0 }}>{label}</span>
             <span className="text-end ms-2">{children}</span>
         </div>
     );
 }
 
-function LabRow({ label, result }: { label: string; result: LabResult | null }) {
+function LabRow({ label, result }: { label: React.ReactNode; result: LabResult | null }) {
     return (
         <DataRow label={label}>
             {result ? (
@@ -55,7 +62,7 @@ function LabRow({ label, result }: { label: string; result: LabResult | null }) 
                         {formatDate(result.date, { month: 'numeric', year: 'numeric' })}
                     </span> */}
                 </span>
-            ) : <span className="text-muted opacity-25">—</span>}
+            ) : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>no data</span>}
         </DataRow>
     );
 }
@@ -75,6 +82,22 @@ export default function IBDScreenA() {
     const priorSurgery  = useMemo(() => hasPriorIBDSurgery(selectedPatientResources),[selectedPatientResources]);
     const perianal      = useMemo(() => hasPerianialDisease(selectedPatientResources),[selectedPatientResources]);
     const labs          = useMemo(() => getAllLabs(selectedPatientResources),         [selectedPatientResources]);
+    const derivedBMI    = useMemo(() => labs.BMI ?? getDerivedBMI(selectedPatientResources), [labs.BMI, selectedPatientResources]);
+    const paris         = useMemo(() => getParisByFHIR(ibdConditions, subtype, perianal), [ibdConditions, subtype, perianal]);
+    const endoscopy     = useMemo(() => getLatestEndoscopy(selectedPatientResources), [selectedPatientResources]);
+
+    // Merge FHIR-derived with note mock (FHIR wins where it has data)
+    const effectiveParis = useMemo(() => ({
+        location: paris.location,
+        behavior: paris.behavior ?? noteData.paris.behavior,
+        perianal: paris.perianal,
+        growth:   noteData.paris.growth,
+    }), [paris]);
+
+    const effectiveEndoscopy = useMemo(() => {
+        if (endoscopy) return { ...endoscopy, ses_cd: noteData.endoscopy.ses_cd };
+        return { date: noteData.endoscopy.date, finding: noteData.endoscopy.finding, ses_cd: noteData.endoscopy.ses_cd };
+    }, [endoscopy]);
 
 
     const biomarkerTrend = (() => {
@@ -105,7 +128,7 @@ export default function IBDScreenA() {
             {/* ── Header ───────────────────────────────────────────────────── */}
             <div className="d-flex align-items-baseline gap-3 mb-2">
                 <h5 className="mb-0">IBD Dashboard – Patient Summary</h5>
-                <span className="text-muted small">Structured FHIR data only · note-derived fields shown as "—"</span>
+                <span className="text-muted small">FHIR + note-derived (mock) · structured sources preferred</span>
             </div>
             <div className="d-flex align-items-center gap-2 mb-3 small">
                 <span className="badge text-bg-warning bg-opacity-50 border border-warning">{subtype}</span>
@@ -114,7 +137,7 @@ export default function IBDScreenA() {
                 {priorSurgery && <span className="badge text-bg-danger fw-normal">Prior IBD surgery</span>}
             </div>
 
-            <div className="d-grid gap-3" style={{ gridTemplateColumns: '240px repeat(auto-fit, minmax(240px, 1fr))' }}>
+            <div className="d-grid gap-3" style={{ gridTemplateColumns: '260px repeat(auto-fit, minmax(240px, 1fr))' }}>
 
                 {/* ── Left rail ────────────────────────────────────────────── */}
                 <div className="">
@@ -125,32 +148,68 @@ export default function IBDScreenA() {
                             <div className="mb-3">
                                 <DataRow label="IBD type">{subtype}</DataRow>
                                 <DataRow label="Duration"><span className={duration ? '' : 'text-muted'}>{duration ?? '—'}</span></DataRow>
-                                <DataRow label="Paris class"><span className="text-muted opacity-25">—</span></DataRow>
-                                <DataRow label="Endoscopy"><span className="text-muted opacity-25">—</span></DataRow>
+                                <DataRow label={<Term term="Paris class">Paris class</Term>}>
+                                    {effectiveParis.location
+                                        ? <span>
+                                            <Term term={`Paris_${effectiveParis.location}`}>{effectiveParis.location}</Term>
+                                            {effectiveParis.behavior && <>{' '}<Term term={`Paris_${effectiveParis.behavior}`}>{effectiveParis.behavior}{effectiveParis.perianal ? 'p' : ''}</Term></>}
+                                            {effectiveParis.growth   && <>{' '}<Term term={`Paris_${effectiveParis.growth}`}>{effectiveParis.growth}</Term></>}
+                                          </span>
+                                        : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>no data</span>}
+                                </DataRow>
+                                <DataRow label="Endoscopy">
+                                    <span data-tooltip={effectiveEndoscopy.finding}>
+                                        {effectiveEndoscopy.date
+                                            ? formatDate(effectiveEndoscopy.date, { month: 'short', year: 'numeric' })
+                                            : 'On file'}
+                                        {effectiveEndoscopy.ses_cd != null &&
+                                            <span className="text-muted ms-1">· <Term term="SES-CD">SES-CD</Term> {effectiveEndoscopy.ses_cd}</span>}
+                                    </span>
+                                </DataRow>
+                                <DataRow label="Activity score">
+                                    <span>
+                                        <Term term={noteData.activity_score.index}>{noteData.activity_score.index}</Term>{' '}{noteData.activity_score.value}
+                                        <span className="text-muted ms-1">({noteData.activity_score.severity})</span>
+                                    </span>
+                                </DataRow>
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current symptoms</p>
                             <div className="mb-3">
-                                <DataRow label="Abdominal pain"><span className="text-muted opacity-25">—</span></DataRow>
-                                <DataRow label="Stool frequency"><span className="text-muted opacity-25">—</span></DataRow>
-                                <DataRow label="Weight loss"><span className="text-muted opacity-25">—</span></DataRow>
-                                <DataRow label="Nocturnal stool"><span className="text-muted opacity-25">—</span></DataRow>
+                                <DataRow label="Abdominal pain">
+                                    <span className={
+                                        noteData.symptoms.abdominal_pain === 'severe'   ? 'text-danger'  :
+                                        noteData.symptoms.abdominal_pain === 'moderate' ? 'text-warning' : 'text-muted'}>
+                                        {noteData.symptoms.abdominal_pain[0].toUpperCase() + noteData.symptoms.abdominal_pain.slice(1)}
+                                    </span>
+                                </DataRow>
+                                <DataRow label="Stool frequency">{noteData.symptoms.stool_freq_per_day}/day</DataRow>
+                                <DataRow label="Weight loss">
+                                    {noteData.symptoms.weight_loss_kg > 0
+                                        ? `${noteData.symptoms.weight_loss_kg} kg`
+                                        : <span className="text-muted">None</span>}
+                                </DataRow>
+                                <DataRow label="Nocturnal stool">
+                                    {noteData.symptoms.nocturnal_stool
+                                        ? <span className="text-warning">Yes</span>
+                                        : <span className="text-muted">No</span>}
+                                </DataRow>
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Recent labs</p>
                             <div className="mb-3">
-                                <LabRow label="CRP"          result={labs.CRP} />
-                                <LabRow label="ESR"          result={labs.ESR} />
-                                <LabRow label="Albumin"      result={labs.Albumin} />
-                                <LabRow label="Calprotectin" result={labs.Calprotectin} />
+                                <LabRow label={<Term term="CRP">CRP</Term>}                  result={labs.CRP} />
+                                <LabRow label={<Term term="ESR">ESR</Term>}                  result={labs.ESR} />
+                                <LabRow label="Albumin"                                      result={labs.Albumin} />
+                                <LabRow label={<Term term="Calprotectin">Calprotectin</Term>} result={labs.Calprotectin} />
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Growth / nutrition</p>
                             <div className="mb-3">
-                                <LabRow label="Weight"      result={labs.Weight} />
-                                <LabRow label="Height"      result={labs.Height} />
-                                <LabRow label="BMI"         result={labs.BMI} />
-                                <LabRow label="Pre-albumin" result={labs.PreAlbumin} />
+                                <LabRow label="Weight"                                        result={labs.Weight} />
+                                <LabRow label="Height"                                        result={labs.Height} />
+                                <LabRow label={<Term term="BMI">BMI</Term>}                   result={derivedBMI} />
+                                <LabRow label={<Term term="Pre-albumin">Pre-albumin</Term>}   result={labs.PreAlbumin} />
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Key facts</p>
@@ -160,7 +219,13 @@ export default function IBDScreenA() {
                                         ? `${steroidExp.totalCourses} course${steroidExp.totalCourses > 1 ? 's' : ''}`
                                         : <span className="text-muted">None</span>}
                                 </DataRow>
-                                <DataRow label="Adherence"><span className="text-muted opacity-25">—</span></DataRow>
+                                <DataRow label="Adherence">
+                                    <span className={
+                                        noteData.adherence === 'poor'    ? 'text-danger'  :
+                                        noteData.adherence === 'partial' ? 'text-warning' : 'text-success'}>
+                                        {noteData.adherence[0].toUpperCase() + noteData.adherence.slice(1)}
+                                    </span>
+                                </DataRow>
                                 <DataRow label="Prior surgery">
                                     {priorSurgery ? <span className="text-danger">Yes</span> : <span className="text-muted">No</span>}
                                 </DataRow>
@@ -181,15 +246,11 @@ export default function IBDScreenA() {
                         {/* Current regimen — real data */}
                         <div className="col-6 col-xl-3">
                             <div className="card h-100">
-                                <div className="card-body p-2 small">
-                                    <div className="d-flex align-items-center gap-2 mb-1">
-                                        <i className="bi bi-capsule text-primary" />
-                                        <span className="text-primary text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</span>
-                                        {/* <span className="text-muted" style={{ fontSize: '0.72rem' }}>Current regimen</span> */}
-                                    </div>
+                                <div className="card-body p-3 small">
+                                    <div className="text-primary text-uppercase fw-semibold mb-1 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
                                     {regimen.length > 0 ? (
                                         regimen.map((m, i) => (
-                                            <DataRow key={i} label={<span className='text-black' title={m.name}>{m.name}</span>}>
+                                            <DataRow key={i} label={<span className='text-black' title={m.name}>{normalizeMedName(m.name)}</span>}>
                                                 {m.startDate
                                                     ? <span className="text-muted opacity-75 text-nowrap">{formatDate(m.startDate)}</span>
                                                     : <span className="text-muted opacity-75">—</span>}
@@ -204,14 +265,11 @@ export default function IBDScreenA() {
 
                         {/* Historical cohort */}
                         <div className="col-6 col-xl-3">
-                            <Link to="cohort" className="text-decoration-none">
+                            <Link to="cohort" className="text-decoration-none text-center">
                                 <div className="card h-100">
-                                    <div className="card-body p-2 small" style={{ color: '#A6A' }}>
-                                        <div className="d-flex align-items-center gap-2 mb-1">
-                                            <i className="bi bi-people" />
-                                            <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</span>
-                                        </div>
-                                        <div className="fw-semibold" style={{ fontSize: '1.4rem' }}>{cohortData.cohort_size}</div>
+                                    <div className="card-body p-3" style={{ color: '#A6A' }}>
+                                        <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</div>
+                                        <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{cohortData.cohort_size}</div>
                                         <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
                                     </div>
                                 </div>
@@ -219,14 +277,11 @@ export default function IBDScreenA() {
                         </div>
 
                         {/* Best historical response */}
-                        <div className="col-6 col-xl-3">
+                        <div className="col-6 col-xl-3 text-center">
                             <div className="card h-100">
-                                <div className="card-body p-2 small">
-                                    <div className="d-flex align-items-center gap-2 mb-1 text-success">
-                                        <i className="bi bi-graph-up" />
-                                        <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</span>
-                                    </div>
-                                    <div className="fw-semibold text-success" style={{ fontSize: '1.4rem' }}>{bestTx.label}</div>
+                                <div className="card-body p-3">
+                                    <div className="text-uppercase fw-semibold text-success" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</div>
+                                    <div className="fw-semibold text-success" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{bestTx.label}</div>
                                     <div style={{ fontSize: '0.72rem' }}>
                                         <span className="text-muted fw-semibold">{Math.round(bestTx.sfr_12m_rate * 100)}% SFR</span>
                                         <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
@@ -236,14 +291,11 @@ export default function IBDScreenA() {
                         </div>
 
                         {/* Risk signal */}
-                        <div className="col-6 col-xl-3">
+                        <div className="col-6 col-xl-3 text-center">
                             <div className="card h-100">
-                                <div className="card-body p-2 small" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
-                                    <div className="d-flex align-items-center gap-2 mb-1">
-                                        <i className="bi bi-exclamation-triangle" />
-                                        <span className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</span>
-                                    </div>
-                                    <div className="fw-semibold" style={{ fontSize: '1.4rem' }}>{surgRate}%</div>
+                                <div className="card-body p-3" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
+                                    <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
+                                    <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{surgRate}%</div>
                                     <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
                                 </div>
                             </div>
@@ -258,10 +310,16 @@ export default function IBDScreenA() {
                                     <p className="fw-bold mb-2">Phenotype and treatment context</p>
                                     <div>
                                         <DataRow label="Disease phenotype">{subtype}{perianal ? ' + perianal' : ''}</DataRow>
-                                        <DataRow label="Severity trend"><span className="text-muted opacity-25">— (note-derived)</span></DataRow>
-                                        <DataRow label="Biomarker trend">{biomarkerTrend ?? <span className="text-muted opacity-25">—</span>}</DataRow>
+                                        <DataRow label="Severity trend">
+                                            <span className={
+                                                noteData.severity_trend === 'worsening' ? 'text-danger'  :
+                                                noteData.severity_trend === 'improving' ? 'text-success' : 'text-muted'}>
+                                                {noteData.severity_trend[0].toUpperCase() + noteData.severity_trend.slice(1)}
+                                            </span>
+                                        </DataRow>
+                                        <DataRow label="Biomarker trend">{biomarkerTrend ?? <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>no data</span>}</DataRow>
                                         <DataRow label="Steroid dependence">{steroidDependenceLabel}</DataRow>
-                                        <DataRow label="Data confidence"><span className="text-muted">Structured only</span></DataRow>
+                                        <DataRow label="Data confidence"><span className="text-muted">FHIR + note mock</span></DataRow>
                                     </div>
 
                                 </div>

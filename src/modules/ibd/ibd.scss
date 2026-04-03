@@ -1,0 +1,9 @@
+.ibd-data-row {
+    font-size: 0.78rem;
+    padding: 0.1rem 0;
+    border-bottom: 1px solid #8882;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}

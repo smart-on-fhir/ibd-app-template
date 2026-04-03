@@ -11,6 +11,7 @@ import HighchartsReact       from 'highcharts-react-official';
 import Highcharts            from '../../highcharts';
 import { usePatientContext }  from '../../contexts/PatientContext';
 import cohortData             from './mockCohort.json';
+import { Term }             from './Tooltip';
 import {
     getIBDConditions,
     getIBDSubtype,
@@ -61,6 +62,11 @@ interface Episode {
     outcome:            string;
     days_to_outcome:    number;
     matching_features:  string[];
+    paris:              { location: string; behavior: string; perianal: boolean; growth: string };
+    labs_at_baseline:   { crp: number; esr: number; albumin: number; calprotectin: number };
+    activity_score:     { index: string; value: number; severity: string };
+    endoscopy_pre:      { ses_cd: number; finding: string };
+    note_summary:       { stool_freq_per_day: number; nocturnal: boolean; global_assessment: string };
     trajectory:         TrajectoryPoint[];
     medication_history: MedBarEntry[];
 }
@@ -371,7 +377,7 @@ export default function IBDScreenC() {
                                                 <td className='text-end'>{ep.similarity.toFixed(2)}</td>
                                                 <td>{ep.treatment}</td>
                                                 <td className={OUTCOME_META[ep.outcome]?.cls ?? ''}>
-                                                    {OUTCOME_META[ep.outcome]?.label ?? ep.outcome}
+                                                    <Term term={ep.outcome}>{OUTCOME_META[ep.outcome]?.label ?? ep.outcome}</Term>
                                                 </td>
                                                 <td className='text-end'>{ep.days_to_outcome}</td>
                                             </tr>
@@ -434,7 +440,7 @@ export default function IBDScreenC() {
                                         <div className="mb-2" style={{ fontSize: '0.68rem' }}>
                                             <span className="text-muted">{selected.episode_id} · similarity {selected.similarity.toFixed(2)}</span>
                                             <span className="ms-3">Tx: <strong>{selected.treatment}</strong></span>
-                                            <span className="ms-3">Outcome: <strong className={OUTCOME_META[selected.outcome]?.cls}>{OUTCOME_META[selected.outcome]?.label}</strong> in {selected.days_to_outcome}d</span>
+                                            <span className="ms-3">Outcome: <strong className={OUTCOME_META[selected.outcome]?.cls}><Term term={selected.outcome}>{OUTCOME_META[selected.outcome]?.label}</Term></strong> in {selected.days_to_outcome}d</span>
                                         </div>
 
                                         <div className="mb-2">
@@ -444,6 +450,28 @@ export default function IBDScreenC() {
                                                     <Chip key={f} label={f} />
                                                 ))}
                                             </div>
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <div className="text-uppercase text-muted fw-semibold mb-1" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Clinical baseline</div>
+                                            {[
+                                                [`${selected.activity_score.index}`, `${selected.activity_score.value} (${selected.activity_score.severity})`],
+                                                ['CRP',     `${selected.labs_at_baseline.crp} mg/L`],
+                                                ['Albumin', `${selected.labs_at_baseline.albumin} g/dL`],
+                                                ['Stool',   `${selected.note_summary.stool_freq_per_day}/day${selected.note_summary.nocturnal ? ' + nocturnal' : ''}`],
+                                                ['SES-CD',  String(selected.endoscopy_pre.ses_cd)],
+                                                ['Paris',   [selected.paris.location, selected.paris.behavior + (selected.paris.perianal ? 'p' : ''), selected.paris.growth !== 'N/A' ? selected.paris.growth : ''].filter(Boolean).join(' ')],
+                                            ].map(([label, value], i) => (
+                                                <div key={i} className="d-flex justify-content-between align-items-baseline"
+                                                     style={{ fontSize: '0.68rem', borderBottom: '1px solid #8882', padding: '0.1rem 0' }}>
+                                                    <span className="text-muted">
+                                                        {label === 'SES-CD' || label === selected.activity_score.index
+                                                            ? <Term term={label}>{label}</Term>
+                                                            : label}
+                                                    </span>
+                                                    <span>{value}</span>
+                                                </div>
+                                            ))}
                                         </div>
 
                                         {selected.medication_history?.length > 0 && (

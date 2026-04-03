@@ -6,11 +6,11 @@
  * Historical cohort: medication_history from mockCohort.json (one row per episode).
  */
 
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState }  from 'react';
 import HighchartsReact                           from 'highcharts-react-official';
 import Highcharts                                from '../../highcharts';
 import { usePatientContext }                     from '../../contexts/PatientContext';
-import { getMedHistory }                         from './utils';
+import { getMedHistory, normalizeMedName }       from './utils';
 import { IBD_MED_CLASS_COLORS }                  from './config';
 import cohortData                                from './mockCohort.json';
 
@@ -26,17 +26,6 @@ interface MedBar {
     drug_class: string;
     start_day:  number;
     end_day:    number;
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-/** Extract a clean generic name: first alphabetic token, title-cased.
- *  "INFLIXIMAB 100 MG powder" → "Infliximab"
- *  "adalimumab 40 MG/0.4 ML" → "Adalimumab"
- */
-function normalizeMedName(raw: string): string {
-    const first = raw.trim().split(/[\s,/()]+/).find(t => /^[A-Za-z]/.test(t)) ?? raw;
-    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
 }
 
 // ── Lane-splitting ────────────────────────────────────────────────────────────

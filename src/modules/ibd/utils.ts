@@ -11,6 +11,7 @@ import {
     IBD_BIOLOGICS, IBD_IMMUNOMODULATORS, IBD_AMINOSALICYLATES, IBD_STEROIDS, IBD_ANTIBIOTICS,
     LAB_DEFS, type LabKey,
     IBD_MED_DISPLAY_DAYS,
+    ENDOSCOPY_LOINCS, ENDOSCOPY_KEYWORDS,
 } from './config';
 
 // ── IBD conditions ────────────────────────────────────────────────────────────
@@ -129,6 +130,12 @@ export function getAllIBDMedications(resources: Record<string, FhirResource[]>):
     });
 }
 
+/** Extracts the first word (generic drug name) from a raw FHIR medication string. */
+export function normalizeMedName(raw: string): string {
+    const first = raw.trim().split(/[\s,/()]+/).find(t => /^[A-Za-z]/.test(t)) ?? raw;
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+}
+
 /** Only active IBD medications, sorted by class priority (biologic first). */
 const CLASS_ORDER: MedClass[] = ['biologic', 'immunomodulator', 'aminosalicylate', 'steroid', 'antibiotic'];
 export function getCurrentRegimen(resources: Record<string, FhirResource[]>): MedInfo[] {
@@ -230,11 +237,39 @@ export function getLabHistory(
         .sort((a, b) => a.date - b.date);
 }
 
-/** Fetch all IBD-relevant labs in one call. */
+/** All IBD-relevant labs in one call. */
 export function getAllLabs(resources: Record<string, FhirResource[]>): Record<LabKey, LabResult | null> {
     return Object.fromEntries(
         (Object.keys(LAB_DEFS) as LabKey[]).map(k => [k, getRecentLab(resources, k)])
     ) as Record<LabKey, LabResult | null>;
+}
+
+/**
+ * Derives BMI from Weight + Height observations when no dedicated BMI observation exists.
+ * Handles kg/lbs for weight and cm/in for height.
+ */
+export function getDerivedBMI(resources: Record<string, FhirResource[]>): LabResult | null {
+    const weightObs = getRecentLab(resources, 'Weight');
+    const heightObs = getRecentLab(resources, 'Height');
+    if (!weightObs?.numValue || !heightObs?.numValue) return null;
+
+    let weightKg = weightObs.numValue;
+    let heightCm = heightObs.numValue;
+
+    // Unit conversion if not already metric
+    if (weightObs.value.includes('lb') || weightObs.value.includes('[lb')) weightKg *= 0.453592;
+    if (heightObs.value.includes('[in') || heightObs.value.includes('" in')) heightCm *= 2.54;
+
+    const bmi = weightKg / Math.pow(heightCm / 100, 2);
+    const rounded = Math.round(bmi * 10) / 10;
+
+    return {
+        value:         `${rounded} kg/m²`,
+        date:          weightObs.date,
+        numValue:      rounded,
+        trend:         null,
+        goodDirection: null,
+    };
 }
 
 // ── Surgery ───────────────────────────────────────────────────────────────────
@@ -341,4 +376,105 @@ export function getMedHistory(resources: Record<string, FhirResource[]>): MedHis
             endIsExact,
         }];
     }).sort((a, b) => a.startMs - b.startMs);
+}
+
+// ── Paris classification (from structured FHIR) ───────────────────────────────
+
+export interface ParisFHIR {
+    location: string | null;   // L1/L2/L3 (CD) or E1/E2/E3 (UC); null if not determinable
+    behavior: string | null;   // B1/B2/B3 (CD only); null if ambiguous
+    perianal: boolean;
+    growth:   null;            // not reliably derivable from standard ICD-10
+}
+
+/**
+ * Infers Paris classification from ICD-10-CM Condition codes.
+ *
+ * Location:
+ *   K50.0x → L1 (ileal)  |  K50.1x → L2 (colonic)  |  both or K50.[89]x → L3
+ *   K51.2 → E1  |  K51.3/K51.4 → E2  |  K51.0/K51.5 → E3  (UC)
+ *
+ * Behavior (CD only, from ICD-10-CM 7th-character subcodes):
+ *   ends in 13 → fistula → B3  |  ends in 14 → abscess → B3
+ *   ends in 12 → obstruction → B2  |  ends in 0 without complications → B1
+ *   perianal=true also implies B3
+ */
+export function getParisByFHIR(
+    conditions: any[],
+    ibdSubtype: IBDSubtype,
+    perianal:   boolean,
+): ParisFHIR {
+    const codes: string[] = conditions.flatMap((c: any) =>
+        (c.code?.coding ?? []).map((cod: any) => (cod.code ?? '') as string).filter(Boolean)
+    );
+
+    let location: string | null = null;
+    let behavior: string | null = null;
+
+    if (ibdSubtype === "Crohn's disease") {
+        const hasIleal   = codes.some(c => c.startsWith('K50.0'));
+        const hasColonic = codes.some(c => c.startsWith('K50.1'));
+        const hasOther   = codes.some(c => c.startsWith('K50.8') || c.startsWith('K50.9'));
+
+        if (hasIleal && hasColonic)    location = 'L3';
+        else if (hasIleal)             location = 'L1';
+        else if (hasColonic)           location = 'L2';
+        else if (hasOther)             location = 'L3';   // unspecified → assume ileocolonic
+
+        const hasFistula  = codes.some(c => c.endsWith('13'));
+        const hasAbscess  = codes.some(c => c.endsWith('14'));
+        const hasObstruct = codes.some(c => c.endsWith('12'));
+        const explicit0   = codes.some(c => /^K50\.\d+0$/.test(c));
+
+        if (hasFistula || hasAbscess || perianal)   behavior = 'B3';
+        else if (hasObstruct)                        behavior = 'B2';
+        else if (explicit0)                          behavior = 'B1';
+
+    } else if (ibdSubtype === 'Ulcerative colitis') {
+        const pancolitis = codes.some(c => c.startsWith('K51.0') || c.startsWith('K51.5'));
+        const leftSided  = codes.some(c => c.startsWith('K51.3') || c.startsWith('K51.4'));
+        const proctitis  = codes.some(c => c.startsWith('K51.2'));
+
+        if (pancolitis)       location = 'E3';
+        else if (leftSided)   location = 'E2';
+        else if (proctitis)   location = 'E1';
+    }
+
+    return { location, behavior, perianal, growth: null };
+}
+
+// ── Endoscopy (from DiagnosticReport) ─────────────────────────────────────────
+
+export interface EndoscopyResult {
+    date:    string;
+    finding: string;
+}
+
+/**
+ * Returns the most recent endoscopy / colonoscopy DiagnosticReport, matched by
+ * LOINC code or free-text keyword in code.text / coding.display.
+ */
+export function getLatestEndoscopy(resources: Record<string, FhirResource[]>): EndoscopyResult | null {
+    const reports = (resources['DiagnosticReport'] ?? [])
+        .filter((r: any) => {
+            const codings = [
+                ...(r.code?.coding ?? []),
+                ...(r.category ?? []).flatMap((cat: any) => cat.coding ?? []),
+            ];
+            if (codings.some((c: any) =>
+                (c.system ?? '').toLowerCase().includes('loinc') &&
+                ENDOSCOPY_LOINCS.includes(c.code)
+            )) return true;
+            const text = [r.code?.text, ...codings.map((c: any) => c.display ?? '')]
+                .filter(Boolean).join(' ').toLowerCase();
+            return ENDOSCOPY_KEYWORDS.some(kw => text.includes(kw));
+        })
+        .map((r: any) => ({
+            date:    r.effectiveDateTime ?? r.effectivePeriod?.end ?? r.issued ?? '',
+            finding: r.conclusion ?? r.presentedForm?.[0]?.title ?? '(report available)',
+        }))
+        .filter(r => r.date)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return reports[0] ?? null;
 }

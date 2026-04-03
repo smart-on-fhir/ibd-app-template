@@ -73,6 +73,13 @@ export type LabKey = keyof typeof LAB_DEFS;
 
 // ── Medication Gantt ──────────────────────────────────────────────────────────
 
+/** LOINC codes identifying endoscopy / colonoscopy reports in DiagnosticReport */
+export const ENDOSCOPY_LOINCS = ['18745-0', '11528-7', '28574-2', '47045-0', '77432-0'];
+/** Keywords for matching endoscopy in DiagnosticReport.code.text / coding.display */
+export const ENDOSCOPY_KEYWORDS = [
+    'colonoscopy', 'endoscopy', 'sigmoidoscopy', 'ileoscopy', 'enteroscopy', 'capsule endoscopy',
+];
+
 /** Color per MedClass for use in the medication Gantt chart. */
 export const IBD_MED_CLASS_COLORS: Record<string, string> = {
     biologic:        '#0d6efd',
@@ -102,3 +109,67 @@ export const IBD_MED_DISPLAY_DAYS: [string[], number][] = [
     [['infliximab', 'adalimumab', 'vedolizumab', 'ustekinumab', 'risankizumab',
       'ozanimod', 'filgotinib', 'tofacitinib', 'upadacitinib', 'etrasimod', 'mirikizumab'], 180],
 ];
+
+// ── Glossary ──────────────────────────────────────────────────────────────────
+
+/**
+ * Short definitions for IBD-specific abbreviations and codes.
+ * Keys are used by the <Term> component to look up tooltip text.
+ */
+export const IBD_GLOSSARY: Record<string, string> = {
+
+    // ── Paris classification ──
+    'Paris class':  'Paris classification: standardised descriptor of IBD phenotype covering disease location, behavior, and growth.',
+    'Paris_L1':     "L1 — Ileal: Crohn's disease confined to the small intestine (terminal ileum).",
+    'Paris_L2':     "L2 — Colonic: Crohn's disease confined to the large intestine.",
+    'Paris_L3':     "L3 — Ileocolonic: Crohn's involving both small and large intestine.",
+    'Paris_L4a':    'L4a — Upper GI: disease proximal to the ligament of Treitz.',
+    'Paris_L4b':    'L4b — Upper GI distal: disease distal to the ligament of Treitz but proximal to ileum.',
+    'Paris_E1':     'E1 — Proctitis: UC limited to the rectum.',
+    'Paris_E2':     'E2 — Left-sided colitis: UC extending to the splenic flexure.',
+    'Paris_E3':     'E3 — Extensive / pancolitis: UC extending beyond the splenic flexure.',
+    'Paris_B1':     'B1 — Non-stricturing, non-penetrating (inflammatory phenotype).',
+    'Paris_B2':     'B2 — Stricturing: bowel wall thickening causing narrowing or obstruction.',
+    'Paris_B3':     'B3 — Penetrating: fistulas or abscesses.',
+    'Paris_G0':     'G0 — Normal growth velocity for age.',
+    'Paris_G1':     'G1 — Mild growth retardation (height velocity 1 SD below mean).',
+    'Paris_G2':     'G2 — Severe growth retardation (height velocity ≥2 SD below mean).',
+
+    // ── Activity indices ──
+    'HBI':      "Harvey-Bradshaw Index (HBI): simplified clinical score for Crohn's disease activity. ≤4 = remission · 5–7 = mild · 8–16 = moderate · ≥17 = severe.",
+    'PCDAI':    "Pediatric Crohn's Disease Activity Index (PCDAI): validated activity score for paediatric Crohn's. <10 = remission · 10–27 = mild · 28–40 = moderate · >40 = severe.",
+    'CDAI':     "Crohn's Disease Activity Index (CDAI): validated adult Crohn's score. Remission <150.",
+    'MAYO':     'Mayo Score: clinical and endoscopic activity score for Ulcerative Colitis. Total 0–12; remission ≤2.',
+    'SCCAI':    'Simple Clinical Colitis Activity Index (SCCAI): bedside UC activity score. Remission <2.5.',
+    'UCEIS':    'UC Endoscopic Index of Severity (UCEIS): validated endoscopic score for UC severity.',
+    'WCDAI':    "Weighted PCDAI: variant of PCDAI emphasising laboratory components.",
+
+    // ── Labs / biomarkers ──
+    'CRP':          'C-Reactive Protein (CRP): acute-phase inflammatory protein elevated in active IBD. Normal <5 mg/L.',
+    'ESR':          'Erythrocyte Sedimentation Rate (ESR): non-specific marker of systemic inflammation. Rises more slowly than CRP.',
+    'Calprotectin': 'Fecal calprotectin: neutrophil protein released in intestinal inflammation. <50 μg/g = normal; 50–200 = borderline; >200 = active mucosal disease.',
+    'Pre-albumin':  'Prealbumin (transthyretin): sensitive nutritional marker; falls rapidly in malnutrition or acute inflammation. Normal range 18–45 mg/dL.',
+    'BMI':          'Body Mass Index (BMI): weight (kg) ÷ height (m²). Used to assess nutritional status; low BMI in IBD may indicate malabsorption or active disease.',
+
+    // ── Endoscopy scores ──
+    'SES-CD':   "Simple Endoscopic Score for Crohn's Disease (SES-CD): endoscopic activity score. 0–2 = inactive · 3–6 = mild · 7–15 = moderate · ≥16 = severe.",
+    'CDEIS':    "Crohn's Disease Endoscopic Index of Severity (CDEIS): detailed endoscopic score (0–44).",
+
+    // ── Clinical outcomes ──
+    'SFR':  'Steroid-Free Remission (SFR): achieving clinical remission without corticosteroid use — the primary target for IBD therapy optimisation.',
+    'ENDO': 'Endoscopic Remission (ENDO): mucosal healing confirmed by colonoscopy — associated with improved long-term outcomes.',
+    'SURG': 'Surgical Intervention (SURG): bowel resection, ileostomy, colostomy, or proctectomy.',
+    'ESC':  'Therapy Escalation (ESC): step-up to a more intensive treatment class (e.g. biologic after failing immunomodulator).',
+    'NO':   'No endpoint event recorded within the observation window.',
+
+    // ── Drug classes ──
+    'biologic':        'Biologic therapy: monoclonal antibodies or fusion proteins targeting specific inflammatory pathways (e.g. anti-TNF, anti-integrin, anti-IL-12/23).',
+    'immunomodulator': 'Immunomodulator: agents that suppress the immune system broadly (azathioprine, 6-MP, methotrexate). Often combined with biologics.',
+    'aminosalicylate': "5-Aminosalicylates (5-ASA): anti-inflammatory drugs for mild-to-moderate UC; limited role in Crohn's.",
+    'steroid':         'Corticosteroids: rapid induction agents for IBD flares; not suitable for maintenance therapy due to side-effect profile.',
+    'antibiotic':      'Antibiotics used in IBD: particularly for perianal disease and post-surgical prophylaxis (e.g. ciprofloxacin, metronidazole).',
+
+    // ── General ──
+    "IBD-U":    "IBD-Unclassified (IBD-U): features of both Crohn's disease and Ulcerative Colitis without definitive classification on available evidence.",
+    'IQR':      'Interquartile Range (IQR): the middle 50% of data — from the 25th to 75th percentile. Used to show variability in treatment response times.',
+};

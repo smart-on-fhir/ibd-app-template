@@ -1,0 +1,30 @@
+{
+  "_comment": "Note-derived clinical data for the demo IBD patient. In production these fields are populated by LLM extraction from clinic notes at the time of the clinical decision. FHIR-structured data (labs, meds, conditions) takes precedence; this file fills the gaps.",
+
+  "symptoms": {
+    "abdominal_pain":       "moderate",
+    "stool_freq_per_day":   5,
+    "weight_loss_kg":       3.2,
+    "nocturnal_stool":      true
+  },
+
+  "paris": {
+    "behavior": "B2",
+    "growth":   "G0"
+  },
+
+  "activity_score": {
+    "index":    "HBI",
+    "value":    9,
+    "severity": "moderate"
+  },
+
+  "endoscopy": {
+    "date":    "2024-09-15",
+    "ses_cd":  8,
+    "finding": "Moderate ileocolonic inflammation with deep ulcers in terminal ileum and patchy colonic involvement. Partial mucosal response to prior therapy. No active perianal disease on exam."
+  },
+
+  "adherence":      "good",
+  "severity_trend": "worsening"
+}

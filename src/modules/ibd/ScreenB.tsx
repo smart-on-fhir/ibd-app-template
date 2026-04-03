@@ -249,7 +249,7 @@ export default function IBDScreenB() {
             <div className="row g-3 flex-nowrap">
 
                 {/* ── Left sidebar ─────────────────────────────────────────── */}
-                <div className="col-auto" style={{ width: 210 }}>
+                <div className="col-auto" style={{ width: 240 }}>
                     <div className="card h-100">
                         <div className="card-body p-3 small">
 
