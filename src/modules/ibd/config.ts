@@ -172,4 +172,10 @@ export const IBD_GLOSSARY: Record<string, string> = {
     // ── General ──
     "IBD-U":    "IBD-Unclassified (IBD-U): features of both Crohn's disease and Ulcerative Colitis without definitive classification on available evidence.",
     'IQR':      'Interquartile Range (IQR): the middle 50% of data — from the 25th to 75th percentile. Used to show variability in treatment response times.',
+
+    // ── Summary card descriptions ──
+    'card:regimen':       'Current regimen: all IBD medications the patient is actively prescribed, sorted by drug class (biologic → immunomodulator → steroid). Start dates are shown where available.',
+    'card:cohort':        'Matched cohort: historical patients with a similar clinical profile (subtype, location, behaviour, lab markers). Matching is episode-level — the same patient may appear more than once at different decision points.',
+    'card:best-response': 'Best historical response: the treatment with the highest steroid-free remission (SFR) rate at 12 months across all matched cohort episodes.',
+    'card:risk-signal':   'Risk signal: percentage of matched cohort episodes that escalated to surgical intervention within 12 months — a surrogate for refractory or complicated disease course.',
 };

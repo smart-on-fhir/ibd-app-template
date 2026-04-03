@@ -13,7 +13,7 @@ import { formatDate }         from '../../utils';
 import cohortData             from './mockCohort.json';
 import noteData              from './mockPatientNote.json';
 import './ibd.scss';
-import { Term }             from './Tooltip';
+import { Term, Tip }         from './Tooltip';
 import {
     getIBDConditions,
     getIBDSubtype,
@@ -245,7 +245,7 @@ export default function IBDScreenA() {
                     <div className="row g-2 mb-3">
                         {/* Current regimen — real data */}
                         <div className="col-6 col-xl-3">
-                            <div className="card h-100">
+                            <Tip term="card:regimen"><div className="card h-100">
                                 <div className="card-body p-3 small">
                                     <div className="text-primary text-uppercase fw-semibold mb-1 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
                                     {regimen.length > 0 ? (
@@ -260,25 +260,25 @@ export default function IBDScreenA() {
                                         <div className="text-muted">No active IBD medications</div>
                                     )}
                                 </div>
-                            </div>
+                            </div></Tip>
                         </div>
 
                         {/* Historical cohort */}
                         <div className="col-6 col-xl-3">
                             <Link to="cohort" className="text-decoration-none text-center">
-                                <div className="card h-100">
+                                <Tip term="card:cohort" cursor="pointer"><div className="card h-100">
                                     <div className="card-body p-3" style={{ color: '#A6A' }}>
                                         <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</div>
                                         <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{cohortData.cohort_size}</div>
                                         <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
                                     </div>
-                                </div>
+                                </div></Tip>
                             </Link>
                         </div>
 
                         {/* Best historical response */}
                         <div className="col-6 col-xl-3 text-center">
-                            <div className="card h-100">
+                            <Tip term="card:best-response"><div className="card h-100">
                                 <div className="card-body p-3">
                                     <div className="text-uppercase fw-semibold text-success" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</div>
                                     <div className="fw-semibold text-success" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{bestTx.label}</div>
@@ -287,18 +287,18 @@ export default function IBDScreenA() {
                                         <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
                                     </div>
                                 </div>
-                            </div>
+                            </div></Tip>
                         </div>
 
                         {/* Risk signal */}
                         <div className="col-6 col-xl-3 text-center">
-                            <div className="card h-100">
+                            <Tip term="card:risk-signal"><div className="card h-100">
                                 <div className="card-body p-3" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
                                     <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
                                     <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{surgRate}%</div>
                                     <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
                                 </div>
-                            </div>
+                            </div></Tip>
                         </div>
                     </div>
 
