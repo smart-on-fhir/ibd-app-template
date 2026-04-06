@@ -1,0 +1,66 @@
+{
+  "data_tier": "aggregate",
+  "cohort_size": 84,
+  "matching_chips": ["Crohn's disease", "Age 10–17", "Perianal disease", "Prior anti-TNF exposure", "Prior immunomodulator", "Same hospital", "Historical only"],
+  "treatment_start_rule": "medication_order",
+  "outcomes": {
+    "sfr_12m_rate":  0.57,
+    "endo_12m_rate": 0.43,
+    "surg_12m_rate": 0.18
+  },
+  "treatment_distributions": [
+    {
+      "treatment": "UST", "label": "Ustekinumab",      "n": 38,
+      "sfr_12m_rate": 0.57, "median_days_to_sfr": 71,  "iqr": [45, 128], "note": "best overall",
+      "median_trajectory": [
+        { "day": 0,   "crp": 21, "q25_crp": 15, "q75_crp": 28 },
+        { "day": 14,  "crp": 16, "q25_crp": 10, "q75_crp": 23 },
+        { "day": 30,  "crp": 11, "q25_crp":  6, "q75_crp": 18 },
+        { "day": 60,  "crp":  6, "q25_crp":  3, "q75_crp": 13 },
+        { "day": 90,  "crp":  4, "q25_crp":  2, "q75_crp":  8 },
+        { "day": 120, "crp":  3, "q25_crp":  1, "q75_crp":  6 },
+        { "day": 180, "crp":  3, "q25_crp":  1, "q75_crp":  5 }
+      ]
+    },
+    {
+      "treatment": "VDZ", "label": "Vedolizumab",      "n": 21,
+      "sfr_12m_rate": 0.38, "median_days_to_sfr": 94,  "iqr": [51, 180], "note": "more variable",
+      "median_trajectory": [
+        { "day": 0,   "crp": 19, "q25_crp": 13, "q75_crp": 30 },
+        { "day": 14,  "crp": 17, "q25_crp": 11, "q75_crp": 27 },
+        { "day": 30,  "crp": 14, "q25_crp":  8, "q75_crp": 24 },
+        { "day": 60,  "crp": 10, "q25_crp":  5, "q75_crp": 19 },
+        { "day": 90,  "crp":  7, "q25_crp":  3, "q75_crp": 15 },
+        { "day": 120, "crp":  5, "q25_crp":  2, "q75_crp": 12 },
+        { "day": 180, "crp":  4, "q25_crp":  2, "q75_crp": 10 }
+      ]
+    },
+    {
+      "treatment": "IFX", "label": "Infliximab retry", "n": 14,
+      "sfr_12m_rate": 0.29, "median_days_to_sfr": 112, "iqr": [60, 210], "note": "prior exposure",
+      "median_trajectory": [
+        { "day": 0,   "crp": 26, "q25_crp": 18, "q75_crp": 37 },
+        { "day": 14,  "crp": 22, "q25_crp": 14, "q75_crp": 33 },
+        { "day": 30,  "crp": 17, "q25_crp": 10, "q75_crp": 28 },
+        { "day": 60,  "crp": 13, "q25_crp":  6, "q75_crp": 23 },
+        { "day": 90,  "crp": 10, "q25_crp":  4, "q75_crp": 19 },
+        { "day": 120, "crp":  8, "q25_crp":  3, "q75_crp": 16 },
+        { "day": 180, "crp":  7, "q25_crp":  2, "q75_crp": 14 }
+      ]
+    },
+    {
+      "treatment": "ADA", "label": "Adalimumab",       "n": 11,
+      "sfr_12m_rate": 0.32, "median_days_to_sfr": 98,  "iqr": [44, 195], "note": "mixed response",
+      "median_trajectory": [
+        { "day": 0,   "crp": 22, "q25_crp": 15, "q75_crp": 31 },
+        { "day": 14,  "crp": 19, "q25_crp": 12, "q75_crp": 28 },
+        { "day": 30,  "crp": 15, "q25_crp":  8, "q75_crp": 24 },
+        { "day": 60,  "crp": 12, "q25_crp":  5, "q75_crp": 21 },
+        { "day": 90,  "crp":  9, "q25_crp":  3, "q75_crp": 17 },
+        { "day": 120, "crp":  7, "q25_crp":  2, "q75_crp": 14 },
+        { "day": 180, "crp":  6, "q25_crp":  2, "q75_crp": 12 }
+      ]
+    }
+  ],
+  "episodes": []
+}

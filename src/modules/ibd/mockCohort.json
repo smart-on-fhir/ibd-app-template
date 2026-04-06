@@ -1,4 +1,5 @@
 {
+  "data_tier": "episode",
   "cohort_size": 84,
   "matching_chips": ["Crohn's disease", "Age 10–17", "Perianal disease", "Prior anti-TNF exposure", "Prior immunomodulator", "Same hospital", "Historical only"],
   "treatment_start_rule": "medication_order",
