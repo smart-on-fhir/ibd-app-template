@@ -9,9 +9,9 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import HighchartsReact       from 'highcharts-react-official';
 import Highcharts            from '../../highcharts';
-import { usePatientContext }  from '../../contexts/PatientContext';
-import cohortData             from './mockCohort.json';
-import { Term }             from './Tooltip';
+import { usePatientContext } from '../../contexts/PatientContext';
+import { useCohortData }     from './useCohortData';
+import { Term }              from './Tooltip';
 import {
     getIBDConditions,
     getIBDSubtype,
@@ -126,9 +126,58 @@ function CRPSparkline({ trajectory }: { trajectory: TrajectoryPoint[] }) {
     );
 }
 
+function MedianCRPSparkline({ trajectory }: { trajectory: MedianTrajectoryPoint[] }) {
+    const W = 260, H = 56;
+    const days  = trajectory.map(p => p.day);
+    const allY  = trajectory.flatMap(p => [p.q25_crp, p.q75_crp, p.crp]);
+    const minX  = Math.min(...days), maxX = Math.max(...days);
+    const maxY  = Math.max(...allY);
+    const px    = (d: number) => ((d - minX) / (maxX - minX || 1)) * W;
+    const py    = (c: number) => H - (c / (maxY || 1)) * (H - 4);
+
+    const upperPts  = trajectory.map(p => `${px(p.day).toFixed(1)},${py(p.q75_crp).toFixed(1)}`);
+    const lowerPts  = [...trajectory].reverse().map(p => `${px(p.day).toFixed(1)},${py(p.q25_crp).toFixed(1)}`);
+    const bandPts   = [...upperPts, ...lowerPts].join(' ');
+    const medianPts = trajectory.map(p => `${px(p.day).toFixed(1)},${py(p.crp).toFixed(1)}`).join(' ');
+    const normalY   = py(5);
+
+    return (
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', overflow: 'visible' }}>
+            <polygon points={bandPts} fill="#0d6efd18" stroke="none" />
+            {normalY >= 0 && normalY <= H && (
+                <line x1="0" y1={normalY.toFixed(1)} x2={W} y2={normalY.toFixed(1)}
+                      stroke="#19875455" strokeWidth="1" strokeDasharray="3,3" />
+            )}
+            <polyline points={medianPts} fill="none" stroke="#0d6efd" strokeWidth="1.5" strokeLinejoin="round" />
+            <line x1={px(0).toFixed(1)} y1="0" x2={px(0).toFixed(1)} y2={H}
+                  stroke="#C0000066" strokeWidth="1" strokeDasharray="3,2" />
+        </svg>
+    );
+}
+
+function SFRRangeBar({ iqr, median }: { iqr: number[]; median: number }) {
+    const W      = 240, H = 32;
+    const maxDay = Math.max(370, iqr[1] + 30);
+    const px     = (d: number) => Math.min(Math.max((d / maxDay) * W, 0), W);
+    const mid    = 12;
+
+    return (
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
+            <line x1="0" y1={mid} x2={W} y2={mid} stroke="#dee2e6" strokeWidth="2" strokeLinecap="round" />
+            <line x1={px(iqr[0])} y1={mid} x2={px(iqr[1])} y2={mid} stroke="#0d6efd55" strokeWidth="7" strokeLinecap="round" />
+            <line x1={px(iqr[0])} y1={mid - 6} x2={px(iqr[0])} y2={mid + 6} stroke="#0d6efd" strokeWidth="1.5" />
+            <line x1={px(iqr[1])} y1={mid - 6} x2={px(iqr[1])} y2={mid + 6} stroke="#0d6efd" strokeWidth="1.5" />
+            <circle cx={px(median)} cy={mid} r="5" fill="#0d6efd" />
+            <text x={px(iqr[0])} y={H - 1} textAnchor="middle" fontSize="7" fill="#6c757d">{iqr[0]}d</text>
+            <text x={px(median)} y={H - 1} textAnchor="middle" fontSize="7.5" fill="#0d6efd" fontWeight="bold">{median}d</text>
+            <text x={px(iqr[1])} y={H - 1} textAnchor="middle" fontSize="7" fill="#6c757d">{iqr[1]}d</text>
+        </svg>
+    );
+}
+
 // ── Treatment distribution chart ──────────────────────────────────────────────
 
-function TreatmentDistChart({ distributions }: { distributions: TreatmentDist[] }) {
+export function TreatmentDistChart({ distributions }: { distributions: TreatmentDist[] }) {
     const maxSFR     = Math.max(...distributions.map(d => d.sfr_12m_rate));
     const maxChars   = Math.max(...distributions.map(d => `${d.label} (n=${d.n})`.length));
     const labelWidth = Math.max(100, Math.min(180, maxChars * 7));
@@ -290,6 +339,7 @@ const pct = (r: number) => `${Math.round(r * 100)}%`;
 // ── Screen C ──────────────────────────────────────────────────────────────────
 
 export default function IBDScreenC() {
+    const cohortData = useCohortData();
     const { selectedPatientResources } = usePatientContext();
     const [selected, setSelected] = useState<Episode | null>(null);
 
@@ -305,7 +355,8 @@ export default function IBDScreenC() {
     const hasImmunomod  = allMeds.some(m => m.class === 'immunomodulator');
 
     // ── API response (mock) ──
-    const { outcomes, treatment_distributions, episodes, treatment_start_rule } = cohortData as {
+    const { data_tier, outcomes, treatment_distributions, episodes, treatment_start_rule } = cohortData as {
+        data_tier:                'aggregate' | 'episode';
         cohort_size:              number;
         matching_chips:           string[];
         treatment_start_rule:     string;
@@ -317,6 +368,12 @@ export default function IBDScreenC() {
         treatment_distributions:  TreatmentDist[];
         episodes:                 Episode[];
     };
+
+    const hasEpisodes = data_tier === 'episode';
+    const maxSFR  = Math.max(...treatment_distributions.map(d => d.sfr_12m_rate));
+    const bestTx  = treatment_distributions.reduce((a, b) => b.sfr_12m_rate > a.sfr_12m_rate ? b : a);
+    const [selectedTxCode, setSelectedTxCode] = useState(bestTx.treatment);
+    const selectedTx = treatment_distributions.find(d => d.treatment === selectedTxCode) ?? bestTx;
 
 
     return (
@@ -347,43 +404,84 @@ export default function IBDScreenC() {
 
             <div className="row g-3 flex-nowrap">
 
-                {/* ── Left: Roster ─────────────────────────────────────── */}
+                {/* ── Left: Roster (episode) or Treatment table (aggregate) ── */}
                 <div className="col col-3">
                     <div className="card h-100">
                         <div className="card-body p-2 small">
-                            <div className="fw-bold mb-1">Matched cohort roster</div>
-                            <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
-                                {cohortData.cohort_size} episodes · sorted by similarity · click to inspect
-                            </div>
-                            <div className='table-responsive'>
-                                <table className="table table-sm table-hover mb-0" style={{ fontSize: '0.72rem' }}>
+                            {hasEpisodes ? (<>
+                                <div className="fw-bold mb-1">Matched cohort roster</div>
+                                <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
+                                    {cohortData.cohort_size} episodes · sorted by similarity · click to inspect
+                                </div>
+                                <div className='table-responsive'>
+                                    <table className="table table-sm table-hover mb-0" style={{ fontSize: '0.72rem' }}>
+                                        <thead>
+                                            <tr>
+                                                <th className="text-secondary">Episode</th>
+                                                <th className='text-secondary text-end'>Sim</th>
+                                                <th className="text-secondary">Tx</th>
+                                                <th className="text-secondary">Outcome</th>
+                                                <th className='text-secondary text-end'>Days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {episodes.map(ep => (
+                                                <tr key={ep.episode_id}
+                                                    onClick={() => setSelected(ep === selected ? null : ep)}
+                                                    className={ep === selected ? 'table-primary' : ''}
+                                                    style={{ cursor: 'pointer' }}>
+                                                    <td className='text-truncate'>{ep.episode_id}</td>
+                                                    <td className='text-end'>{ep.similarity.toFixed(2)}</td>
+                                                    <td>{ep.treatment}</td>
+                                                    <td className={OUTCOME_META[ep.outcome]?.cls ?? ''}>
+                                                        <Term term={ep.outcome}>{OUTCOME_META[ep.outcome]?.label ?? ep.outcome}</Term>
+                                                    </td>
+                                                    <td className='text-end'>{ep.days_to_outcome}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </>) : (<>
+                                <div className="fw-bold mb-1">Treatment comparison</div>
+                                <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
+                                    Aggregate outcomes across {cohortData.cohort_size} episodes
+                                </div>
+                                <table className="table table-sm mb-0" style={{ fontSize: '0.72rem' }}>
                                     <thead>
                                         <tr>
-                                            <th className="text-secondary">Episode</th>
-                                            <th className='text-secondary text-end'>Sim</th>
-                                            <th className="text-secondary">Tx</th>
-                                            <th className="text-secondary">Outcome</th>
-                                            <th className='text-secondary text-end'>Days</th>
+                                            <th className="text-secondary">Treatment</th>
+                                            <th className="text-secondary text-end">n</th>
+                                            <th className="text-secondary text-end">SFR</th>
+                                            <th className="text-secondary text-end">Median</th>
+                                            <th className="text-secondary text-end">IQR</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {episodes.map(ep => (
-                                            <tr key={ep.episode_id}
-                                                onClick={() => setSelected(ep === selected ? null : ep)}
-                                                className={ep === selected ? 'table-primary' : ''}
-                                                style={{ cursor: 'pointer' }}>
-                                                <td className='text-truncate'>{ep.episode_id}</td>
-                                                <td className='text-end'>{ep.similarity.toFixed(2)}</td>
-                                                <td>{ep.treatment}</td>
-                                                <td className={OUTCOME_META[ep.outcome]?.cls ?? ''}>
-                                                    <Term term={ep.outcome}>{OUTCOME_META[ep.outcome]?.label ?? ep.outcome}</Term>
-                                                </td>
-                                                <td className='text-end'>{ep.days_to_outcome}</td>
-                                            </tr>
-                                        ))}
+                                        {[...treatment_distributions]
+                                            .sort((a, b) => b.sfr_12m_rate - a.sfr_12m_rate)
+                                            .map(d => (
+                                                <tr key={d.treatment}
+                                                    className={d.treatment === selectedTxCode ? 'table-primary' : d.sfr_12m_rate === maxSFR ? 'table-success' : ''}
+                                                    onClick={() => setSelectedTxCode(d.treatment)}
+                                                    style={{ cursor: 'pointer' }}>
+                                                    <td>
+                                                        <div className="fw-semibold">{d.treatment}</div>
+                                                        <div className="text-muted" style={{ fontSize: '0.65rem' }}>{d.label}</div>
+                                                    </td>
+                                                    <td className="text-end text-muted">{d.n}</td>
+                                                    <td className={`text-end fw-semibold ${d.sfr_12m_rate === maxSFR ? 'text-success' : ''}`}>
+                                                        {pct(d.sfr_12m_rate)}
+                                                    </td>
+                                                    <td className="text-end text-muted">{d.median_days_to_sfr}d</td>
+                                                    <td className="text-end text-muted" style={{ fontSize: '0.65rem' }}>
+                                                        {d.iqr[0]}–{d.iqr[1]}
+                                                    </td>
+                                                </tr>
+                                            ))}
                                     </tbody>
                                 </table>
-                            </div>
+                            </>)}
                         </div>
                     </div>
                 </div>
@@ -432,10 +530,52 @@ export default function IBDScreenC() {
                             <div className="card h-100">
                                 <div className="card-body p-3 small">
                                     <div className="fw-bold mb-2 d-flex justify-content-between align-items-start">
-                                        <span>Episode detail</span>
-                                        {selected && <button className="btn-close btn-sm" onClick={() => setSelected(null)} />}
+                                        <span>{hasEpisodes ? 'Episode detail' : 'Treatment detail'}</span>
+                                        {hasEpisodes && selected && <button className="btn-close btn-sm" onClick={() => setSelected(null)} />}
                                     </div>
-                                    {selected ? (<>
+                                    {!hasEpisodes ? (
+                                        <div style={{ fontSize: '0.72rem' }}>
+                                            <div className="mb-2">
+                                                <span className="fw-bold" style={{ fontSize: '0.85rem' }}>{selectedTx.label}</span>
+                                                <span className="text-muted ms-2">n={selectedTx.n}</span>
+                                                {selectedTx.sfr_12m_rate === maxSFR && (
+                                                    <span className="badge bg-success ms-2" style={{ fontSize: '0.6rem' }}>Best SFR</span>
+                                                )}
+                                                {selectedTx.note && (
+                                                    <span className="ms-2 fst-italic text-muted">{selectedTx.note}</span>
+                                                )}
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <div className="d-flex justify-content-between mb-1">
+                                                    <span className="text-muted text-uppercase fw-semibold" style={{ fontSize: '0.6rem', letterSpacing: '0.04em' }}>SFR at 12 months</span>
+                                                    <span className={`fw-semibold ${selectedTx.sfr_12m_rate === maxSFR ? 'text-success' : ''}`}>
+                                                        {pct(selectedTx.sfr_12m_rate)}
+                                                    </span>
+                                                </div>
+                                                <div className="progress" style={{ height: 6 }}>
+                                                    <div className={`progress-bar ${selectedTx.sfr_12m_rate === maxSFR ? 'bg-success' : 'bg-primary'}`}
+                                                         style={{ width: pct(selectedTx.sfr_12m_rate) }} />
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <div className="text-muted text-uppercase fw-semibold mb-2" style={{ fontSize: '0.6rem', letterSpacing: '0.04em' }}>Time to SFR — median + IQR (days)</div>
+                                                <SFRRangeBar iqr={selectedTx.iqr} median={selectedTx.median_days_to_sfr} />
+                                            </div>
+
+                                            {(selectedTx.median_trajectory?.length ?? 0) > 0 && (
+                                                <div>
+                                                    <div className="text-muted text-uppercase fw-semibold mb-1" style={{ fontSize: '0.6rem', letterSpacing: '0.04em' }}>CRP trajectory — median ± IQR</div>
+                                                    <MedianCRPSparkline trajectory={selectedTx.median_trajectory} />
+                                                    <div className="d-flex justify-content-between text-muted mt-1" style={{ fontSize: '0.6rem' }}>
+                                                        <span>Day 0</span>
+                                                        <span>Day {selectedTx.median_trajectory.at(-1)!.day}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : selected ? (<>
                                         <div className="mb-2" style={{ fontSize: '0.68rem' }}>
                                             <span className="text-muted">{selected.episode_id} · similarity {selected.similarity.toFixed(2)}</span>
                                             <span className="ms-3">Tx: <strong>{selected.treatment}</strong></span>
