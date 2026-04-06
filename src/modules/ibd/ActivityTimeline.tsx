@@ -19,7 +19,7 @@ export default function ActivityTimeline() {
 
     const options: Highcharts.Options = useMemo(() => ({
         chart: {
-            height:           150,
+            height:           236 ,
             margin:           [20, 12, 50, 44],
             backgroundColor:  'transparent',
             animation:        false,

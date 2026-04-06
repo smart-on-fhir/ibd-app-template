@@ -142,7 +142,7 @@ export default function IBDScreenA() {
                 {/* ── Left rail ────────────────────────────────────────────── */}
                 <div className="">
                     <div className="card h-100">
-                        <div className="card-body p-3 small">
+                        <div className="card-body px-3 py-2 small">
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Diagnosis</p>
                             <div className="mb-3">
@@ -239,66 +239,74 @@ export default function IBDScreenA() {
                 </div>
 
                 {/* ── Main area ────────────────────────────────────────────── */}
-                <div className="">
+                <div className="d-flex flex-column">
 
                     {/* ── Top summary cards ── */}
                     <div className="row g-2 mb-3">
                         {/* Current regimen — real data */}
                         <div className="col-6 col-xl-3">
-                            <Tip term="card:regimen"><div className="card h-100">
-                                <div className="card-body p-3 small">
-                                    <div className="text-primary text-uppercase fw-semibold mb-1 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
-                                    {regimen.length > 0 ? (
-                                        regimen.map((m, i) => (
-                                            <DataRow key={i} label={<span className='text-black' title={m.name}>{normalizeMedName(m.name)}</span>}>
-                                                {m.startDate
-                                                    ? <span className="text-muted opacity-75 text-nowrap">{formatDate(m.startDate)}</span>
-                                                    : <span className="text-muted opacity-75">—</span>}
-                                            </DataRow>
-                                        ))
-                                    ) : (
-                                        <div className="text-muted">No active IBD medications</div>
-                                    )}
+                            <Tip term="card:regimen">
+                                <div className="card h-100">
+                                    <div className="card-body px-3 py-2 small">
+                                        <div className="text-primary text-uppercase fw-semibold mb-1 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
+                                        {regimen.length > 0 ? (
+                                            regimen.map((m, i) => (
+                                                <DataRow key={i} label={<span className='text-black' title={m.name}>{normalizeMedName(m.name)}</span>}>
+                                                    {m.startDate
+                                                        ? <span className="text-muted opacity-75 text-nowrap">{formatDate(m.startDate)}</span>
+                                                        : <span className="text-muted opacity-75">—</span>}
+                                                </DataRow>
+                                            ))
+                                        ) : (
+                                            <div className="text-muted">No active IBD medications</div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div></Tip>
+                            </Tip>
                         </div>
 
                         {/* Historical cohort */}
                         <div className="col-6 col-xl-3">
                             <Link to="cohort" className="text-decoration-none text-center">
-                                <Tip term="card:cohort" cursor="pointer"><div className="card h-100">
-                                    <div className="card-body p-3" style={{ color: '#A6A' }}>
-                                        <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</div>
-                                        <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{cohortData.cohort_size}</div>
-                                        <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
+                                <Tip term="card:cohort" cursor="pointer">
+                                    <div className="card h-100">
+                                        <div className="card-body px-3 py-2" style={{ color: '#A6A' }}>
+                                            <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</div>
+                                            <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{cohortData.cohort_size}</div>
+                                            <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
+                                        </div>
                                     </div>
-                                </div></Tip>
+                                </Tip>
                             </Link>
                         </div>
 
                         {/* Best historical response */}
                         <div className="col-6 col-xl-3 text-center">
-                            <Tip term="card:best-response"><div className="card h-100">
-                                <div className="card-body p-3">
-                                    <div className="text-uppercase fw-semibold text-success" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</div>
-                                    <div className="fw-semibold text-success" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{bestTx.label}</div>
-                                    <div style={{ fontSize: '0.72rem' }}>
-                                        <span className="text-muted fw-semibold">{Math.round(bestTx.sfr_12m_rate * 100)}% SFR</span>
-                                        <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
+                            <Tip term="card:best-response">
+                                <div className="card h-100">
+                                    <div className="card-body px-3 py-2">
+                                        <div className="text-uppercase fw-semibold text-success" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</div>
+                                        <div className="fw-semibold text-success" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{bestTx.label}</div>
+                                        <div style={{ fontSize: '0.72rem' }}>
+                                            <span className="text-muted fw-semibold">{Math.round(bestTx.sfr_12m_rate * 100)}% SFR</span>
+                                            <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div></Tip>
+                            </Tip>
                         </div>
 
                         {/* Risk signal */}
                         <div className="col-6 col-xl-3 text-center">
-                            <Tip term="card:risk-signal"><div className="card h-100">
-                                <div className="card-body p-3" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
-                                    <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
-                                    <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{surgRate}%</div>
-                                    <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
+                            <Tip term="card:risk-signal">
+                                <div className="card h-100">
+                                    <div className="card-body px-3 py-2" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
+                                        <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
+                                        <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{surgRate}%</div>
+                                        <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
+                                    </div>
                                 </div>
-                            </div></Tip>
+                            </Tip>
                         </div>
                     </div>
 
@@ -359,8 +367,8 @@ export default function IBDScreenA() {
                     </div>
 
                     {/* ── Recent disease activity timeline placeholder ── */}
-                    <div className="card">
-                        <div className="card-body p-3 small">
+                    <div className="card" style={{ flex: '1 0 0'}}>
+                        <div className="card-body p-3 small d-flex flex-column">
                             <p className="fw-bold mb-1">Recent disease activity timeline</p>
                             <p className="text-muted mb-2" style={{ fontSize: '0.72rem' }}>
                                 Compact orientation chart showing inflammation and symptom burden before the current decision point.
