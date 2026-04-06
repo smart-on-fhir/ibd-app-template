@@ -6,11 +6,12 @@
  * Individual episode lines are toggleable.
  */
 import { useMemo, useState, useRef, useEffect } from 'react';
-import HighchartsReact from 'highcharts-react-official';
-import Highcharts      from '../../highcharts';
-import { usePatientContext } from '../../contexts/PatientContext';
-import cohortData from './mockCohort.json';
-import { getCurrentRegimen, getLabHistory } from './utils';
+import HighchartsReact                          from 'highcharts-react-official';
+import Highcharts                               from '../../highcharts';
+import { usePatientContext }                    from '../../contexts/PatientContext';
+import { useCohortData }                        from './useCohortData';
+import { TreatmentDistChart }                   from './ScreenC';
+import { getCurrentRegimen, getLabHistory }     from './utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -51,10 +52,12 @@ const ENDPOINT_OPTIONS = ['SFR', 'ENDO', 'SURG'] as const;
 // ── Screen B ──────────────────────────────────────────────────────────────────
 
 export default function IBDScreenB() {
+    const cohortData = useCohortData();
     const { selectedPatientResources } = usePatientContext();
 
     const distributions = cohortData.treatment_distributions as unknown as TreatmentDist[];
     const allEpisodes   = cohortData.episodes as unknown as Episode[];
+    const hasEpisodes   = (cohortData as any).data_tier === 'episode';
 
     const defaultTx = distributions.reduce((a, b) =>
         b.sfr_12m_rate > a.sfr_12m_rate ? b : a
@@ -83,8 +86,9 @@ export default function IBDScreenB() {
     }, [regimen, crpHistory]);
 
     // ── Cohort data for selected treatment ──
-    const dist             = distributions.find(d => d.treatment === candidateTx)!;
-    const selectedEpisodes = allEpisodes.filter(e => e.treatment === candidateTx);
+    const dist              = distributions.find(d => d.treatment === candidateTx)!;
+    const selectedEpisodes  = allEpisodes.filter(e => e.treatment === candidateTx);
+    const hasTrajectoryData = (dist.median_trajectory?.length ?? 0) > 0;
 
     // ── Highcharts series ──────────────────────────────────────────────────────
     const series = useMemo((): Highcharts.SeriesOptionsType[] => {
@@ -286,15 +290,19 @@ export default function IBDScreenB() {
                             <hr className="my-2" />
 
                             <p className="text-primary text-uppercase fw-semibold mb-2" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Display</p>
-                            <div className="form-check mb-1">
+                            <div className={`form-check mb-1 ${!hasEpisodes ? 'opacity-40' : ''}`}>
                                 <input className="form-check-input" type="checkbox"
                                        id="show-individuals"
-                                       checked={showIndividuals}
+                                       checked={showIndividuals && hasEpisodes}
+                                       disabled={!hasEpisodes}
                                        onChange={e => setShowIndividuals(e.target.checked)} />
                                 <label className="form-check-label" htmlFor="show-individuals" style={{ fontSize: '0.72rem' }}>
                                     Individual episodes
                                 </label>
                             </div>
+                            {!hasEpisodes && (
+                                <div className="text-muted" style={{ fontSize: '0.65rem' }}>Aggregate data only</div>
+                            )}
 
                             <hr className="my-2" />
 
@@ -311,19 +319,27 @@ export default function IBDScreenB() {
                     {/* Chart */}
                     <div className="card mb-3">
                         <div className="card-body p-3 small">
-                            <div className="fw-bold mb-1">
-                                CRP over time — {dist.label} cohort&nbsp;
-                                <span className="text-muted fw-normal">vs. present patient</span>
-                            </div>
-                            <div ref={containerRef}>
-                                <HighchartsReact ref={chartRef} highcharts={Highcharts} options={options}
-                                                containerProps={{ style: { width: '100%' } }} />
-                            </div>
+                            {hasTrajectoryData ? (<>
+                                <div className="fw-bold mb-1">
+                                    CRP over time — {dist.label} cohort&nbsp;
+                                    <span className="text-muted fw-normal">vs. present patient</span>
+                                </div>
+                                <div ref={containerRef}>
+                                    <HighchartsReact ref={chartRef} highcharts={Highcharts} options={options}
+                                                    containerProps={{ style: { width: '100%' } }} />
+                                </div>
+                            </>) : (<>
+                                <div className="fw-bold mb-1">Outcome distributions by treatment choice</div>
+                                <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
+                                    CRP trajectory data unavailable — showing outcome distributions
+                                </div>
+                                <TreatmentDistChart distributions={distributions} />
+                            </>)}
                         </div>
                     </div>
 
                     {/* Outcome legend for individual episodes */}
-                    {showIndividuals && (
+                    {showIndividuals && hasEpisodes && (
                         <div className="d-flex gap-3 mb-3 small flex-wrap">
                             {Object.entries(OUTCOME_COLOR).map(([k, v]) => (
                                 <span key={k} className="d-flex align-items-center gap-1" style={{ fontSize: '0.68rem' }}>
