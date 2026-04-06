@@ -1,14 +1,15 @@
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 
 interface Props {
-    basePath:    string;
-    label:       string;
-    icon:        string;
-    color?:      string;
-    navLinks?:   Array<{ path: string; label: string; icon: string }>;
+    basePath:       string;
+    label:          string;
+    icon:           string;
+    color?:         string;
+    navLinks?:      Array<{ path: string; label: string; icon: string }>;
+    sidebarFooter?: React.ReactNode;
 }
 
-export default function ModuleLayout({ basePath, label, icon, color, navLinks }: Props) {
+export default function ModuleLayout({ basePath, label, icon, color, navLinks, sidebarFooter }: Props) {
     const { id } = useParams();
     const base = `/patients/${id}/${basePath}`;
 
@@ -43,6 +44,7 @@ export default function ModuleLayout({ basePath, label, icon, color, navLinks }:
                             <span>{link.label}</span>
                         </NavLink>
                     ))}
+                    {sidebarFooter}
                 </div>
             </div>
 
