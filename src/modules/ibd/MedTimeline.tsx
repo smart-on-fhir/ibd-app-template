@@ -248,6 +248,7 @@ export default function MedTimeline() {
             type:        'xrange',
             data:        seriesData,
             pointWidth:  ROW_H - 6,
+            minPointLength: 4,
             borderRadius: 3,
             borderWidth:  0.5,
             dataLabels: {
