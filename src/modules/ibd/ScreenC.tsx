@@ -164,7 +164,6 @@ function TreatmentDistChart({ distributions }: { distributions: TreatmentDist[] 
         },
         xAxis: {
             categories: distributions.map(d => `${d.label} (n=${d.n})`),
-            min:        -0.1,
             lineWidth:  0,
             tickWidth:  0,
             labels: {
