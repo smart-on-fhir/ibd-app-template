@@ -133,7 +133,9 @@ export function getAllIBDMedications(resources: Record<string, FhirResource[]>):
 /** Extracts the first word (generic drug name) from a raw FHIR medication string. */
 export function normalizeMedName(raw: string): string {
     const first = raw.trim().split(/[\s,/()]+/).find(t => /^[A-Za-z]/.test(t)) ?? raw;
-    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+    // Strip FDA biosimilar suffix: exactly 4 lowercase letters after a hyphen (e.g. adalimumab-adaz → adalimumab)
+    const stripped = first.replace(/-[a-z]{4}$/i, '');
+    return stripped.charAt(0).toUpperCase() + stripped.slice(1).toLowerCase();
 }
 
 /** Only active IBD medications, sorted by class priority (biologic first). */

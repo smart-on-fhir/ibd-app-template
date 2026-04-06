@@ -12,7 +12,7 @@ import Highcharts                                from '../../highcharts';
 import { usePatientContext }                     from '../../contexts/PatientContext';
 import { getMedHistory, normalizeMedName }       from './utils';
 import { IBD_MED_CLASS_COLORS }                  from './config';
-import cohortData                                from './mockCohort.json';
+import { useCohortData }                         from './useCohortData';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -49,12 +49,11 @@ function splitIntoLanes<T extends { start: number; end: number }>(items: T[]): T
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function MedTimeline() {
-    const { selectedPatientResources } = usePatientContext();
-
-    const chartRef     = useRef<HighchartsReact.RefObject>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const [chartHeight, setChartHeight] = useState(500);
+    const cohortData                    = useCohortData();
+    const { selectedPatientResources }  = usePatientContext();
+    const chartRef                      = useRef<HighchartsReact.RefObject>(null);
+    const containerRef                  = useRef<HTMLDivElement>(null);
+    const [chartHeight, setChartHeight] = useState(520);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -71,10 +70,34 @@ export default function MedTimeline() {
         [selectedPatientResources],
     );
 
-    // Day 0 = start of the most recent biologic (the index treatment for this patient)
+    // Day 0 = first prescription of the current index biologic.
+    // Strategy: prefer the most recently initiated biologic that is still active
+    // (status === 'active' or endMs in the future). If none are active — patient
+    // is between therapies — fall back to the most recently initiated regardless
+    // of status, so the chart still anchors on the last known treatment.
+    //
+    // In both passes we group by normalised drug name and take the earliest
+    // startMs per name (ignoring renewals/refills), then pick the latest start.
     const day0Ms = useMemo(() => {
         const biologics = patientMeds.filter(m => m.class === 'biologic');
-        return biologics.length ? Math.max(...biologics.map(m => m.startMs)) : null;
+        if (!biologics.length) return null;
+
+        const now = Date.now();
+        const isActive = (m: typeof biologics[number]) =>
+            m.status === 'active' || m.endMs > now;
+
+        function latestFirstStart(subset: typeof biologics): number | null {
+            if (!subset.length) return null;
+            const firstStartByName = new Map<string, number>();
+            for (const m of subset) {
+                const key  = normalizeMedName(m.name);
+                const prev = firstStartByName.get(key);
+                if (prev === undefined || m.startMs < prev) firstStartByName.set(key, m.startMs);
+            }
+            return Math.max(...firstStartByName.values());
+        }
+
+        return latestFirstStart(biologics.filter(isActive)) ?? latestFirstStart(biologics);
     }, [patientMeds]);
 
     // ── Build chart rows + data ───────────────────────────────────────────────
@@ -88,16 +111,17 @@ export default function MedTimeline() {
 
         // ── Patient rows ──────────────────────────────────────────────────────
         if (day0Ms !== null && patientMeds.length > 0) {
-            // Deduplicate by name while preserving chronological order
+            // Deduplicate by normalised name (groups originator + brand variants together), preserving chronological order
             const seen = new Set<string>();
-            const uniqueNames: string[] = [];
+            const uniqueNormNames: string[] = [];
             for (const m of patientMeds) {
-                if (!seen.has(m.name)) { seen.add(m.name); uniqueNames.push(m.name); }
+                const norm = normalizeMedName(m.name);
+                if (!seen.has(norm)) { seen.add(norm); uniqueNormNames.push(norm); }
             }
 
-            uniqueNames.forEach(name => {
+            uniqueNormNames.forEach(normName => {
                 const bars = patientMeds
-                    .filter(m => m.name === name)
+                    .filter(m => normalizeMedName(m.name) === normName)
                     .map(m => ({
                         start: (m.startMs - day0Ms) / 864e5,
                         end:   (m.endMs   - day0Ms) / 864e5,
@@ -105,15 +129,16 @@ export default function MedTimeline() {
                     }));
                 splitIntoLanes(bars).forEach((lane, laneIdx) => {
                     const rowIdx = categories.length;
-                    categories.push(laneIdx === 0 ? normalizeMedName(name) : '');
+                    categories.push(laneIdx === 0 ? normName : '');
                     lane.forEach(({ start, end, med: m }) => {
                         seriesData.push({
                             x:      start,
                             x2:     end,
                             y:      rowIdx,
-                            color:  (IBD_MED_CLASS_COLORS[m.class] ?? IBD_MED_CLASS_COLORS.other) + '88',
-                            name:   m.name,
+                            color:  (IBD_MED_CLASS_COLORS[m.class] ?? IBD_MED_CLASS_COLORS.other) + (end <= 0 ? '44' : '88'),
+                            name:   normName,
                             custom: {
+                                fullName:     m.name,
                                 class:        m.class,
                                 status:       m.status,
                                 durationDays: m.durationDays,
@@ -127,36 +152,40 @@ export default function MedTimeline() {
             categories.push('(no FHIR med data)');
         }
 
-        // ── Spacer + cohort header ────────────────────────────────────────────
+        // ── Spacer + cohort header ───────────────────────────────────────────
+        const hasEpisodes = (cohortData as any).data_tier === 'episode';
         categories.push('');
         const cohortHeaderRow = categories.length;
-        categories.push(COHORT_HEADER);    // styled header, no bars
 
-        // ── Cohort episode rows (lane-split to avoid overlaps) ───────────────
-        cohortData.episodes.forEach(ep => {
-            const bars = (ep.medication_history as MedBar[]).map(m => ({
-                start: m.start_day,
-                end:   m.end_day,
-                bar:   m,
-            }));
-            splitIntoLanes(bars).forEach((lane, laneIdx) => {
-                const rowIdx = categories.length;
-                categories.push(laneIdx === 0 ? `${ep.episode_id}  ${ep.outcome}` : '');
-                lane.forEach(({ bar: m }) => {
-                    seriesData.push({
-                        x:      m.start_day,
-                        x2:     m.end_day,
-                        y:      rowIdx,
-                        color:  (IBD_MED_CLASS_COLORS[m.drug_class] ?? IBD_MED_CLASS_COLORS.other) + '66',
-                        name:   m.drug,
-                        custom: { class: m.drug_class },
+        if (hasEpisodes) {
+            categories.push(COHORT_HEADER);    // styled header, no bars
+
+            // ── Cohort episode rows (lane-split to avoid overlaps) ───────────
+            cohortData.episodes.forEach(ep => {
+                const bars = (ep.medication_history as MedBar[]).map(m => ({
+                    start: m.start_day,
+                    end:   m.end_day,
+                    bar:   m,
+                }));
+                splitIntoLanes(bars).forEach((lane, laneIdx) => {
+                    const rowIdx = categories.length;
+                    categories.push(laneIdx === 0 ? `${ep.episode_id}  ${ep.outcome}` : '');
+                    lane.forEach(({ bar: m }) => {
+                        seriesData.push({
+                            x:      m.start_day,
+                            x2:     m.end_day,
+                            y:      rowIdx,
+                            color:  (IBD_MED_CLASS_COLORS[m.drug_class] ?? IBD_MED_CLASS_COLORS.other) + (m.end_day <= 0 ? '33' : '66'),
+                            name:   m.drug,
+                            custom: { class: m.drug_class },
+                        });
                     });
                 });
             });
-        });
+        }
 
         return { categories, seriesData, cohortHeaderRow };
-    }, [patientMeds, day0Ms]);
+    }, [patientMeds, day0Ms, cohortData]);
 
     // ── Chart options ─────────────────────────────────────────────────────────
 
@@ -164,6 +193,69 @@ export default function MedTimeline() {
         setChartHeight(categories.length * ROW_H + 60);
     }, [categories.length]);
 
+    // SFR expectation annotations derived from treatment_distributions
+    const sfrAnnotations = useMemo(() => {
+        const dists = (cohortData as any).treatment_distributions as Array<{
+            label: string; sfr_12m_rate: number; median_days_to_sfr: number; iqr: [number, number];
+        }> | undefined;
+        if (!dists?.length) return { plotLines: [] as Highcharts.XAxisPlotLinesOptions[], plotBands: [] as Highcharts.XAxisPlotBandsOptions[] };
+
+        const maxSFR  = Math.max(...dists.map(d => d.sfr_12m_rate));
+        const palette = ['#198754', '#0d6efd', '#6f42c1', '#fd7e14'];
+
+        const sorted = [...dists].sort((a, b) => a.median_days_to_sfr - b.median_days_to_sfr);
+        const n = sorted.length;
+
+        const plotLines: Highcharts.XAxisPlotLinesOptions[] = sorted.map((d, i) => ({
+            value:     d.median_days_to_sfr,
+            color:     palette[i % palette.length],
+            width:     1,
+            dashStyle: 'Dash',
+            zIndex:    4,
+            label: {
+                text:     `● ${d.label} ${Math.round(d.sfr_12m_rate * 100)}% SFR`,
+                style:    {
+                    fontSize: '0.57rem', color: palette[i % palette.length],
+                    fontWeight: '600',
+                    textShadow: '0 0 3px #fff',
+                    background: '#FFF8'
+                },
+                rotation: 0,
+                y: -(6 + (n - 1 - i) * 16),  // smallest x → top, largest x → bottom
+                x: -4.85,
+                useHTML: true
+            },
+        }));
+
+        // IQR band only for best-SFR treatment
+        const plotBands: Highcharts.XAxisPlotBandsOptions[] = dists
+            .filter(d => d.sfr_12m_rate === maxSFR)
+            .map(d => ({
+                from:  d.iqr[0],
+                to:    d.iqr[1],
+                color: '#19875412',
+                zIndex: 2,
+                borderWidth: 1,
+                borderColor: '#19875444',
+            }));
+
+        return { plotLines, plotBands };
+    }, [cohortData]);
+
+    // Keep a ref so the chart render event always sees the latest annotations
+    const sfrAnnotationsRef = useRef(sfrAnnotations);
+    sfrAnnotationsRef.current = sfrAnnotations;
+
+    // Choose time unit based on data span so labels don't crowd on long timelines
+    const xUnit = useMemo(() => {
+        const allX = seriesData.flatMap(d => [d.x ?? 0, d.x2 ?? 0]);
+        const span = allX.length ? Math.max(...allX) - Math.min(...allX) : 0;
+        if (span > 730) return { label: 'Months', interval: 30  };
+        if (span > 90)  return { label: 'Weeks',  interval: 14  };
+        return               { label: 'Days',   interval: undefined as number | undefined };
+    }, [seriesData]);
+
+    const hasEpisodes = (cohortData as any).data_tier === 'episode';
     const options: Highcharts.Options = {
         chart: {
             type:                'xrange',
@@ -171,29 +263,74 @@ export default function MedTimeline() {
             backgroundColor:     'transparent',
             plotBackgroundColor: '#ffffff',
             style:           { fontFamily: 'inherit' },
-            height:          chartHeight,
+            height:          hasEpisodes ? chartHeight : chartHeight + 72,
             marginLeft:      MARGIN_L,
+            marginTop:       72,   // headroom for staggered SFR labels above plot
             zooming:         { type: 'x' },
             panning:         { enabled: true, type: 'x' },
             panKey:          'shift',
+            events: {
+                render(this: Highcharts.Chart) {
+                    const chart  = this;
+                    const annotations = sfrAnnotationsRef.current;
+                    const exts        = (chart as any)._sfrExts as Highcharts.SVGElement[] | undefined;
+                    exts?.forEach(el => el.destroy());
+                    const n = annotations.plotLines.length;
+                    (chart as any)._sfrExts = annotations.plotLines.map((pl, i) => {
+                        const xPx = chart.xAxis[0].toPixels(pl.value as number, false);
+                        const h   = 6 + (n - 1 - i) * 16;   // mirrors label y: smallest x → tallest
+                        return chart.renderer
+                            .path(['M', xPx, chart.plotTop -2, 'L', xPx, chart.plotTop - h] as any)
+                            .attr({
+                                stroke: pl.color as string,
+                                'stroke-width': 1,
+                                'stroke-dasharray': '4,2',
+                                'image-rendering': 'crisp-edges',
+                                zIndex: 4
+                            })
+                            .add();
+                    });
+                },
+            },
         },
         title:   { text: undefined },
         credits: { enabled: false },
         legend:  { enabled: false },
         exporting: { enabled: false },
         xAxis: {
-            title:         { text: 'Days from index treatment start', style: { fontSize: '0.8rem', fontWeight: '500' } },
+            title:         { text: 'Time from index treatment', style: { fontSize: '0.8rem', fontWeight: '500' } },
             gridLineWidth: 1,
-            labels:        { style: { fontSize: '0.65rem' } },
+            labels:        {
+                style: { fontSize: '0.65rem' },
+                formatter(this: Highcharts.AxisLabelsFormatterContextObject) {
+                    const days = this.value as number;
+                    if (days === 0) return '0';
+                    const sign = days < 0 ? '\u2212' : '';
+                    const abs  = Math.abs(days);
+                    if (xUnit.label === 'Months') {
+                        const mo = Math.round(abs / 30);
+                        return mo >= 12 && mo % 12 === 0
+                            ? `${sign}${mo / 12} yr`
+                            : `${sign}${mo} mo`;
+                    }
+                    if (xUnit.label === 'Weeks') return `${sign}${Math.round(abs / 7)} wk`;
+                    return `${sign}${abs} d`;
+                },
+            },
+            tickInterval: xUnit.interval,
             lineColor: '#CCCCCC',
             tickColor: '#CCCCCC',
-            plotLines: [{
-                value:     0,
-                color:     '#C00',
-                width:     2,
-                zIndex:    5,
-                label:     { text: 'Day 0', style: { fontWeight: 'bold', fontSize: '0.62rem', color: '#C00', textShadow: '0 0 2px #fff' }, y: 14, useHTML: true, rotation: 0 },
-            }],
+            plotLines: [
+                {
+                    value:  0,
+                    color:  '#C00',
+                    width:  2,
+                    zIndex: 5,
+                    label:  { text: 'Day 0', style: { fontWeight: 'bold', fontSize: '0.62rem', color: '#C00', textShadow: '0 0 2px #fff' }, y: 14, useHTML: true, rotation: 0 },
+                },
+                ...sfrAnnotations.plotLines,
+            ],
+            plotBands: sfrAnnotations.plotBands,
         },
 
         yAxis: {
@@ -214,14 +351,22 @@ export default function MedTimeline() {
                     return `<span style="font-size:0.65rem">${v}</span>`;
                 },
             },
+            plotLines: hasEpisodes ? [
+                {
+                    value:     cohortHeaderRow - 0.5,
+                    color:     '#FFFFFF',
+                    width:     35,
+                    zIndex:    1,
+                },
+            ] : [],
             plotBands: [
                 {
-                    from:  -0.5,
-                    to:    cohortHeaderRow - 1.5,   // covers PATIENT_HEADER + drug rows
-                    color: 'rgba(13, 110, 253, 0.05)',
+                    from:  0.5, // skip PATIENT_HEADER row
+                    to:    cohortHeaderRow - 1.5,
+                    color: 'rgba(0, 100, 255, 0.06)',
                 },
                 {
-                    from:  cohortHeaderRow - 0.5,   // covers COHORT_HEADER + episode rows
+                    from:  cohortHeaderRow + 0.5, // skip COHORT_HEADER row
                     to:    categories.length - 0.5,
                     color: 'rgba(108, 117, 125, 0.04)',
                 },
