@@ -1,314 +1,7171 @@
 {
   "data_tier": "episode",
   "cohort_size": 84,
-  "matching_chips": ["Crohn's disease", "Age 10–17", "Perianal disease", "Prior anti-TNF exposure", "Prior immunomodulator", "Same hospital", "Historical only"],
+  "matching_chips": [
+    "Crohn's disease",
+    "Age 10–17",
+    "Perianal disease",
+    "Prior anti-TNF exposure",
+    "Prior immunomodulator",
+    "Same hospital",
+    "Historical only"
+  ],
   "treatment_start_rule": "medication_order",
   "outcomes": {
-    "sfr_12m_rate":  0.57,
+    "sfr_12m_rate": 0.57,
     "endo_12m_rate": 0.43,
     "surg_12m_rate": 0.18
   },
   "treatment_distributions": [
     {
-      "treatment": "UST", "label": "Ustekinumab", "n": 38,
-      "sfr_12m_rate": 0.57, "median_days_to_sfr": 71, "iqr": [45, 128], "note": "best overall",
+      "treatment": "UST",
+      "label": "Ustekinumab",
+      "n": 38,
+      "sfr_12m_rate": 0.57,
+      "median_days_to_sfr": 71,
+      "iqr": [
+        45,
+        128
+      ],
+      "endo_12m_rate": 0.47,
+      "median_days_to_endo": 120,
+      "iqr_endo": [
+        80,
+        190
+      ],
+      "surg_12m_rate": 0.08,
+      "median_days_to_surg": 280,
+      "iqr_surg": [
+        210,
+        340
+      ],
+      "note": "best overall",
       "median_trajectory": [
-        { "day": 0,   "crp": 21, "q25_crp": 15, "q75_crp": 28 },
-        { "day": 14,  "crp": 16, "q25_crp": 10, "q75_crp": 23 },
-        { "day": 30,  "crp": 11, "q25_crp":  6, "q75_crp": 18 },
-        { "day": 60,  "crp":  6, "q25_crp":  3, "q75_crp": 13 },
-        { "day": 90,  "crp":  4, "q25_crp":  2, "q75_crp":  8 },
-        { "day": 120, "crp":  3, "q25_crp":  1, "q75_crp":  6 },
-        { "day": 180, "crp":  3, "q25_crp":  1, "q75_crp":  5 }
+        {
+          "day": 0,
+          "crp": 21,
+          "q25_crp": 15,
+          "q75_crp": 28
+        },
+        {
+          "day": 14,
+          "crp": 16,
+          "q25_crp": 10,
+          "q75_crp": 23
+        },
+        {
+          "day": 30,
+          "crp": 11,
+          "q25_crp": 6,
+          "q75_crp": 18
+        },
+        {
+          "day": 60,
+          "crp": 6,
+          "q25_crp": 3,
+          "q75_crp": 13
+        },
+        {
+          "day": 90,
+          "crp": 4,
+          "q25_crp": 2,
+          "q75_crp": 8
+        },
+        {
+          "day": 120,
+          "crp": 3,
+          "q25_crp": 1,
+          "q75_crp": 6
+        },
+        {
+          "day": 180,
+          "crp": 3,
+          "q25_crp": 1,
+          "q75_crp": 5
+        }
       ]
     },
     {
-      "treatment": "VDZ", "label": "Vedolizumab", "n": 21,
-      "sfr_12m_rate": 0.38, "median_days_to_sfr": 94, "iqr": [51, 180], "note": "more variable",
+      "treatment": "VDZ",
+      "label": "Vedolizumab",
+      "n": 21,
+      "sfr_12m_rate": 0.38,
+      "median_days_to_sfr": 94,
+      "iqr": [
+        51,
+        180
+      ],
+      "endo_12m_rate": 0.33,
+      "median_days_to_endo": 150,
+      "iqr_endo": [
+        90,
+        240
+      ],
+      "surg_12m_rate": 0.14,
+      "median_days_to_surg": 250,
+      "iqr_surg": [
+        180,
+        320
+      ],
+      "note": "more variable",
       "median_trajectory": [
-        { "day": 0,   "crp": 19, "q25_crp": 13, "q75_crp": 30 },
-        { "day": 14,  "crp": 17, "q25_crp": 11, "q75_crp": 27 },
-        { "day": 30,  "crp": 14, "q25_crp":  8, "q75_crp": 24 },
-        { "day": 60,  "crp": 10, "q25_crp":  5, "q75_crp": 19 },
-        { "day": 90,  "crp":  7, "q25_crp":  3, "q75_crp": 15 },
-        { "day": 120, "crp":  5, "q25_crp":  2, "q75_crp": 12 },
-        { "day": 180, "crp":  4, "q25_crp":  2, "q75_crp": 10 }
+        {
+          "day": 0,
+          "crp": 19,
+          "q25_crp": 13,
+          "q75_crp": 30
+        },
+        {
+          "day": 14,
+          "crp": 17,
+          "q25_crp": 11,
+          "q75_crp": 27
+        },
+        {
+          "day": 30,
+          "crp": 14,
+          "q25_crp": 8,
+          "q75_crp": 24
+        },
+        {
+          "day": 60,
+          "crp": 10,
+          "q25_crp": 5,
+          "q75_crp": 19
+        },
+        {
+          "day": 90,
+          "crp": 7,
+          "q25_crp": 3,
+          "q75_crp": 15
+        },
+        {
+          "day": 120,
+          "crp": 5,
+          "q25_crp": 2,
+          "q75_crp": 12
+        },
+        {
+          "day": 180,
+          "crp": 4,
+          "q25_crp": 2,
+          "q75_crp": 10
+        }
       ]
     },
     {
-      "treatment": "IFX", "label": "Infliximab retry", "n": 14,
-      "sfr_12m_rate": 0.29, "median_days_to_sfr": 112, "iqr": [60, 210], "note": "prior exposure",
+      "treatment": "IFX",
+      "label": "Infliximab retry",
+      "n": 14,
+      "sfr_12m_rate": 0.29,
+      "median_days_to_sfr": 112,
+      "iqr": [
+        60,
+        210
+      ],
+      "endo_12m_rate": 0.21,
+      "median_days_to_endo": 180,
+      "iqr_endo": [
+        120,
+        270
+      ],
+      "surg_12m_rate": 0.29,
+      "median_days_to_surg": 200,
+      "iqr_surg": [
+        140,
+        290
+      ],
+      "note": "prior exposure",
       "median_trajectory": [
-        { "day": 0,   "crp": 26, "q25_crp": 18, "q75_crp": 37 },
-        { "day": 14,  "crp": 22, "q25_crp": 14, "q75_crp": 33 },
-        { "day": 30,  "crp": 17, "q25_crp": 10, "q75_crp": 28 },
-        { "day": 60,  "crp": 13, "q25_crp":  6, "q75_crp": 23 },
-        { "day": 90,  "crp": 10, "q25_crp":  4, "q75_crp": 19 },
-        { "day": 120, "crp":  8, "q25_crp":  3, "q75_crp": 16 },
-        { "day": 180, "crp":  7, "q25_crp":  2, "q75_crp": 14 }
+        {
+          "day": 0,
+          "crp": 26,
+          "q25_crp": 18,
+          "q75_crp": 37
+        },
+        {
+          "day": 14,
+          "crp": 22,
+          "q25_crp": 14,
+          "q75_crp": 33
+        },
+        {
+          "day": 30,
+          "crp": 17,
+          "q25_crp": 10,
+          "q75_crp": 28
+        },
+        {
+          "day": 60,
+          "crp": 13,
+          "q25_crp": 6,
+          "q75_crp": 23
+        },
+        {
+          "day": 90,
+          "crp": 10,
+          "q25_crp": 4,
+          "q75_crp": 19
+        },
+        {
+          "day": 120,
+          "crp": 8,
+          "q25_crp": 3,
+          "q75_crp": 16
+        },
+        {
+          "day": 180,
+          "crp": 7,
+          "q25_crp": 2,
+          "q75_crp": 14
+        }
       ]
     },
     {
-      "treatment": "ADA", "label": "Adalimumab", "n": 11,
-      "sfr_12m_rate": 0.32, "median_days_to_sfr": 98, "iqr": [44, 195], "note": "mixed response",
+      "treatment": "ADA",
+      "label": "Adalimumab",
+      "n": 11,
+      "sfr_12m_rate": 0.32,
+      "median_days_to_sfr": 98,
+      "iqr": [
+        44,
+        195
+      ],
+      "endo_12m_rate": 0.27,
+      "median_days_to_endo": 160,
+      "iqr_endo": [
+        100,
+        250
+      ],
+      "surg_12m_rate": 0.18,
+      "median_days_to_surg": 230,
+      "iqr_surg": [
+        160,
+        310
+      ],
+      "note": "mixed response",
       "median_trajectory": [
-        { "day": 0,   "crp": 22, "q25_crp": 15, "q75_crp": 31 },
-        { "day": 14,  "crp": 19, "q25_crp": 12, "q75_crp": 28 },
-        { "day": 30,  "crp": 15, "q25_crp":  8, "q75_crp": 24 },
-        { "day": 60,  "crp": 12, "q25_crp":  5, "q75_crp": 21 },
-        { "day": 90,  "crp":  9, "q25_crp":  3, "q75_crp": 17 },
-        { "day": 120, "crp":  7, "q25_crp":  2, "q75_crp": 14 },
-        { "day": 180, "crp":  6, "q25_crp":  2, "q75_crp": 12 }
+        {
+          "day": 0,
+          "crp": 22,
+          "q25_crp": 15,
+          "q75_crp": 31
+        },
+        {
+          "day": 14,
+          "crp": 19,
+          "q25_crp": 12,
+          "q75_crp": 28
+        },
+        {
+          "day": 30,
+          "crp": 15,
+          "q25_crp": 8,
+          "q75_crp": 24
+        },
+        {
+          "day": 60,
+          "crp": 12,
+          "q25_crp": 5,
+          "q75_crp": 21
+        },
+        {
+          "day": 90,
+          "crp": 9,
+          "q25_crp": 3,
+          "q75_crp": 17
+        },
+        {
+          "day": 120,
+          "crp": 7,
+          "q25_crp": 2,
+          "q75_crp": 14
+        },
+        {
+          "day": 180,
+          "crp": 6,
+          "q25_crp": 2,
+          "q75_crp": 12
+        }
       ]
     }
   ],
+  "present_patient": {
+    "medication_history": [
+      {
+        "drug": "Azathioprine",
+        "drug_class": "immunomodulator",
+        "start_day": -820,
+        "end_day": -180
+      },
+      {
+        "drug": "Adalimumab",
+        "drug_class": "biologic",
+        "start_day": -540,
+        "end_day": -30
+      },
+      {
+        "drug": "Prednisone",
+        "drug_class": "steroid",
+        "start_day": -60,
+        "end_day": 0
+      },
+      {
+        "drug": "Ustekinumab",
+        "drug_class": "biologic",
+        "start_day": 0,
+        "end_day": 90
+      }
+    ],
+    "crp_trajectory": [
+      {
+        "day": -90,
+        "crp": 32
+      },
+      {
+        "day": -60,
+        "crp": 29
+      },
+      {
+        "day": -30,
+        "crp": 26
+      },
+      {
+        "day": 0,
+        "crp": 22
+      },
+      {
+        "day": 14,
+        "crp": 18
+      },
+      {
+        "day": 30,
+        "crp": 13
+      },
+      {
+        "day": 60,
+        "crp": 8
+      },
+      {
+        "day": 90,
+        "crp": 5
+      }
+    ]
+  },
   "episodes": [
     {
-      "episode_id": "EP-1038-1", "patient_id": "PT-1038", "similarity": 0.93,
-      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 62,
-      "matching_features": ["CD", "perianal", "age 14", "prior IFX", "CRP 18"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 18, "esr": 32, "albumin": 3.4, "calprotectin": 680 },
-      "activity_score": { "index": "PCDAI", "value": 30, "severity": "moderate" },
-      "endoscopy_pre": { "ses_cd": 12, "finding": "Ileocolonic ulcers with perianal fistula; no mucosal healing on prior infliximab" },
-      "note_summary": { "stool_freq_per_day": 4, "nocturnal": true, "global_assessment": "moderate" },
+      "episode_id": "EP-1038-1",
+      "patient_id": "PT-1038",
+      "similarity": 0.93,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 32,
+        "albumin": 3.4,
+        "calprotectin": 680
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 12,
+        "finding": "Ileocolonic ulcers with perianal fistula; no mucosal healing on prior infliximab"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 18 },
-        { "day": 14, "crp": 11 },
-        { "day": 30, "crp":  6 },
-        { "day": 62, "crp":  3 }
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 14,
+          "crp": 11
+        },
+        {
+          "day": 30,
+          "crp": 6
+        },
+        {
+          "day": 62,
+          "crp": 3
+        }
       ],
       "medication_history": [
-        { "drug": "Azathioprine",  "drug_class": "immunomodulator", "start_day": -420, "end_day":  -90 },
-        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -380, "end_day":  -90 },
-        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
-        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   62 }
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -90
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -380,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
       ]
     },
     {
-      "episode_id": "EP-2441-1", "patient_id": "PT-2441", "similarity": 0.91,
-      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 74,
-      "matching_features": ["CD", "perianal", "age 13", "prior IFX+AZA", "CRP 22"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G1" },
-      "labs_at_baseline": { "crp": 22, "esr": 38, "albumin": 3.2, "calprotectin": 820 },
-      "activity_score": { "index": "PCDAI", "value": 35, "severity": "moderate" },
-      "endoscopy_pre": { "ses_cd": 14, "finding": "Deep ileocolonic ulcers; active perianal fistula; mucosal friability throughout" },
-      "note_summary": { "stool_freq_per_day": 5, "nocturnal": true, "global_assessment": "moderate" },
+      "episode_id": "EP-2441-1",
+      "patient_id": "PT-2441",
+      "similarity": 0.91,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 74,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 13",
+        "prior IFX+AZA",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 38,
+        "albumin": 3.2,
+        "calprotectin": 820
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 35,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Deep ileocolonic ulcers; active perianal fistula; mucosal friability throughout"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 22 },
-        { "day": 14, "crp": 15 },
-        { "day": 30, "crp":  9 },
-        { "day": 60, "crp":  4 },
-        { "day": 74, "crp":  3 }
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 14,
+          "crp": 15
+        },
+        {
+          "day": 30,
+          "crp": 9
+        },
+        {
+          "day": 60,
+          "crp": 4
+        },
+        {
+          "day": 74,
+          "crp": 3
+        }
       ],
       "medication_history": [
-        { "drug": "Azathioprine",  "drug_class": "immunomodulator", "start_day": -500, "end_day":  -60 },
-        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -420, "end_day":  -60 },
-        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -21, "end_day":    0 },
-        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   74 }
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -500,
+          "end_day": -60
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 74
+        }
       ]
     },
     {
-      "episode_id": "EP-1884-1", "patient_id": "PT-1884", "similarity": 0.90,
-      "treatment": "UST", "outcome": "ENDO", "days_to_outcome": 98,
-      "matching_features": ["CD", "perianal", "age 16", "prior IFX", "albumin 3.1"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 17, "esr": 28, "albumin": 3.1, "calprotectin": 590 },
-      "activity_score": { "index": "PCDAI", "value": 28, "severity": "mild" },
-      "endoscopy_pre": { "ses_cd": 10, "finding": "Ileocolonic inflammation with ileocecal narrowing; perianal sinus tract" },
-      "note_summary": { "stool_freq_per_day": 3, "nocturnal": false, "global_assessment": "mild" },
+      "episode_id": "EP-1884-1",
+      "patient_id": "PT-1884",
+      "similarity": 0.9,
+      "treatment": "UST",
+      "outcome": "ENDO",
+      "days_to_outcome": 98,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "albumin 3.1"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 17,
+        "esr": 28,
+        "albumin": 3.1,
+        "calprotectin": 590
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 10,
+        "finding": "Ileocolonic inflammation with ileocecal narrowing; perianal sinus tract"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 17 },
-        { "day": 30, "crp": 10 },
-        { "day": 60, "crp":  7 },
-        { "day": 98, "crp":  5 }
+        {
+          "day": 0,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 98,
+          "crp": 5
+        }
       ],
       "medication_history": [
-        { "drug": "Infliximab",    "drug_class": "biologic", "start_day": -310, "end_day": -120 },
-        { "drug": "Prednisone",    "drug_class": "steroid",  "start_day":  -30, "end_day":    0 },
-        { "drug": "Ustekinumab",   "drug_class": "biologic", "start_day":    0, "end_day":   98 }
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -310,
+          "end_day": -120
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -30,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 98
+        }
       ]
     },
     {
-      "episode_id": "EP-1172-1", "patient_id": "PT-1172", "similarity": 0.88,
-      "treatment": "VDZ", "outcome": "ESC", "days_to_outcome": 41,
-      "matching_features": ["CD", "age 15", "prior IFX+MTX", "CRP 31"],
-      "paris": { "location": "L3", "behavior": "B1", "perianal": false, "growth": "G0" },
-      "labs_at_baseline": { "crp": 31, "esr": 48, "albumin": 3.0, "calprotectin": 1240 },
-      "activity_score": { "index": "PCDAI", "value": 47, "severity": "severe" },
-      "endoscopy_pre": { "ses_cd": 18, "finding": "Extensive ileocolonic ulceration; no mucosal healing on infliximab or methotrexate" },
-      "note_summary": { "stool_freq_per_day": 7, "nocturnal": true, "global_assessment": "severe" },
+      "episode_id": "EP-1172-1",
+      "patient_id": "PT-1172",
+      "similarity": 0.88,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 41,
+      "matching_features": [
+        "CD",
+        "age 15",
+        "prior IFX+MTX",
+        "CRP 31"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 31,
+        "esr": 48,
+        "albumin": 3,
+        "calprotectin": 1240
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 47,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Extensive ileocolonic ulceration; no mucosal healing on infliximab or methotrexate"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 31 },
-        { "day": 14, "crp": 29 },
-        { "day": 30, "crp": 33 },
-        { "day": 41, "crp": 38 }
+        {
+          "day": 0,
+          "crp": 31
+        },
+        {
+          "day": 14,
+          "crp": 29
+        },
+        {
+          "day": 30,
+          "crp": 33
+        },
+        {
+          "day": 41,
+          "crp": 38
+        }
       ],
       "medication_history": [
-        { "drug": "Methotrexate",  "drug_class": "immunomodulator", "start_day": -450, "end_day":  -30 },
-        { "drug": "Infliximab",    "drug_class": "biologic",        "start_day": -420, "end_day":  -60 },
-        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -14, "end_day":    0 },
-        { "drug": "Vedolizumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   41 }
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -450,
+          "end_day": -30
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 41
+        }
       ]
     },
     {
-      "episode_id": "EP-2971-1", "patient_id": "PT-2971", "similarity": 0.88,
-      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 182,
-      "matching_features": ["CD", "perianal", "age 17", "prior ADA", "CRP 14"],
-      "paris": { "location": "L3", "behavior": "B2", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 14, "esr": 22, "albumin": 3.6, "calprotectin": 480 },
-      "activity_score": { "index": "PCDAI", "value": 22, "severity": "mild" },
-      "endoscopy_pre": { "ses_cd": 8, "finding": "Ileocolonic inflammation with mild stricture at terminal ileum; perianal skin tags" },
-      "note_summary": { "stool_freq_per_day": 3, "nocturnal": false, "global_assessment": "mild" },
+      "episode_id": "EP-2971-1",
+      "patient_id": "PT-2971",
+      "similarity": 0.88,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 182,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior ADA",
+        "CRP 14"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 14,
+        "esr": 22,
+        "albumin": 3.6,
+        "calprotectin": 480
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 8,
+        "finding": "Ileocolonic inflammation with mild stricture at terminal ileum; perianal skin tags"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
       "trajectory": [
-        { "day": 0,   "crp": 14 },
-        { "day": 30,  "crp": 10 },
-        { "day": 60,  "crp":  7 },
-        { "day": 90,  "crp":  5 },
-        { "day": 120, "crp":  4 },
-        { "day": 182, "crp":  3 }
+        {
+          "day": 0,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 90,
+          "crp": 5
+        },
+        {
+          "day": 120,
+          "crp": 4
+        },
+        {
+          "day": 182,
+          "crp": 3
+        }
       ],
       "medication_history": [
-        { "drug": "Mesalamine",    "drug_class": "aminosalicylate", "start_day": -540, "end_day":  -30 },
-        { "drug": "Adalimumab",    "drug_class": "biologic",        "start_day": -320, "end_day":  -60 },
-        { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
-        { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":  182 }
+        {
+          "drug": "Mesalamine",
+          "drug_class": "aminosalicylate",
+          "start_day": -540,
+          "end_day": -30
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -320,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 182
+        }
       ]
     },
     {
-      "episode_id": "EP-3199-1", "patient_id": "PT-3199", "similarity": 0.87,
-      "treatment": "IFX", "outcome": "NO", "days_to_outcome": 365,
-      "matching_features": ["CD", "age 12", "prior IFX (washout)", "CRP 28"],
-      "paris": { "location": "L3", "behavior": "B1", "perianal": false, "growth": "G1" },
-      "labs_at_baseline": { "crp": 28, "esr": 44, "albumin": 3.1, "calprotectin": 980 },
-      "activity_score": { "index": "PCDAI", "value": 40, "severity": "severe" },
-      "endoscopy_pre": { "ses_cd": 15, "finding": "Active ileocolonic disease; only partial response to prior infliximab course" },
-      "note_summary": { "stool_freq_per_day": 5, "nocturnal": true, "global_assessment": "severe" },
+      "episode_id": "EP-3199-1",
+      "patient_id": "PT-3199",
+      "similarity": 0.87,
+      "treatment": "IFX",
+      "outcome": "NO",
+      "days_to_outcome": 365,
+      "matching_features": [
+        "CD",
+        "age 12",
+        "prior IFX (washout)",
+        "CRP 28"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 28,
+        "esr": 44,
+        "albumin": 3.1,
+        "calprotectin": 980
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 40,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 15,
+        "finding": "Active ileocolonic disease; only partial response to prior infliximab course"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
       "trajectory": [
-        { "day": 0,   "crp": 28 },
-        { "day": 30,  "crp": 19 },
-        { "day": 60,  "crp": 14 },
-        { "day": 90,  "crp": 12 },
-        { "day": 180, "crp": 11 },
-        { "day": 365, "crp": 10 }
+        {
+          "day": 0,
+          "crp": 28
+        },
+        {
+          "day": 30,
+          "crp": 19
+        },
+        {
+          "day": 60,
+          "crp": 14
+        },
+        {
+          "day": 90,
+          "crp": 12
+        },
+        {
+          "day": 180,
+          "crp": 11
+        },
+        {
+          "day": 365,
+          "crp": 10
+        }
       ],
       "medication_history": [
-        { "drug": "Azathioprine",         "drug_class": "immunomodulator", "start_day": -540, "end_day": -100 },
-        { "drug": "Infliximab (1st line)", "drug_class": "biologic",        "start_day": -500, "end_day": -180 },
-        { "drug": "Prednisone",           "drug_class": "steroid",         "start_day":  -60, "end_day":    0 },
-        { "drug": "Infliximab",           "drug_class": "biologic",        "start_day":    0, "end_day":  365 }
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -100
+        },
+        {
+          "drug": "Infliximab (1st line)",
+          "drug_class": "biologic",
+          "start_day": -500,
+          "end_day": -180
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -60,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 365
+        }
       ]
     },
     {
-      "episode_id": "EP-1038-2", "patient_id": "PT-1038", "similarity": 0.86,
-      "treatment": "ADA", "outcome": "ESC", "days_to_outcome": 38,
-      "matching_features": ["CD", "perianal", "age 11", "prior IFX", "CRP 24"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G1" },
-      "labs_at_baseline": { "crp": 24, "esr": 40, "albumin": 3.2, "calprotectin": 860 },
-      "activity_score": { "index": "PCDAI", "value": 38, "severity": "moderate" },
-      "endoscopy_pre": { "ses_cd": 15, "finding": "Severe perianal fistula; deep ileocolonic ulcers; poor response to infliximab" },
-      "note_summary": { "stool_freq_per_day": 5, "nocturnal": true, "global_assessment": "severe" },
+      "episode_id": "EP-1038-2",
+      "patient_id": "PT-1038",
+      "similarity": 0.86,
+      "treatment": "ADA",
+      "outcome": "ESC",
+      "days_to_outcome": 38,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 40,
+        "albumin": 3.2,
+        "calprotectin": 860
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 15,
+        "finding": "Severe perianal fistula; deep ileocolonic ulcers; poor response to infliximab"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 24 },
-        { "day": 14, "crp": 22 },
-        { "day": 30, "crp": 27 },
-        { "day": 38, "crp": 31 }
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 22
+        },
+        {
+          "day": 30,
+          "crp": 27
+        },
+        {
+          "day": 38,
+          "crp": 31
+        }
       ],
       "medication_history": [
-        { "drug": "Infliximab",  "drug_class": "biologic", "start_day": -420, "end_day": -120 },
-        { "drug": "Prednisone",  "drug_class": "steroid",  "start_day":  -30, "end_day":    0 },
-        { "drug": "Adalimumab",  "drug_class": "biologic", "start_day":    0, "end_day":   38 }
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -120
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -30,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 38
+        }
       ]
     },
     {
-      "episode_id": "EP-2055-1", "patient_id": "PT-2055", "similarity": 0.86,
-      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 55,
-      "matching_features": ["CD", "perianal", "age 15", "prior IFX+6MP"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 20, "esr": 34, "albumin": 3.3, "calprotectin": 740 },
-      "activity_score": { "index": "PCDAI", "value": 32, "severity": "moderate" },
-      "endoscopy_pre": { "ses_cd": 12, "finding": "Ileocolonic disease with healing perianal fistula; failed infliximab and mercaptopurine" },
-      "note_summary": { "stool_freq_per_day": 4, "nocturnal": true, "global_assessment": "moderate" },
+      "episode_id": "EP-2055-1",
+      "patient_id": "PT-2055",
+      "similarity": 0.86,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior IFX+6MP"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 34,
+        "albumin": 3.3,
+        "calprotectin": 740
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 32,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 12,
+        "finding": "Ileocolonic disease with healing perianal fistula; failed infliximab and mercaptopurine"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 20 },
-        { "day": 14, "crp": 11 },
-        { "day": 30, "crp":  5 },
-        { "day": 55, "crp":  2 }
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 14,
+          "crp": 11
+        },
+        {
+          "day": 30,
+          "crp": 5
+        },
+        {
+          "day": 55,
+          "crp": 2
+        }
       ],
       "medication_history": [
-        { "drug": "Mercaptopurine", "drug_class": "immunomodulator", "start_day": -620, "end_day":  -60 },
-        { "drug": "Infliximab",     "drug_class": "biologic",        "start_day": -510, "end_day":  -90 },
-        { "drug": "Prednisone",     "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
-        { "drug": "Ustekinumab",    "drug_class": "biologic",        "start_day":    0, "end_day":   55 }
+        {
+          "drug": "Mercaptopurine",
+          "drug_class": "immunomodulator",
+          "start_day": -620,
+          "end_day": -60
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -510,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
       ]
     },
     {
-      "episode_id": "EP-2670-1", "patient_id": "PT-2670", "similarity": 0.84,
-      "treatment": "UST", "outcome": "SFR", "days_to_outcome": 84,
-      "matching_features": ["CD", "perianal", "age 14", "prior IFX+ADA"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 25, "esr": 42, "albumin": 3.0, "calprotectin": 920 },
-      "activity_score": { "index": "PCDAI", "value": 40, "severity": "severe" },
-      "endoscopy_pre": { "ses_cd": 17, "finding": "Complex perianal fistula; ileocolonic ulcers; failed two prior biologics" },
-      "note_summary": { "stool_freq_per_day": 5, "nocturnal": true, "global_assessment": "severe" },
+      "episode_id": "EP-2670-1",
+      "patient_id": "PT-2670",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 84,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+ADA"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 42,
+        "albumin": 3,
+        "calprotectin": 920
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 40,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 17,
+        "finding": "Complex perianal fistula; ileocolonic ulcers; failed two prior biologics"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
       "trajectory": [
-        { "day": 0,  "crp": 25 },
-        { "day": 30, "crp": 14 },
-        { "day": 60, "crp":  6 },
-        { "day": 84, "crp":  3 }
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 30,
+          "crp": 14
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 84,
+          "crp": 3
+        }
       ],
       "medication_history": [
-        { "drug": "Infliximab",  "drug_class": "biologic", "start_day": -620, "end_day": -300 },
-        { "drug": "Adalimumab",  "drug_class": "biologic", "start_day": -260, "end_day":  -60 },
-        { "drug": "Prednisone",  "drug_class": "steroid",  "start_day":  -28, "end_day":    0 },
-        { "drug": "Ustekinumab", "drug_class": "biologic", "start_day":    0, "end_day":   84 }
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -620,
+          "end_day": -300
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -260,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 84
+        }
       ]
     },
     {
-      "episode_id": "EP-3302-1", "patient_id": "PT-3302", "similarity": 0.83,
-      "treatment": "VDZ", "outcome": "NO", "days_to_outcome": 365,
-      "matching_features": ["CD", "age 13", "prior IFX", "CRP 11"],
-      "paris": { "location": "L2", "behavior": "B1", "perianal": false, "growth": "G0" },
-      "labs_at_baseline": { "crp": 11, "esr": 18, "albumin": 3.7, "calprotectin": 380 },
-      "activity_score": { "index": "PCDAI", "value": 18, "severity": "mild" },
-      "endoscopy_pre": { "ses_cd": 7, "finding": "Mild left-sided colitis; partial mucosal healing; no upper GI or perianal involvement" },
-      "note_summary": { "stool_freq_per_day": 2, "nocturnal": false, "global_assessment": "mild" },
+      "episode_id": "EP-3302-1",
+      "patient_id": "PT-3302",
+      "similarity": 0.83,
+      "treatment": "VDZ",
+      "outcome": "NO",
+      "days_to_outcome": 365,
+      "matching_features": [
+        "CD",
+        "age 13",
+        "prior IFX",
+        "CRP 11"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 11,
+        "esr": 18,
+        "albumin": 3.7,
+        "calprotectin": 380
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 18,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 7,
+        "finding": "Mild left-sided colitis; partial mucosal healing; no upper GI or perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 2,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
       "trajectory": [
-        { "day": 0,   "crp": 11 },
-        { "day": 30,  "crp":  8 },
-        { "day": 60,  "crp":  7 },
-        { "day": 90,  "crp":  6 },
-        { "day": 180, "crp":  6 },
-        { "day": 365, "crp":  5 }
+        {
+          "day": 0,
+          "crp": 11
+        },
+        {
+          "day": 30,
+          "crp": 8
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 90,
+          "crp": 6
+        },
+        {
+          "day": 180,
+          "crp": 6
+        },
+        {
+          "day": 365,
+          "crp": 5
+        }
       ],
       "medication_history": [
-        { "drug": "Mesalamine",  "drug_class": "aminosalicylate", "start_day": -510, "end_day": -200 },
-        { "drug": "Infliximab",  "drug_class": "biologic",        "start_day": -400, "end_day": -120 },
-        { "drug": "Prednisone",  "drug_class": "steroid",         "start_day":  -30, "end_day":    0 },
-        { "drug": "Vedolizumab", "drug_class": "biologic",        "start_day":    0, "end_day":  365 }
+        {
+          "drug": "Mesalamine",
+          "drug_class": "aminosalicylate",
+          "start_day": -510,
+          "end_day": -200
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -400,
+          "end_day": -120
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -30,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 365
+        }
       ]
     },
     {
-      "episode_id": "EP-2309-1", "patient_id": "PT-2309", "similarity": 0.81,
-      "treatment": "UST", "outcome": "ENDO", "days_to_outcome": 103,
-      "matching_features": ["CD", "perianal", "age 17", "prior IFX+6MP", "CRP 24"],
-      "paris": { "location": "L3", "behavior": "B3", "perianal": true, "growth": "G0" },
-      "labs_at_baseline": { "crp": 24, "esr": 38, "albumin": 3.3, "calprotectin": 810 },
-      "activity_score": { "index": "PCDAI", "value": 35, "severity": "moderate" },
-      "endoscopy_pre": { "ses_cd": 13, "finding": "Ileocolonic disease with perianal fistula; endoscopic remission confirmed at day 103 follow-up" },
-      "note_summary": { "stool_freq_per_day": 4, "nocturnal": true, "global_assessment": "moderate" },
+      "episode_id": "EP-2309-1",
+      "patient_id": "PT-2309",
+      "similarity": 0.81,
+      "treatment": "UST",
+      "outcome": "ENDO",
+      "days_to_outcome": 103,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior IFX+6MP",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 38,
+        "albumin": 3.3,
+        "calprotectin": 810
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 35,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic disease with perianal fistula; endoscopic remission confirmed at day 103 follow-up"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
       "trajectory": [
-        { "day": 0,   "crp": 24 },
-        { "day": 30,  "crp": 16 },
-        { "day": 60,  "crp": 10 },
-        { "day": 90,  "crp":  7 },
-        { "day": 103, "crp":  5 }
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 30,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 10
+        },
+        {
+          "day": 90,
+          "crp": 7
+        },
+        {
+          "day": 103,
+          "crp": 5
+        }
       ],
       "medication_history": [
-        { "drug": "Azathioprine", "drug_class": "immunomodulator", "start_day": -620, "end_day":  -30 },
-        { "drug": "Infliximab",   "drug_class": "biologic",        "start_day": -510, "end_day": -120 },
-        { "drug": "Prednisone",   "drug_class": "steroid",         "start_day":  -28, "end_day":    0 },
-        { "drug": "Ustekinumab",  "drug_class": "biologic",        "start_day":    0, "end_day":  103 }
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -620,
+          "end_day": -30
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -510,
+          "end_day": -120
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 103
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1100-1",
+      "patient_id": "PT-1100",
+      "similarity": 0.87,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 128,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 44,
+        "albumin": 2.9,
+        "calprotectin": 660
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 90,
+          "crp": 5
+        },
+        {
+          "day": 128,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 128
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1101-1",
+      "patient_id": "PT-1101",
+      "similarity": 0.87,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 13",
+        "prior IFX",
+        "CRP 26"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 26,
+        "esr": 46,
+        "albumin": 2.9,
+        "calprotectin": 902
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 26
+        },
+        {
+          "day": 14,
+          "crp": 19
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 62,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -30
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1102-1",
+      "patient_id": "PT-1102",
+      "similarity": 0.87,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 15",
+        "prior IFX",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 38,
+        "albumin": 3.2,
+        "calprotectin": 758
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 33,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 14,
+          "crp": 16
+        },
+        {
+          "day": 30,
+          "crp": 11
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 62,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1103-1",
+      "patient_id": "PT-1103",
+      "similarity": 0.86,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 41,
+        "albumin": 2.9,
+        "calprotectin": 610
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 82,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1104-1",
+      "patient_id": "PT-1104",
+      "similarity": 0.86,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 145,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior ADA",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 44,
+        "albumin": 2.9,
+        "calprotectin": 658
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 90,
+          "crp": 5
+        },
+        {
+          "day": 145,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 145
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1105-1",
+      "patient_id": "PT-1105",
+      "similarity": 0.86,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+AZA",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 44,
+        "albumin": 2.9,
+        "calprotectin": 778
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 82,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1106-1",
+      "patient_id": "PT-1106",
+      "similarity": 0.86,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 23"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 23,
+        "esr": 41,
+        "albumin": 3.1,
+        "calprotectin": 754
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 23
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 82,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -30
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1107-1",
+      "patient_id": "PT-1107",
+      "similarity": 0.85,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 98,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior ADA",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 46,
+        "albumin": 3.1,
+        "calprotectin": 747
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 33,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 90,
+          "crp": 5
+        },
+        {
+          "day": 98,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -30
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 98
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1108-1",
+      "patient_id": "PT-1108",
+      "similarity": 0.85,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 68,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 14",
+        "prior ADA",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 34,
+        "albumin": 3.1,
+        "calprotectin": 542
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 68,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 68
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1109-1",
+      "patient_id": "PT-1109",
+      "similarity": 0.85,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 21"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 21,
+        "esr": 39,
+        "albumin": 3.1,
+        "calprotectin": 789
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 21
+        },
+        {
+          "day": 14,
+          "crp": 15
+        },
+        {
+          "day": 30,
+          "crp": 11
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 62,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -45
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -30
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1110-1",
+      "patient_id": "PT-1110",
+      "similarity": 0.85,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 128,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 31,
+        "albumin": 3.2,
+        "calprotectin": 451
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 12
+        },
+        {
+          "day": 30,
+          "crp": 8
+        },
+        {
+          "day": 60,
+          "crp": 4
+        },
+        {
+          "day": 90,
+          "crp": 3
+        },
+        {
+          "day": 128,
+          "crp": 2
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 128
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1111-1",
+      "patient_id": "PT-1111",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 48,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior ADA",
+        "CRP 21"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 21,
+        "esr": 40,
+        "albumin": 3,
+        "calprotectin": 690
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 21
+        },
+        {
+          "day": 14,
+          "crp": 15
+        },
+        {
+          "day": 30,
+          "crp": 11
+        },
+        {
+          "day": 48,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 48
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1112-1",
+      "patient_id": "PT-1112",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 160,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior ADA",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 33,
+        "albumin": 3.1,
+        "calprotectin": 488
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 25,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 90,
+          "crp": 3
+        },
+        {
+          "day": 160,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 160
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1113-1",
+      "patient_id": "PT-1113",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 48,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 47,
+        "albumin": 3,
+        "calprotectin": 654
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 14,
+          "crp": 19
+        },
+        {
+          "day": 30,
+          "crp": 14
+        },
+        {
+          "day": 48,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 48
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1114-1",
+      "patient_id": "PT-1114",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 10",
+        "prior IFX",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 35,
+        "albumin": 3.1,
+        "calprotectin": 499
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 82,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -30
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1115-1",
+      "patient_id": "PT-1115",
+      "similarity": 0.84,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 29,
+        "albumin": 3.2,
+        "calprotectin": 566
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 25,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 12
+        },
+        {
+          "day": 30,
+          "crp": 8
+        },
+        {
+          "day": 60,
+          "crp": 4
+        },
+        {
+          "day": 82,
+          "crp": 2
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -90
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1116-1",
+      "patient_id": "PT-1116",
+      "similarity": 0.83,
+      "treatment": "UST",
+      "outcome": "SFR",
+      "days_to_outcome": 74,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 17",
+        "prior ADA",
+        "CRP 23"
+      ],
+      "paris": {
+        "location": "L1",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 23,
+        "esr": 40,
+        "albumin": 3.1,
+        "calprotectin": 712
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 33,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 23
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 74,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -45
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 74
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1117-1",
+      "patient_id": "PT-1117",
+      "similarity": 0.83,
+      "treatment": "UST",
+      "outcome": "ENDO",
+      "days_to_outcome": 90,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior IFX",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 38,
+        "albumin": 3.2,
+        "calprotectin": 630
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 18,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 6,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 2,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 8
+        },
+        {
+          "day": 90,
+          "crp": 5
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 90
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1118-1",
+      "patient_id": "PT-1118",
+      "similarity": 0.83,
+      "treatment": "UST",
+      "outcome": "ENDO",
+      "days_to_outcome": 90,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior IFX+AZA",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 30,
+        "albumin": 3.3,
+        "calprotectin": 594
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 18,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 8,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 90,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 90
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1119-1",
+      "patient_id": "PT-1119",
+      "similarity": 0.83,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior ADA",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 33,
+        "albumin": 3,
+        "calprotectin": 650
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 20
+        },
+        {
+          "day": 37,
+          "crp": 22
+        },
+        {
+          "day": 62,
+          "crp": 24
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1120-1",
+      "patient_id": "PT-1120",
+      "similarity": 0.82,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior IFX+AZA",
+        "CRP 26"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 26,
+        "esr": 47,
+        "albumin": 2.9,
+        "calprotectin": 862
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 26
+        },
+        {
+          "day": 14,
+          "crp": 27
+        },
+        {
+          "day": 33,
+          "crp": 30
+        },
+        {
+          "day": 55,
+          "crp": 33
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1121-1",
+      "patient_id": "PT-1121",
+      "similarity": 0.82,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 22,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior IFX",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 28,
+        "albumin": 3,
+        "calprotectin": 611
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 22,
+          "crp": 20
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 22
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1122-1",
+      "patient_id": "PT-1122",
+      "similarity": 0.82,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 28,
+        "albumin": 3.3,
+        "calprotectin": 607
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 33,
+          "crp": 18
+        },
+        {
+          "day": 55,
+          "crp": 20
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -45
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1123-1",
+      "patient_id": "PT-1123",
+      "similarity": 0.82,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 48,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior IFX+AZA",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 32,
+        "albumin": 3.2,
+        "calprotectin": 501
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 14,
+          "crp": 19
+        },
+        {
+          "day": 29,
+          "crp": 21
+        },
+        {
+          "day": 48,
+          "crp": 23
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 48
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1124-1",
+      "patient_id": "PT-1124",
+      "similarity": 0.81,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 13",
+        "prior ADA",
+        "CRP 20"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 36,
+        "albumin": 3.2,
+        "calprotectin": 543
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 14,
+          "crp": 21
+        },
+        {
+          "day": 33,
+          "crp": 23
+        },
+        {
+          "day": 55,
+          "crp": 25
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1125-1",
+      "patient_id": "PT-1125",
+      "similarity": 0.81,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 10",
+        "prior ADA",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 31,
+        "albumin": 3.3,
+        "calprotectin": 507
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 33,
+          "crp": 18
+        },
+        {
+          "day": 55,
+          "crp": 20
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1126-1",
+      "patient_id": "PT-1126",
+      "similarity": 0.81,
+      "treatment": "UST",
+      "outcome": "ESC",
+      "days_to_outcome": 22,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 16",
+        "prior ADA",
+        "CRP 20"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 37,
+        "albumin": 3.2,
+        "calprotectin": 669
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 14,
+          "crp": 21
+        },
+        {
+          "day": 22,
+          "crp": 25
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 22
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1127-1",
+      "patient_id": "PT-1127",
+      "similarity": 0.81,
+      "treatment": "UST",
+      "outcome": "SURG",
+      "days_to_outcome": 160,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 15"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 15,
+        "esr": 27,
+        "albumin": 3.2,
+        "calprotectin": 465
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 15
+        },
+        {
+          "day": 30,
+          "crp": 14
+        },
+        {
+          "day": 60,
+          "crp": 14
+        },
+        {
+          "day": 90,
+          "crp": 17
+        },
+        {
+          "day": 160,
+          "crp": 18
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 160
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1128-1",
+      "patient_id": "PT-1128",
+      "similarity": 0.8,
+      "treatment": "UST",
+      "outcome": "SURG",
+      "days_to_outcome": 200,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 37,
+        "albumin": 3.2,
+        "calprotectin": 744
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 30,
+          "crp": 20
+        },
+        {
+          "day": 60,
+          "crp": 21
+        },
+        {
+          "day": 90,
+          "crp": 24
+        },
+        {
+          "day": 200,
+          "crp": 26
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -90
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 200
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1129-1",
+      "patient_id": "PT-1129",
+      "similarity": 0.8,
+      "treatment": "UST",
+      "outcome": "NO",
+      "days_to_outcome": 365,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior ADA",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 32,
+        "albumin": 3.1,
+        "calprotectin": 399
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 7,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 14
+        },
+        {
+          "day": 120,
+          "crp": 13
+        },
+        {
+          "day": 180,
+          "crp": 12
+        },
+        {
+          "day": 365,
+          "crp": 12
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 365
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1130-1",
+      "patient_id": "PT-1130",
+      "similarity": 0.8,
+      "treatment": "UST",
+      "outcome": "NO",
+      "days_to_outcome": 365,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 23"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 23,
+        "esr": 40,
+        "albumin": 2.9,
+        "calprotectin": 602
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 6,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 23
+        },
+        {
+          "day": 60,
+          "crp": 20
+        },
+        {
+          "day": 120,
+          "crp": 19
+        },
+        {
+          "day": 180,
+          "crp": 18
+        },
+        {
+          "day": 365,
+          "crp": 17
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Ustekinumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 365
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1131-1",
+      "patient_id": "PT-1131",
+      "similarity": 0.8,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 112,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior IFX",
+        "CRP 20"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 36,
+        "albumin": 3.1,
+        "calprotectin": 796
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 33,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 90,
+          "crp": 4
+        },
+        {
+          "day": 112,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 112
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1132-1",
+      "patient_id": "PT-1132",
+      "similarity": 0.8,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 160,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior IFX+AZA",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 33,
+        "albumin": 3.2,
+        "calprotectin": 485
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 14,
+          "crp": 13
+        },
+        {
+          "day": 30,
+          "crp": 9
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 90,
+          "crp": 3
+        },
+        {
+          "day": 160,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -30
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 160
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1133-1",
+      "patient_id": "PT-1133",
+      "similarity": 0.79,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 90,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+AZA",
+        "CRP 23"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 23,
+        "esr": 40,
+        "albumin": 2.9,
+        "calprotectin": 662
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 23
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 90,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 90
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1134-1",
+      "patient_id": "PT-1134",
+      "similarity": 0.79,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 52,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 13",
+        "prior IFX",
+        "CRP 17"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 17,
+        "esr": 31,
+        "albumin": 3.1,
+        "calprotectin": 485
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 17
+        },
+        {
+          "day": 14,
+          "crp": 12
+        },
+        {
+          "day": 30,
+          "crp": 9
+        },
+        {
+          "day": 52,
+          "crp": 2
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 52
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1135-1",
+      "patient_id": "PT-1135",
+      "similarity": 0.79,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior IFX",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 36,
+        "albumin": 3.2,
+        "calprotectin": 513
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 82,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -45
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -30
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1136-1",
+      "patient_id": "PT-1136",
+      "similarity": 0.79,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 52,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 44,
+        "albumin": 3.1,
+        "calprotectin": 713
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 25,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 52,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 52
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1137-1",
+      "patient_id": "PT-1137",
+      "similarity": 0.78,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 68,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 21"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 21,
+        "esr": 40,
+        "albumin": 3.2,
+        "calprotectin": 673
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 21
+        },
+        {
+          "day": 14,
+          "crp": 15
+        },
+        {
+          "day": 30,
+          "crp": 11
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 68,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 68
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1138-1",
+      "patient_id": "PT-1138",
+      "similarity": 0.78,
+      "treatment": "VDZ",
+      "outcome": "SFR",
+      "days_to_outcome": 82,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 16"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 16,
+        "esr": 30,
+        "albumin": 3.3,
+        "calprotectin": 633
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 16
+        },
+        {
+          "day": 14,
+          "crp": 12
+        },
+        {
+          "day": 30,
+          "crp": 8
+        },
+        {
+          "day": 60,
+          "crp": 4
+        },
+        {
+          "day": 82,
+          "crp": 2
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 82
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1139-1",
+      "patient_id": "PT-1139",
+      "similarity": 0.78,
+      "treatment": "VDZ",
+      "outcome": "ENDO",
+      "days_to_outcome": 165,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 10",
+        "prior IFX",
+        "CRP 14"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 14,
+        "esr": 26,
+        "albumin": 3.2,
+        "calprotectin": 379
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 25,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 6,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 2,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 8
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 90,
+          "crp": 4
+        },
+        {
+          "day": 165,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 165
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1140-1",
+      "patient_id": "PT-1140",
+      "similarity": 0.78,
+      "treatment": "VDZ",
+      "outcome": "ENDO",
+      "days_to_outcome": 110,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 37,
+        "albumin": 3.2,
+        "calprotectin": 880
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 18,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 8,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 8
+        },
+        {
+          "day": 90,
+          "crp": 6
+        },
+        {
+          "day": 110,
+          "crp": 5
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -90
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 110
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1141-1",
+      "patient_id": "PT-1141",
+      "similarity": 0.77,
+      "treatment": "VDZ",
+      "outcome": "ENDO",
+      "days_to_outcome": 120,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 10",
+        "prior IFX+AZA",
+        "CRP 17"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 17,
+        "esr": 29,
+        "albumin": 3.1,
+        "calprotectin": 447
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 6,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 6
+        },
+        {
+          "day": 90,
+          "crp": 4
+        },
+        {
+          "day": 120,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 120
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1142-1",
+      "patient_id": "PT-1142",
+      "similarity": 0.77,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 48,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 13",
+        "prior IFX",
+        "CRP 17"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 17,
+        "esr": 31,
+        "albumin": 3.3,
+        "calprotectin": 428
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 17
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 29,
+          "crp": 20
+        },
+        {
+          "day": 48,
+          "crp": 21
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 48
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1143-1",
+      "patient_id": "PT-1143",
+      "similarity": 0.77,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 22,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior ADA",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 43,
+        "albumin": 3.1,
+        "calprotectin": 766
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 25
+        },
+        {
+          "day": 22,
+          "crp": 30
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 22
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1144-1",
+      "patient_id": "PT-1144",
+      "similarity": 0.77,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 35,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 13",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 41,
+        "albumin": 3,
+        "calprotectin": 597
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 25
+        },
+        {
+          "day": 21,
+          "crp": 28
+        },
+        {
+          "day": 35,
+          "crp": 30
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -45
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 35
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1145-1",
+      "patient_id": "PT-1145",
+      "similarity": 0.77,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 22,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior IFX+AZA",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 40,
+        "albumin": 2.9,
+        "calprotectin": 760
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 14,
+          "crp": 23
+        },
+        {
+          "day": 22,
+          "crp": 28
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 22
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1146-1",
+      "patient_id": "PT-1146",
+      "similarity": 0.76,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior ADA",
+        "CRP 14"
+      ],
+      "paris": {
+        "location": "L1",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 14,
+        "esr": 29,
+        "albumin": 3.3,
+        "calprotectin": 343
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 14
+        },
+        {
+          "day": 14,
+          "crp": 15
+        },
+        {
+          "day": 33,
+          "crp": 16
+        },
+        {
+          "day": 55,
+          "crp": 18
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1147-1",
+      "patient_id": "PT-1147",
+      "similarity": 0.76,
+      "treatment": "VDZ",
+      "outcome": "ESC",
+      "days_to_outcome": 28,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 10",
+        "prior IFX",
+        "CRP 21"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 21,
+        "esr": 38,
+        "albumin": 3.1,
+        "calprotectin": 726
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 21
+        },
+        {
+          "day": 14,
+          "crp": 22
+        },
+        {
+          "day": 17,
+          "crp": 24
+        },
+        {
+          "day": 28,
+          "crp": 26
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 28
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1148-1",
+      "patient_id": "PT-1148",
+      "similarity": 0.76,
+      "treatment": "VDZ",
+      "outcome": "SURG",
+      "days_to_outcome": 140,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior IFX+AZA",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 34,
+        "albumin": 3.2,
+        "calprotectin": 446
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 17
+        },
+        {
+          "day": 90,
+          "crp": 20
+        },
+        {
+          "day": 140,
+          "crp": 22
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -90
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 140
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1149-1",
+      "patient_id": "PT-1149",
+      "similarity": 0.76,
+      "treatment": "VDZ",
+      "outcome": "SURG",
+      "days_to_outcome": 110,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 31,
+        "albumin": 3,
+        "calprotectin": 644
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 17
+        },
+        {
+          "day": 90,
+          "crp": 20
+        },
+        {
+          "day": 110,
+          "crp": 22
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 110
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1150-1",
+      "patient_id": "PT-1150",
+      "similarity": 0.75,
+      "treatment": "IFX",
+      "outcome": "SFR",
+      "days_to_outcome": 182,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 33"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 33,
+        "esr": 57,
+        "albumin": 2.7,
+        "calprotectin": 1174
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 11,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 33
+        },
+        {
+          "day": 14,
+          "crp": 24
+        },
+        {
+          "day": 30,
+          "crp": 17
+        },
+        {
+          "day": 60,
+          "crp": 9
+        },
+        {
+          "day": 90,
+          "crp": 6
+        },
+        {
+          "day": 182,
+          "crp": 5
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -360,
+          "end_day": -30
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 182
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1151-1",
+      "patient_id": "PT-1151",
+      "similarity": 0.75,
+      "treatment": "IFX",
+      "outcome": "SFR",
+      "days_to_outcome": 182,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+AZA",
+        "CRP 32"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 32,
+        "esr": 56,
+        "albumin": 3,
+        "calprotectin": 921
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 33,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 32
+        },
+        {
+          "day": 14,
+          "crp": 23
+        },
+        {
+          "day": 30,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 9
+        },
+        {
+          "day": 90,
+          "crp": 6
+        },
+        {
+          "day": 182,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 182
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1152-1",
+      "patient_id": "PT-1152",
+      "similarity": 0.75,
+      "treatment": "IFX",
+      "outcome": "SFR",
+      "days_to_outcome": 74,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 40,
+        "albumin": 3.1,
+        "calprotectin": 879
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 17
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 74,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 74
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1153-1",
+      "patient_id": "PT-1153",
+      "similarity": 0.75,
+      "treatment": "IFX",
+      "outcome": "SFR",
+      "days_to_outcome": 48,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 13",
+        "prior IFX+AZA",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 37,
+        "albumin": 3.1,
+        "calprotectin": 528
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 28,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 14,
+          "crp": 16
+        },
+        {
+          "day": 30,
+          "crp": 11
+        },
+        {
+          "day": 48,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -45
+        },
+        {
+          "drug": "Azathioprine",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -30
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 48
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1154-1",
+      "patient_id": "PT-1154",
+      "similarity": 0.74,
+      "treatment": "IFX",
+      "outcome": "ENDO",
+      "days_to_outcome": 120,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 47,
+        "albumin": 3.1,
+        "calprotectin": 998
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 18,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 6,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 30,
+          "crp": 16
+        },
+        {
+          "day": 60,
+          "crp": 10
+        },
+        {
+          "day": 90,
+          "crp": 7
+        },
+        {
+          "day": 120,
+          "crp": 6
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 120
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1155-1",
+      "patient_id": "PT-1155",
+      "similarity": 0.74,
+      "treatment": "IFX",
+      "outcome": "ESC",
+      "days_to_outcome": 28,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 41,
+        "albumin": 3.1,
+        "calprotectin": 853
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 18,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 25
+        },
+        {
+          "day": 17,
+          "crp": 28
+        },
+        {
+          "day": 28,
+          "crp": 30
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -45
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 28
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1156-1",
+      "patient_id": "PT-1156",
+      "similarity": 0.74,
+      "treatment": "IFX",
+      "outcome": "ESC",
+      "days_to_outcome": 28,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 31"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 31,
+        "esr": 51,
+        "albumin": 2.8,
+        "calprotectin": 1012
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 31
+        },
+        {
+          "day": 14,
+          "crp": 33
+        },
+        {
+          "day": 17,
+          "crp": 36
+        },
+        {
+          "day": 28,
+          "crp": 39
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -90
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 28
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1157-1",
+      "patient_id": "PT-1157",
+      "similarity": 0.74,
+      "treatment": "IFX",
+      "outcome": "ESC",
+      "days_to_outcome": 41,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 21"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 21,
+        "esr": 40,
+        "albumin": 2.9,
+        "calprotectin": 589
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 21
+        },
+        {
+          "day": 14,
+          "crp": 22
+        },
+        {
+          "day": 25,
+          "crp": 24
+        },
+        {
+          "day": 41,
+          "crp": 26
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 41
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1158-1",
+      "patient_id": "PT-1158",
+      "similarity": 0.73,
+      "treatment": "IFX",
+      "outcome": "ESC",
+      "days_to_outcome": 55,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 24"
+      ],
+      "paris": {
+        "location": "L1",
+        "behavior": "B3",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 24,
+        "esr": 41,
+        "albumin": 3,
+        "calprotectin": 800
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 24
+        },
+        {
+          "day": 14,
+          "crp": 25
+        },
+        {
+          "day": 33,
+          "crp": 28
+        },
+        {
+          "day": 55,
+          "crp": 30
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 55
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1159-1",
+      "patient_id": "PT-1159",
+      "similarity": 0.73,
+      "treatment": "IFX",
+      "outcome": "ESC",
+      "days_to_outcome": 41,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+AZA",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 49,
+        "albumin": 3,
+        "calprotectin": 890
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 14,
+          "crp": 28
+        },
+        {
+          "day": 25,
+          "crp": 31
+        },
+        {
+          "day": 41,
+          "crp": 34
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 41
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1160-1",
+      "patient_id": "PT-1160",
+      "similarity": 0.73,
+      "treatment": "IFX",
+      "outcome": "SURG",
+      "days_to_outcome": 95,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 22"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 22,
+        "esr": 41,
+        "albumin": 2.9,
+        "calprotectin": 578
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 50,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 22
+        },
+        {
+          "day": 30,
+          "crp": 20
+        },
+        {
+          "day": 60,
+          "crp": 21
+        },
+        {
+          "day": 95,
+          "crp": 26
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 95
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1161-1",
+      "patient_id": "PT-1161",
+      "similarity": 0.73,
+      "treatment": "IFX",
+      "outcome": "SURG",
+      "days_to_outcome": 110,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 16",
+        "prior IFX",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 46,
+        "albumin": 3,
+        "calprotectin": 777
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 14,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 30,
+          "crp": 24
+        },
+        {
+          "day": 60,
+          "crp": 26
+        },
+        {
+          "day": 90,
+          "crp": 30
+        },
+        {
+          "day": 110,
+          "crp": 32
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 110
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1162-1",
+      "patient_id": "PT-1162",
+      "similarity": 0.73,
+      "treatment": "IFX",
+      "outcome": "SURG",
+      "days_to_outcome": 110,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior ADA",
+        "CRP 33"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 33,
+        "esr": 56,
+        "albumin": 2.7,
+        "calprotectin": 1126
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 8,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 33
+        },
+        {
+          "day": 30,
+          "crp": 30
+        },
+        {
+          "day": 60,
+          "crp": 31
+        },
+        {
+          "day": 90,
+          "crp": 36
+        },
+        {
+          "day": 110,
+          "crp": 40
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -45
+        },
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 110
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1163-1",
+      "patient_id": "PT-1163",
+      "similarity": 0.72,
+      "treatment": "ADA",
+      "outcome": "SFR",
+      "days_to_outcome": 74,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior ADA",
+        "CRP 26"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 26,
+        "esr": 44,
+        "albumin": 2.9,
+        "calprotectin": 880
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 26
+        },
+        {
+          "day": 14,
+          "crp": 19
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 60,
+          "crp": 7
+        },
+        {
+          "day": 74,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 74
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1164-1",
+      "patient_id": "PT-1164",
+      "similarity": 0.72,
+      "treatment": "ADA",
+      "outcome": "SFR",
+      "days_to_outcome": 52,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 16",
+        "prior ADA",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L2",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 44,
+        "albumin": 3.1,
+        "calprotectin": 754
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 25,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Small bowel involvement; colonic skip lesions"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 14,
+          "crp": 18
+        },
+        {
+          "day": 30,
+          "crp": 13
+        },
+        {
+          "day": 52,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -540,
+          "end_day": -30
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 52
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1165-1",
+      "patient_id": "PT-1165",
+      "similarity": 0.72,
+      "treatment": "ADA",
+      "outcome": "SFR",
+      "days_to_outcome": 90,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 17",
+        "prior ADA",
+        "CRP 18"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 18,
+        "esr": 33,
+        "albumin": 3.1,
+        "calprotectin": 646
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 13,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 5,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 18
+        },
+        {
+          "day": 14,
+          "crp": 13
+        },
+        {
+          "day": 30,
+          "crp": 9
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 90,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -28,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 90
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1166-1",
+      "patient_id": "PT-1166",
+      "similarity": 0.72,
+      "treatment": "ADA",
+      "outcome": "SFR",
+      "days_to_outcome": 62,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX+AZA",
+        "CRP 19"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 19,
+        "esr": 35,
+        "albumin": 3,
+        "calprotectin": 702
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 30,
+        "severity": "moderate"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 9,
+        "finding": "Ileocolonic ulcers with perianal fistula"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 4,
+        "nocturnal": true,
+        "global_assessment": "moderate"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 19
+        },
+        {
+          "day": 14,
+          "crp": 14
+        },
+        {
+          "day": 30,
+          "crp": 10
+        },
+        {
+          "day": 60,
+          "crp": 5
+        },
+        {
+          "day": 62,
+          "crp": 3
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -90
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 62
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1167-1",
+      "patient_id": "PT-1167",
+      "similarity": 0.71,
+      "treatment": "ADA",
+      "outcome": "ENDO",
+      "days_to_outcome": 120,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 20"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": false,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 38,
+        "albumin": 3,
+        "calprotectin": 715
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 7,
+        "finding": "Ileocolonic ulceration; mucosal friability"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 2,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 30,
+          "crp": 12
+        },
+        {
+          "day": 60,
+          "crp": 8
+        },
+        {
+          "day": 90,
+          "crp": 5
+        },
+        {
+          "day": 120,
+          "crp": 4
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -45
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 120
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1168-1",
+      "patient_id": "PT-1168",
+      "similarity": 0.71,
+      "treatment": "ADA",
+      "outcome": "ESC",
+      "days_to_outcome": 41,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 14",
+        "prior IFX",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B2",
+        "perianal": true,
+        "growth": "G1"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 45,
+        "albumin": 2.9,
+        "calprotectin": 773
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 38,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 14,
+          "crp": 28
+        },
+        {
+          "day": 25,
+          "crp": 31
+        },
+        {
+          "day": 41,
+          "crp": 34
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -60
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 41
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1169-1",
+      "patient_id": "PT-1169",
+      "similarity": 0.71,
+      "treatment": "ADA",
+      "outcome": "ESC",
+      "days_to_outcome": 35,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 11",
+        "prior IFX+AZA",
+        "CRP 26"
+      ],
+      "paris": {
+        "location": "L1",
+        "behavior": "B3",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 26,
+        "esr": 47,
+        "albumin": 3,
+        "calprotectin": 662
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 20,
+        "finding": "Deep ileocolonic ulcers; active perianal sinus"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 26
+        },
+        {
+          "day": 14,
+          "crp": 27
+        },
+        {
+          "day": 21,
+          "crp": 30
+        },
+        {
+          "day": 35,
+          "crp": 33
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -300,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -360,
+          "end_day": -60
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 35
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1170-1",
+      "patient_id": "PT-1170",
+      "similarity": 0.71,
+      "treatment": "ADA",
+      "outcome": "SURG",
+      "days_to_outcome": 120,
+      "matching_features": [
+        "CD",
+        "no perianal",
+        "age 11",
+        "prior IFX",
+        "CRP 20"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": false,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 20,
+        "esr": 38,
+        "albumin": 3,
+        "calprotectin": 674
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 42,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic inflammation with stricture"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 6,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 20
+        },
+        {
+          "day": 30,
+          "crp": 18
+        },
+        {
+          "day": 60,
+          "crp": 19
+        },
+        {
+          "day": 90,
+          "crp": 22
+        },
+        {
+          "day": 120,
+          "crp": 24
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -21,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 120
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1171-1",
+      "patient_id": "PT-1171",
+      "similarity": 0.7,
+      "treatment": "ADA",
+      "outcome": "SURG",
+      "days_to_outcome": 95,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 15",
+        "prior IFX",
+        "CRP 27"
+      ],
+      "paris": {
+        "location": "L1",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 27,
+        "esr": 46,
+        "albumin": 3.1,
+        "calprotectin": 797
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 45,
+        "severity": "severe"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 16,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 7,
+        "nocturnal": true,
+        "global_assessment": "severe"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 27
+        },
+        {
+          "day": 30,
+          "crp": 24
+        },
+        {
+          "day": 60,
+          "crp": 26
+        },
+        {
+          "day": 95,
+          "crp": 32
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Infliximab",
+          "drug_class": "biologic",
+          "start_day": -360,
+          "end_day": -90
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 95
+        }
+      ]
+    },
+    {
+      "episode_id": "EP-1173-1",
+      "patient_id": "PT-1173",
+      "similarity": 0.7,
+      "treatment": "ADA",
+      "outcome": "NO",
+      "days_to_outcome": 365,
+      "matching_features": [
+        "CD",
+        "perianal",
+        "age 12",
+        "prior IFX",
+        "CRP 25"
+      ],
+      "paris": {
+        "location": "L3",
+        "behavior": "B1",
+        "perianal": true,
+        "growth": "G0"
+      },
+      "labs_at_baseline": {
+        "crp": 25,
+        "esr": 44,
+        "albumin": 3,
+        "calprotectin": 904
+      },
+      "activity_score": {
+        "index": "PCDAI",
+        "value": 22,
+        "severity": "mild"
+      },
+      "endoscopy_pre": {
+        "ses_cd": 8,
+        "finding": "Ileocolonic inflammation with perianal involvement"
+      },
+      "note_summary": {
+        "stool_freq_per_day": 3,
+        "nocturnal": false,
+        "global_assessment": "mild"
+      },
+      "trajectory": [
+        {
+          "day": 0,
+          "crp": 25
+        },
+        {
+          "day": 60,
+          "crp": 22
+        },
+        {
+          "day": 120,
+          "crp": 21
+        },
+        {
+          "day": 180,
+          "crp": 20
+        },
+        {
+          "day": 365,
+          "crp": 18
+        }
+      ],
+      "medication_history": [
+        {
+          "drug": "Vedolizumab",
+          "drug_class": "biologic",
+          "start_day": -420,
+          "end_day": -90
+        },
+        {
+          "drug": "Methotrexate",
+          "drug_class": "immunomodulator",
+          "start_day": -480,
+          "end_day": -60
+        },
+        {
+          "drug": "Prednisone",
+          "drug_class": "steroid",
+          "start_day": -14,
+          "end_day": 0
+        },
+        {
+          "drug": "Adalimumab",
+          "drug_class": "biologic",
+          "start_day": 0,
+          "end_day": 365
+        }
       ]
     }
   ]

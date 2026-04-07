@@ -2,15 +2,13 @@
  * IBD Screen — Treatment Trajectories (medication Gantt)
  * Shows biologic and steroid transitions before and after the index treatment.
  *
- * Present patient: derived from FHIR MedicationRequest resources via getMedHistory().
+ * Present patient: cohortData.present_patient.medication_history (day-aligned by CDS backend).
  * Historical cohort: medication_history from mockCohort.json (one row per episode).
  */
 
 import { useMemo, useRef, useEffect, useState }  from 'react';
 import HighchartsReact                           from 'highcharts-react-official';
 import Highcharts                                from '../../highcharts';
-import { usePatientContext }                     from '../../contexts/PatientContext';
-import { getMedHistory, normalizeMedName }       from './utils';
 import { IBD_MED_CLASS_COLORS }                  from './config';
 import { useCohortData }                         from './useCohortData';
 
@@ -50,7 +48,6 @@ function splitIntoLanes<T extends { start: number; end: number }>(items: T[]): T
 
 export default function MedTimeline() {
     const cohortData                    = useCohortData();
-    const { selectedPatientResources }  = usePatientContext();
     const chartRef                      = useRef<HighchartsReact.RefObject>(null);
     const containerRef                  = useRef<HTMLDivElement>(null);
     const [chartHeight, setChartHeight] = useState(520);
@@ -63,42 +60,11 @@ export default function MedTimeline() {
         return () => ro.disconnect();
     }, []);
 
-    // ── Present patient medication history ────────────────────────────────────
-
-    const patientMeds = useMemo(
-        () => getMedHistory(selectedPatientResources),
-        [selectedPatientResources],
+    // Present patient medication history from the cohort API response (day-aligned to Day 0)
+    const presentPatientMeds = useMemo(
+        () => ((cohortData as any).present_patient?.medication_history ?? []) as MedBar[],
+        [cohortData],
     );
-
-    // Day 0 = first prescription of the current index biologic.
-    // Strategy: prefer the most recently initiated biologic that is still active
-    // (status === 'active' or endMs in the future). If none are active — patient
-    // is between therapies — fall back to the most recently initiated regardless
-    // of status, so the chart still anchors on the last known treatment.
-    //
-    // In both passes we group by normalised drug name and take the earliest
-    // startMs per name (ignoring renewals/refills), then pick the latest start.
-    const day0Ms = useMemo(() => {
-        const biologics = patientMeds.filter(m => m.class === 'biologic');
-        if (!biologics.length) return null;
-
-        const now = Date.now();
-        const isActive = (m: typeof biologics[number]) =>
-            m.status === 'active' || m.endMs > now;
-
-        function latestFirstStart(subset: typeof biologics): number | null {
-            if (!subset.length) return null;
-            const firstStartByName = new Map<string, number>();
-            for (const m of subset) {
-                const key  = normalizeMedName(m.name);
-                const prev = firstStartByName.get(key);
-                if (prev === undefined || m.startMs < prev) firstStartByName.set(key, m.startMs);
-            }
-            return Math.max(...firstStartByName.values());
-        }
-
-        return latestFirstStart(biologics.filter(isActive)) ?? latestFirstStart(biologics);
-    }, [patientMeds]);
 
     // ── Build chart rows + data ───────────────────────────────────────────────
 
@@ -110,46 +76,29 @@ export default function MedTimeline() {
         categories.push(PATIENT_HEADER);   // row 0 — styled header, no bars
 
         // ── Patient rows ──────────────────────────────────────────────────────
-        if (day0Ms !== null && patientMeds.length > 0) {
-            // Deduplicate by normalised name (groups originator + brand variants together), preserving chronological order
-            const seen = new Set<string>();
-            const uniqueNormNames: string[] = [];
-            for (const m of patientMeds) {
-                const norm = normalizeMedName(m.name);
-                if (!seen.has(norm)) { seen.add(norm); uniqueNormNames.push(norm); }
-            }
-
-            uniqueNormNames.forEach(normName => {
-                const bars = patientMeds
-                    .filter(m => normalizeMedName(m.name) === normName)
-                    .map(m => ({
-                        start: (m.startMs - day0Ms) / 864e5,
-                        end:   (m.endMs   - day0Ms) / 864e5,
-                        med:   m,
-                    }));
+        if (presentPatientMeds.length > 0) {
+            const uniqueDrugs = [...new Set(presentPatientMeds.map(m => m.drug))];
+            uniqueDrugs.forEach(drug => {
+                const bars = presentPatientMeds
+                    .filter(m => m.drug === drug)
+                    .map(m => ({ start: m.start_day, end: m.end_day, bar: m }));
                 splitIntoLanes(bars).forEach((lane, laneIdx) => {
                     const rowIdx = categories.length;
-                    categories.push(laneIdx === 0 ? normName : '');
-                    lane.forEach(({ start, end, med: m }) => {
+                    categories.push(laneIdx === 0 ? drug : '');
+                    lane.forEach(({ start, end, bar: m }) => {
                         seriesData.push({
                             x:      start,
                             x2:     end,
                             y:      rowIdx,
-                            color:  (IBD_MED_CLASS_COLORS[m.class] ?? IBD_MED_CLASS_COLORS.other) + (end <= 0 ? '44' : '88'),
-                            name:   normName,
-                            custom: {
-                                fullName:     m.name,
-                                class:        m.class,
-                                status:       m.status,
-                                durationDays: m.durationDays,
-                                endIsExact:   m.endIsExact,
-                            },
+                            color:  (IBD_MED_CLASS_COLORS[m.drug_class] ?? IBD_MED_CLASS_COLORS.other) + (end <= 0 ? '44' : '88'),
+                            name:   m.drug,
+                            custom: { class: m.drug_class },
                         });
                     });
                 });
             });
         } else {
-            categories.push('(no FHIR med data)');
+            categories.push('(no medication history)');
         }
 
         // ── Spacer + cohort header ───────────────────────────────────────────
@@ -185,7 +134,7 @@ export default function MedTimeline() {
         }
 
         return { categories, seriesData, cohortHeaderRow };
-    }, [patientMeds, day0Ms, cohortData]);
+    }, [presentPatientMeds, cohortData]);
 
     // ── Chart options ─────────────────────────────────────────────────────────
 
@@ -444,9 +393,9 @@ export default function MedTimeline() {
                     ))}
             </div>
 
-            {!patientMeds.length && (
+            {!presentPatientMeds.length && (
                 <div className="alert alert-warning py-1 px-2 mb-2" style={{ fontSize: '0.72rem' }}>
-                    No IBD medication history found in FHIR for the present patient.
+                    No medication history available for the present patient.
                 </div>
             )}
 

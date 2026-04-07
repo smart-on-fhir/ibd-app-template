@@ -37,14 +37,20 @@ interface MedianTrajectoryPoint {
 }
 
 interface TreatmentDist {
-    treatment:           string;
-    label:               string;
-    n:                   number;
-    sfr_12m_rate:        number;
-    median_days_to_sfr:  number;
-    iqr:                 number[];
-    note:                string;
-    median_trajectory:   MedianTrajectoryPoint[];
+    treatment:            string;
+    label:                string;
+    n:                    number;
+    sfr_12m_rate:         number;
+    median_days_to_sfr:   number;
+    iqr:                  number[];
+    endo_12m_rate:        number;
+    median_days_to_endo:  number;
+    iqr_endo:             number[];
+    surg_12m_rate:        number;
+    median_days_to_surg:  number;
+    iqr_surg:             number[];
+    note:                 string;
+    median_trajectory:    MedianTrajectoryPoint[];
 }
 
 interface MedBarEntry {
@@ -177,8 +183,19 @@ function SFRRangeBar({ iqr, median }: { iqr: number[]; median: number }) {
 
 // ── Treatment distribution chart ──────────────────────────────────────────────
 
-export function TreatmentDistChart({ distributions }: { distributions: TreatmentDist[] }) {
-    const maxSFR     = Math.max(...distributions.map(d => d.sfr_12m_rate));
+type Endpoint = 'SFR' | 'ENDO' | 'SURG';
+
+function endpointFields(d: TreatmentDist, ep: Endpoint) {
+    if (ep === 'ENDO') return { rate: d.endo_12m_rate, median: d.median_days_to_endo, iqr: d.iqr_endo };
+    if (ep === 'SURG') return { rate: d.surg_12m_rate, median: d.median_days_to_surg, iqr: d.iqr_surg };
+    return { rate: d.sfr_12m_rate, median: d.median_days_to_sfr, iqr: d.iqr };
+}
+
+const ENDPOINT_LABEL: Record<Endpoint, string> = { SFR: 'SFR', ENDO: 'Endoscopic remission', SURG: 'Surgery' };
+
+export function TreatmentDistChart({ distributions, endpoint = 'SFR' }: { distributions: TreatmentDist[]; endpoint?: Endpoint }) {
+    const epLabel    = ENDPOINT_LABEL[endpoint];
+    const maxRate    = Math.max(...distributions.map(d => endpointFields(d, endpoint).rate));
     const maxChars   = Math.max(...distributions.map(d => `${d.label} (n=${d.n})`.length));
     const labelWidth = Math.max(100, Math.min(180, maxChars * 7));
 
@@ -249,20 +266,21 @@ export function TreatmentDistChart({ distributions }: { distributions: Treatment
             formatter() {
                 const pt   = (this as any).point;
                 const d    = distributions[pt.x as number];
+                const f    = endpointFields(d, endpoint);
                 const note = d.note
                     ? ` <span style="background:#fff3cd;border-radius:3px;padding:1px 5px;font-size:0.68rem;color:#664d03">${d.note}</span>`
                     : '';
                 if ((this as any).series.type === 'errorbar') {
-                    return `<b>${d.label}</b>${note}<br/>IQR: ${d.iqr[0]}–${d.iqr[1]}d`;
+                    return `<b>${d.label}</b>${note}<br/>IQR: ${f.iqr[0]}–${f.iqr[1]}d`;
                 }
-                return `<b>${d.label}</b>${note}<br/>Median: ${d.median_days_to_sfr}d<br/>SFR within 12 mo: <b>${Math.round(d.sfr_12m_rate * 100)}%</b>`;
+                return `<b>${d.label}</b>${note}<br/>Median: ${f.median}d<br/>${epLabel} within 12 mo: <b>${Math.round(f.rate * 100)}%</b>`;
             },
         },
         series: [
             {
                 type:        'errorbar',
                 name:        'IQR (25th–75th percentile)',
-                data:        distributions.map((d, i) => [i, d.iqr[0], d.iqr[1]]),
+                data:        distributions.map((d, i) => { const f = endpointFields(d, endpoint); return [i, f.iqr[0], f.iqr[1]]; }),
                 whiskerLength: '40%',
                 stemWidth    : 3,
                 whiskerWidth : 3,
@@ -271,12 +289,11 @@ export function TreatmentDistChart({ distributions }: { distributions: Treatment
             },
             {
                 type: 'scatter',
-                name: 'Median days to SFR',
-                data: distributions.map((d, i) => ({
-                    x:      i,
-                    y:      d.median_days_to_sfr,
-                    custom: { sfr: d.sfr_12m_rate, note: d.note },
-                })),
+                name: `Median days to ${epLabel}`,
+                data: distributions.map((d, i) => {
+                    const f = endpointFields(d, endpoint);
+                    return { x: i, y: f.median, custom: { rate: f.rate, note: d.note } };
+                }),
                 marker: {
                     symbol: 'circle',
                     radius: 7,
@@ -298,8 +315,8 @@ export function TreatmentDistChart({ distributions }: { distributions: Treatment
                     enabled:   true,
                     formatter() {
                         const pt   = (this as any).point;
-                        const best = pt.custom.sfr === maxSFR;
-                        const rate = `${Math.round(pt.custom.sfr * 100)}% SFR`;
+                        const best = pt.custom.rate === maxRate;
+                        const rate = `${Math.round(pt.custom.rate * 100)}% ${endpoint}`;
                         const note = pt.custom.note
                             ? `<span style="background:#fff3cd;border-radius:3px;padding:1px 5px;margin-left:5px;font-size:0.62rem;color:#664d03">${pt.custom.note}</span>`
                             : '';
@@ -413,7 +430,7 @@ export default function IBDScreenC() {
                                 <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
                                     {cohortData.cohort_size} episodes · sorted by similarity · click to inspect
                                 </div>
-                                <div className='table-responsive'>
+                                <div className='table-responsive' style={{ maxHeight: '58vh', overflowY: 'auto' }}>
                                     <table className="table table-sm table-hover mb-0" style={{ fontSize: '0.72rem' }}>
                                         <thead>
                                             <tr>

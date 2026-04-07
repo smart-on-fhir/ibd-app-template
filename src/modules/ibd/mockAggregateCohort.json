@@ -11,7 +11,10 @@
   "treatment_distributions": [
     {
       "treatment": "UST", "label": "Ustekinumab",      "n": 38,
-      "sfr_12m_rate": 0.57, "median_days_to_sfr": 71,  "iqr": [45, 128], "note": "best overall",
+      "sfr_12m_rate": 0.57, "median_days_to_sfr": 71,  "iqr": [45, 128],
+      "endo_12m_rate": 0.47, "median_days_to_endo": 120, "iqr_endo": [80, 190],
+      "surg_12m_rate": 0.08, "median_days_to_surg": 280, "iqr_surg": [210, 340],
+      "note": "best overall",
       "median_trajectory": [
         { "day": 0,   "crp": 21, "q25_crp": 15, "q75_crp": 28 },
         { "day": 14,  "crp": 16, "q25_crp": 10, "q75_crp": 23 },
@@ -24,7 +27,10 @@
     },
     {
       "treatment": "VDZ", "label": "Vedolizumab",      "n": 21,
-      "sfr_12m_rate": 0.38, "median_days_to_sfr": 94,  "iqr": [51, 180], "note": "more variable",
+      "sfr_12m_rate": 0.38, "median_days_to_sfr": 94,  "iqr": [51, 180],
+      "endo_12m_rate": 0.33, "median_days_to_endo": 150, "iqr_endo": [90, 240],
+      "surg_12m_rate": 0.14, "median_days_to_surg": 250, "iqr_surg": [180, 320],
+      "note": "more variable",
       "median_trajectory": [
         { "day": 0,   "crp": 19, "q25_crp": 13, "q75_crp": 30 },
         { "day": 14,  "crp": 17, "q25_crp": 11, "q75_crp": 27 },
@@ -37,7 +43,10 @@
     },
     {
       "treatment": "IFX", "label": "Infliximab retry", "n": 14,
-      "sfr_12m_rate": 0.29, "median_days_to_sfr": 112, "iqr": [60, 210], "note": "prior exposure",
+      "sfr_12m_rate": 0.29, "median_days_to_sfr": 112, "iqr": [60, 210],
+      "endo_12m_rate": 0.21, "median_days_to_endo": 180, "iqr_endo": [120, 270],
+      "surg_12m_rate": 0.29, "median_days_to_surg": 200, "iqr_surg": [140, 290],
+      "note": "prior exposure",
       "median_trajectory": [
         { "day": 0,   "crp": 26, "q25_crp": 18, "q75_crp": 37 },
         { "day": 14,  "crp": 22, "q25_crp": 14, "q75_crp": 33 },
@@ -50,7 +59,10 @@
     },
     {
       "treatment": "ADA", "label": "Adalimumab",       "n": 11,
-      "sfr_12m_rate": 0.32, "median_days_to_sfr": 98,  "iqr": [44, 195], "note": "mixed response",
+      "sfr_12m_rate": 0.32, "median_days_to_sfr": 98,  "iqr": [44, 195],
+      "endo_12m_rate": 0.27, "median_days_to_endo": 160, "iqr_endo": [100, 250],
+      "surg_12m_rate": 0.18, "median_days_to_surg": 230, "iqr_surg": [160, 310],
+      "note": "mixed response",
       "median_trajectory": [
         { "day": 0,   "crp": 22, "q25_crp": 15, "q75_crp": 31 },
         { "day": 14,  "crp": 19, "q25_crp": 12, "q75_crp": 28 },
@@ -62,5 +74,23 @@
       ]
     }
   ],
+  "present_patient": {
+    "medication_history": [
+      { "drug": "Azathioprine",  "drug_class": "immunomodulator", "start_day": -820, "end_day": -180 },
+      { "drug": "Adalimumab",    "drug_class": "biologic",        "start_day": -540, "end_day":  -30 },
+      { "drug": "Prednisone",    "drug_class": "steroid",         "start_day":  -60, "end_day":    0 },
+      { "drug": "Ustekinumab",   "drug_class": "biologic",        "start_day":    0, "end_day":   90 }
+    ],
+    "crp_trajectory": [
+      { "day": -90, "crp": 32 },
+      { "day": -60, "crp": 29 },
+      { "day": -30, "crp": 26 },
+      { "day":   0, "crp": 22 },
+      { "day":  14, "crp": 18 },
+      { "day":  30, "crp": 13 },
+      { "day":  60, "crp":  8 },
+      { "day":  90, "crp":  5 }
+    ]
+  },
   "episodes": []
 }

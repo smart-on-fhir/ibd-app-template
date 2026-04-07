@@ -220,6 +220,7 @@ export function getRecentLab(
 export interface LabPoint {
     date:  number;  // Unix ms
     value: number;
+    unit:  string;  // as reported in FHIR valueQuantity
 }
 
 /** All numeric observations for a lab key, sorted oldest → newest. */
@@ -234,6 +235,7 @@ export function getLabHistory(
         .map((obs: any) => ({
             date:  new Date(obs.effectiveDateTime ?? obs.issued ?? '').getTime(),
             value: obs.valueQuantity.value as number,
+            unit:  (obs.valueQuantity.code ?? obs.valueQuantity.unit ?? '') as string,
         }))
         .filter(p => !isNaN(p.date))
         .sort((a, b) => a.date - b.date);

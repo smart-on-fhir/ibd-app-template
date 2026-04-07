@@ -11,7 +11,7 @@ import Highcharts                               from '../../highcharts';
 import { usePatientContext }                    from '../../contexts/PatientContext';
 import { useCohortData }                        from './useCohortData';
 import { TreatmentDistChart }                   from './ScreenC';
-import { getCurrentRegimen, getLabHistory }     from './utils';
+import { getMedHistory, normalizeMedName, getLabHistory } from './utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -19,14 +19,20 @@ interface TrajectoryPoint        { day: number; crp: number; }
 interface MedianTrajectoryPoint  { day: number; crp: number; q25_crp: number; q75_crp: number; }
 
 interface TreatmentDist {
-    treatment:          string;
-    label:              string;
-    n:                  number;
-    sfr_12m_rate:       number;
-    median_days_to_sfr: number;
-    iqr:                [number, number];
-    note:               string;
-    median_trajectory:  MedianTrajectoryPoint[];
+    treatment:            string;
+    label:                string;
+    n:                    number;
+    sfr_12m_rate:         number;
+    median_days_to_sfr:   number;
+    iqr:                  [number, number];
+    endo_12m_rate:        number;
+    median_days_to_endo:  number;
+    iqr_endo:             [number, number];
+    surg_12m_rate:        number;
+    median_days_to_surg:  number;
+    iqr_surg:             [number, number];
+    note:                 string;
+    median_trajectory:    MedianTrajectoryPoint[];
 }
 
 interface Episode {
@@ -42,12 +48,25 @@ interface Episode {
 const OUTCOME_COLOR: Record<string, string> = {
     SFR:  '#008800',
     ENDO: '#990099',
-    ESC:  '#fd7e14',
+    ESC:  '#ff9640',
     SURG: '#dc3545',
     NO:   '#adb5bd',
 };
 
 const ENDPOINT_OPTIONS = ['SFR', 'ENDO', 'SURG'] as const;
+type Endpoint = typeof ENDPOINT_OPTIONS[number];
+
+const ENDPOINT_LABEL: Record<Endpoint, string> = {
+    SFR:  'Steroid-free remission',
+    ENDO: 'Endoscopic remission',
+    SURG: 'Surgery',
+};
+
+function endpointFields(d: TreatmentDist, ep: Endpoint) {
+    if (ep === 'ENDO') return { rate: d.endo_12m_rate, median: d.median_days_to_endo, iqr: d.iqr_endo };
+    if (ep === 'SURG') return { rate: d.surg_12m_rate, median: d.median_days_to_surg, iqr: d.iqr_surg };
+    return { rate: d.sfr_12m_rate, median: d.median_days_to_sfr, iqr: d.iqr };
+}
 
 // ── Screen B ──────────────────────────────────────────────────────────────────
 
@@ -64,31 +83,60 @@ export default function IBDScreenB() {
     ).treatment;
 
     const [candidateTx,      setCandidateTx]      = useState(defaultTx);
-    const [endpoint,         setEndpoint]          = useState<typeof ENDPOINT_OPTIONS[number]>('SFR');
+    const [endpoint,         setEndpoint]          = useState<Endpoint>('SFR');
     const [showIndividuals,  setShowIndividuals]   = useState(true);
     const [chartHeight,      setChartHeight]       = useState(450);
 
-    // ── Present patient CRP relative to regimen start ──
-    const regimen    = useMemo(() => getCurrentRegimen(selectedPatientResources),    [selectedPatientResources]);
-    const crpHistory = useMemo(() => getLabHistory(selectedPatientResources, 'CRP'), [selectedPatientResources]);
+    // ── Present patient CRP relative to index biologic start (Day 0) ──
+    const patientMeds = useMemo(() => getMedHistory(selectedPatientResources), [selectedPatientResources]);
+    const crpHistory  = useMemo(() => getLabHistory(selectedPatientResources, 'CRP'), [selectedPatientResources]);
 
-    const patientTrajectory = useMemo((): TrajectoryPoint[] => {
-        if (!regimen.length || !crpHistory.length) return [];
-        const startMs = regimen
-            .map(m => m.startDate ? new Date(m.startDate).getTime() : null)
-            .filter((d): d is number => d !== null)
-            .sort((a, b) => a - b)[0];
-        if (!startMs) return [];
-        return crpHistory
-            .map(p => ({ day: Math.round((p.date - startMs) / 86_400_000), crp: p.value }))
-            .filter(p => p.day >= -30 && p.day <= 365)
-            .sort((a, b) => a.day - b.day);
-    }, [regimen, crpHistory]);
+    // Day 0 = most recently initiated biologic that is still active; fallback to
+    // most recently initiated regardless of status (mirrors MedTimeline logic).
+    const day0Ms = useMemo(() => {
+        const biologics = patientMeds.filter(m => m.class === 'biologic');
+        if (!biologics.length) return null;
+        const now      = Date.now();
+        const isActive = (m: typeof biologics[number]) => m.status === 'active' || m.endMs > now;
+        function latestFirstStart(subset: typeof biologics): number | null {
+            if (!subset.length) return null;
+            const firstStartByName = new Map<string, number>();
+            for (const m of subset) {
+                const key = normalizeMedName(m.name);
+                const prev = firstStartByName.get(key);
+                if (prev === undefined || m.startMs < prev) firstStartByName.set(key, m.startMs);
+            }
+            return Math.max(...firstStartByName.values());
+        }
+        return latestFirstStart(biologics.filter(isActive)) ?? latestFirstStart(biologics);
+    }, [patientMeds]);
+
+    const { patientTrajectory, crpSource } = useMemo(() => {
+        // Prefer FHIR CRP observations aligned to Day 0
+        if (day0Ms !== null && crpHistory.length) {
+            const fhirPoints = crpHistory
+                .map(p => {
+                    const u = p.unit.toLowerCase();
+                    // Normalize to mg/L (chart baseline unit)
+                    const crp = u === 'mg/dl' || u === 'mg%'   ? p.value * 10
+                              : u === 'g/l'                    ? p.value * 1000
+                              : p.value;
+                    return { day: Math.round((p.date - day0Ms) / 86_400_000), crp };
+                })
+                .filter(p => p.day >= -180 && p.day <= 365)
+                .sort((a, b) => a.day - b.day);
+            if (fhirPoints.length) return { patientTrajectory: fhirPoints, crpSource: 'fhir' as const };
+        }
+        // Fall back to mock CRP trajectory from cohort API response
+        const mockPoints = ((cohortData as any).present_patient?.crp_trajectory ?? []) as TrajectoryPoint[];
+        return { patientTrajectory: mockPoints, crpSource: mockPoints.length ? 'mock' as const : 'none' as const };
+    }, [day0Ms, crpHistory, cohortData]);
 
     // ── Cohort data for selected treatment ──
     const dist              = distributions.find(d => d.treatment === candidateTx)!;
     const selectedEpisodes  = allEpisodes.filter(e => e.treatment === candidateTx);
     const hasTrajectoryData = (dist.median_trajectory?.length ?? 0) > 0;
+    const epFields          = endpointFields(dist, endpoint);
 
     // ── Highcharts series ──────────────────────────────────────────────────────
     const series = useMemo((): Highcharts.SeriesOptionsType[] => {
@@ -141,10 +189,11 @@ export default function IBDScreenB() {
                     name:         ep.outcome,
                     data:         [{ x: last.day, y: last.crp }],
                     color,
-                    marker:       { symbol: 'circle', radius: 4 },
-                    showInLegend: false,
-                    zIndex:       3,
-                    tooltip:      { pointFormat: `<b>${ep.episode_id}</b><br/>Outcome: ${ep.outcome} at day ${ep.days_to_outcome}<br/>CRP: {point.y} mg/L` },
+                    marker:             { symbol: 'circle', radius: 4, lineWidth: 0 },
+                    opacity:            0.65,
+                    showInLegend:       false,
+                    zIndex:             3,
+                    tooltip:            { pointFormat: `<b>${ep.episode_id}</b><br/>Outcome: ${ep.outcome} at day ${ep.days_to_outcome}<br/>CRP: {point.y} mg/L` },
                 });
             });
         }
@@ -174,13 +223,42 @@ export default function IBDScreenB() {
         credits:  { enabled: false },
         exporting: { enabled: false },
         xAxis: {
-            min: -15,
+            min: -90,
             max: 375,
             title: { text: 'Days from treatment start', style: { fontSize: '0.65rem', color: '#6c757d' } },
             labels: { style: { fontSize: '0.65rem' } },
-            plotLines: [{
-                value: 0, color: '#00000066', dashStyle: 'ShortDot', width: 1,
-                label: { text: 'Day 0', style: { fontSize: '0.65rem', color: '#6c757d' } },
+            plotLines: [
+                {
+                    value: 0, color: '#00000066', dashStyle: 'ShortDot', width: 1,
+                    label: { text: 'Day 0', style: { fontSize: '0.65rem', color: '#6c757d' } },
+                },
+                {
+                    value:     epFields.median,
+                    color:     '#198754',
+                    dashStyle: 'ShortDash',
+                    width:     2,
+                    zIndex:    4,
+                    label: {
+                        text:     `Median ${endpoint} (${epFields.median}d)`,
+                        style:    { fontSize: '0.65rem', color: '#198754', fontWeight: '600' },
+                        rotation: 0,
+                        y:        14,
+                    },
+                },
+            ],
+            plotBands: [{
+                from:  epFields.iqr[0],
+                to:    epFields.iqr[1],
+                color: '#19875418',
+                zIndex: 1,
+                borderWidth: 1,
+                borderColor: '#19875440',
+                label: {
+                    text:  `IQR`,
+                    style: { fontSize: '0.6rem', color: '#198754' },
+                    align: 'center',
+                    y:     14,
+                },
             }],
         },
         yAxis: {
@@ -233,13 +311,13 @@ export default function IBDScreenB() {
     }, []);
 
     // ── Interpretation ─────────────────────────────────────────────────────────
-    const sfrPct = Math.round(dist.sfr_12m_rate * 100);
+    const crpNote = crpSource === 'fhir' ? `The present patient's CRP trajectory is overlaid (from FHIR).`
+                  : crpSource === 'mock' ? `The present patient's CRP trajectory is overlaid (indicative — no FHIR observations found).`
+                  : `No CRP data found for the present patient.`;
     const interpretation = `Among ${dist.n} similar historical episodes treated with ${dist.label}, `
-        + `${sfrPct}% achieved steroid-free remission within 12 months `
-        + `(median ${dist.median_days_to_sfr} days; IQR ${dist.iqr[0]}–${dist.iqr[1]} days). `
-        + (patientTrajectory.length
-            ? `The present patient's CRP trajectory is overlaid in black.`
-            : `No CRP observations found for the present patient relative to treatment start.`);
+        + `${Math.round(epFields.rate * 100)}% achieved ${ENDPOINT_LABEL[endpoint].toLowerCase()} within 12 months `
+        + `(median ${epFields.median} days; IQR ${epFields.iqr[0]}–${epFields.iqr[1]} days). `
+        + crpNote;
 
     return (
         <div className="container-fluid">
@@ -267,7 +345,7 @@ export default function IBDScreenB() {
                                     <label className="form-check-label" htmlFor={`tx-${d.treatment}`} style={{ fontSize: '0.72rem' }}>
                                         {d.label}
                                         <span className="text-muted ms-1" style={{ fontSize: '0.65rem' }}>
-                                            {Math.round(d.sfr_12m_rate * 100)}% SFR
+                                            {Math.round(endpointFields(d, endpoint).rate * 100)}% {endpoint}
                                         </span>
                                     </label>
                                 </div>
@@ -277,11 +355,10 @@ export default function IBDScreenB() {
 
                             <p className="text-primary text-uppercase fw-semibold mb-2" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Endpoint</p>
                             {ENDPOINT_OPTIONS.map(ep => (
-                                <div key={ep} className={`form-check mb-1 ${ep !== 'SFR' ? 'opacity-40' : ''}`}>
+                                <div key={ep} className="form-check mb-1">
                                     <input className="form-check-input" type="radio"
                                            id={`ep-${ep}`}
                                            checked={endpoint === ep}
-                                           disabled={ep !== 'SFR'}
                                            onChange={() => setEndpoint(ep)} />
                                     <label className="form-check-label" htmlFor={`ep-${ep}`} style={{ fontSize: '0.72rem' }}>{ep}</label>
                                 </div>
@@ -333,7 +410,7 @@ export default function IBDScreenB() {
                                 <div className="text-muted mb-2" style={{ fontSize: '0.68rem' }}>
                                     CRP trajectory data unavailable — showing outcome distributions
                                 </div>
-                                <TreatmentDistChart distributions={distributions} />
+                                <TreatmentDistChart distributions={distributions} endpoint={endpoint} />
                             </>)}
                         </div>
                     </div>
@@ -356,9 +433,9 @@ export default function IBDScreenB() {
                         <div className="card-body p-3 small">
                             <div className="fw-bold mb-1">Interpretation</div>
                             <p className="mb-0" style={{ fontSize: '0.78rem' }}>{interpretation}</p>
-                            {!patientTrajectory.length && (
+                            {crpSource === 'none' && (
                                 <div className="alert alert-warning py-1 px-2 mt-2 mb-0" style={{ fontSize: '0.68rem' }}>
-                                    No CRP data found relative to treatment start. Ensure CRP labs and medication start dates are present in FHIR.
+                                    No CRP data found. Ensure CRP observations and medication start dates are present in FHIR.
                                 </div>
                             )}
                         </div>
