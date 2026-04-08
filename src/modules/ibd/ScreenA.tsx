@@ -248,7 +248,7 @@ export default function IBDScreenA() {
                             <Tip term="card:regimen">
                                 <div className="card h-100">
                                     <div className="card-body px-3 py-2 small">
-                                        <div className="text-primary text-uppercase fw-semibold mb-1 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
+                                        <div className="text-primary text-uppercase fw-semibold mb-2 text-center" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current regimen</div>
                                         {regimen.length > 0 ? (
                                             regimen.map((m, i) => (
                                                 <DataRow key={i} label={<span className='text-black' title={m.name}>{normalizeMedName(m.name)}</span>}>
@@ -272,7 +272,7 @@ export default function IBDScreenA() {
                                     <div className="card h-100">
                                         <div className="card-body px-3 py-2" style={{ color: '#A6A' }}>
                                             <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Historical cohort</div>
-                                            <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{cohortData.cohort_size}</div>
+                                            <div className="fw-semibold my-2" style={{ fontSize: '1.4rem', lineHeight: 1 }}>{cohortData.cohort_size}</div>
                                             <div className="text-muted" style={{ fontSize: '0.68rem' }}>similar episodes matched</div>
                                         </div>
                                     </div>
@@ -286,7 +286,7 @@ export default function IBDScreenA() {
                                 <div className="card h-100">
                                     <div className="card-body px-3 py-2">
                                         <div className="text-uppercase fw-semibold text-success" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Best {/*historical*/} response</div>
-                                        <div className="fw-semibold text-success" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{bestTx.label}</div>
+                                        <div className="fw-semibold text-success my-2" style={{ fontSize: '1.4rem', lineHeight: 1 }}>{bestTx.label}</div>
                                         <div style={{ fontSize: '0.72rem' }}>
                                             <span className="text-muted fw-semibold">{Math.round(bestTx.sfr_12m_rate * 100)}% SFR</span>
                                             <span className="text-muted ms-1">· median {bestTx.median_days_to_sfr}d</span>
@@ -302,7 +302,7 @@ export default function IBDScreenA() {
                                 <div className="card h-100">
                                     <div className="card-body px-3 py-2" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
                                         <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
-                                        <div className="fw-semibold" style={{ fontSize: '1.4rem', lineHeight: 2 }}>{surgRate}%</div>
+                                        <div className="fw-semibold my-2" style={{ fontSize: '1.4rem', lineHeight: 1 }}>{surgRate}%</div>
                                         <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
                                     </div>
                                 </div>

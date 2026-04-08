@@ -45,6 +45,7 @@ export default function IBDLayout() {
                     { path: 'timeline', label: 'Timelines'         , icon: 'bi-bar-chart-steps opacity-75' },
                     { path: 'cohort'  , label: 'Similar Patients'  , icon: 'bi-people opacity-75' },
                     { path: 'meds'    , label: 'Treatment History' , icon: 'bi-list-columns-reverse opacity-75' },
+                    { path: 'outcomes', label: 'Treatment Outcomes', icon: 'bi-graph-up-arrow opacity-75' },
                 ]}
                 sidebarFooter={<CohortDataToggle />}
             />

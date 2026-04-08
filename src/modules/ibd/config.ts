@@ -58,16 +58,24 @@ export const IBD_ANTIBIOTICS: string[] = [
 
 export const LAB_DEFS = {
     CRP:          { loincs: ['1988-5', '14959-1', '71426-1'],  keywords: ['c reactive protein', 'crp'],                    goodDirection: 'down' as const },
-    ESR:          { loincs: ['30341-2', '4537-7'],              keywords: ['erythrocyte sedimentation', 'esr', 'sed rate', 'sedimentation rate'], goodDirection: 'down' as const },
+    ESR:          { loincs: ['30341-2', '4537-7'],             keywords: ['erythrocyte sedimentation', 'esr', 'sed rate', 'sedimentation rate'], goodDirection: 'down' as const },
     Albumin:      { loincs: ['1751-7', '3519-7', '2862-1'],    keywords: ['albumin'],                                      goodDirection: 'up'   as const },
-    Calprotectin: { loincs: ['35896-1', '27818-8'],             keywords: ['calprotectin'],                                 goodDirection: 'down' as const },
-    Hemoglobin:   { loincs: ['718-7', '20509-6'],               keywords: ['hemoglobin', 'haemoglobin'],                    goodDirection: 'up'   as const },
-    Platelets:    { loincs: ['777-3', '26515-7'],               keywords: ['platelet'],                                     goodDirection: null },
-    Weight:       { loincs: ['29463-7', '3141-9'],              keywords: ['body weight', 'weight'],                        goodDirection: 'up'   as const },
-    Height:       { loincs: ['8302-2', '3137-7'],               keywords: ['body height', 'height'],                        goodDirection: null },
-    BMI:          { loincs: ['39156-5'],                        keywords: ['body mass index', 'bmi'],                       goodDirection: null },
-    PreAlbumin:   { loincs: ['1809-3', '2857-1'],               keywords: ['prealbumin', 'pre-albumin', 'transthyretin'],   goodDirection: 'up'   as const },
-    PCT:          { loincs: ['33959-8', '75241-0', '44372-3'], keywords: ['procalcitonin', 'pct'],                          goodDirection: 'down' as const },
+    Calprotectin: { loincs: ['35896-1', '27818-8'],            keywords: ['calprotectin'],                                 goodDirection: 'down' as const },
+    Hemoglobin:   { loincs: ['718-7', '20509-6'],              keywords: ['hemoglobin', 'haemoglobin'],                    goodDirection: 'up'   as const },
+    Platelets:    { loincs: ['777-3', '26515-7'],              keywords: ['platelet'],                                     goodDirection: null },
+    Weight:       { loincs: ['29463-7', '3141-9'],             keywords: ['body weight', 'weight'],                        goodDirection: 'up'   as const },
+    Height:       { loincs: ['8302-2', '3137-7'],              keywords: ['body height', 'height'],                        goodDirection: null },
+    BMI:          { loincs: ['39156-5'],                       keywords: ['body mass index', 'bmi'],                       goodDirection: null },
+    PreAlbumin:   { loincs: ['1809-3', '2857-1'],              keywords: ['prealbumin', 'pre-albumin', 'transthyretin'],   goodDirection: 'up'   as const },
+    PCT:          { loincs: ['33959-8', '75241-0', '44372-3'], keywords: ['procalcitonin', 'pct'],                         goodDirection: 'down' as const },
+    Ferritin:     { loincs: ['2276-4', '20567-4'],             keywords: ['ferritin'],                                     goodDirection: null },
+    VitaminD:     { loincs: ['35365-7', '1989-3', '14635-7'],  keywords: ['vitamin d', '25-oh', '25-hydroxyvitamin'],      goodDirection: 'up'   as const },
+    VitaminB12:   { loincs: ['2132-9', '14685-2'],             keywords: ['vitamin b12', 'cobalamin', 'b-12'],             goodDirection: 'up'   as const },
+    WBC:          { loincs: ['6690-2', '26464-8'],             keywords: ['white blood cell', 'leukocyte', 'wbc'],         goodDirection: null },
+    Neutrophils:  { loincs: ['751-8', '26499-4'],              keywords: ['neutrophil'],                                   goodDirection: null },
+    Lymphocytes:  { loincs: ['731-0', '26478-8'],              keywords: ['lymphocyte'],                                   goodDirection: null },
+    ALT:          { loincs: ['1742-6', '1743-4'],              keywords: ['alanine aminotransferase', 'alt', 'sgpt'],      goodDirection: 'down' as const },
+    AST:          { loincs: ['1920-8', '30239-8'],             keywords: ['aspartate aminotransferase', 'ast', 'sgot'],    goodDirection: 'down' as const },
 } as const;
 
 export type LabKey = keyof typeof LAB_DEFS;

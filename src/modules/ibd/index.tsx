@@ -1,10 +1,11 @@
 import type { PatientModule } from '../types';
-import { detectIBD } from './detect';
-import IBDLayout from './IBDLayout';
-import IBDScreenA from './ScreenA';
-import IBDScreenB from './ScreenB';
-import IBDScreenC from './ScreenC';
-import IBDMedTimeline from './MedTimeline';
+import { detectIBD }          from './detect';
+import IBDLayout              from './IBDLayout';
+import IBDScreenA             from './ScreenA';
+import IBDScreenB             from './ScreenB';
+import IBDScreenC             from './ScreenC';
+import IBDMedTimeline         from './MedTimeline';
+import IBDOutcomeTimeline     from './OutcomeTimeline';
 
 const ibdModule: PatientModule = {
     id:          'ibd',
@@ -20,6 +21,7 @@ const ibdModule: PatientModule = {
         { path: 'timeline',   element: <IBDScreenB /> },
         { path: 'cohort',     element: <IBDScreenC /> },
         { path: 'meds',       element: <IBDMedTimeline /> },
+        { path: 'outcomes',   element: <IBDOutcomeTimeline /> },
     ],
 };
 

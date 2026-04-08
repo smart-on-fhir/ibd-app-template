@@ -17,7 +17,7 @@ export default function ModuleLayout({ basePath, label, icon, color, navLinks, s
 
     return (
         <div className='d-flex gap-2 flex-nowrap'>
-            <div className='flex-auto small' style={{ minWidth: '201px' }}>
+            <div className='flex-auto small flex-shrink-0' style={{ minWidth: '201px' }}>
                 <div className='flex-column nav nav-pills position-sticky top-0'>
                     <NavLink
                         to={`/patients/${id}`}
