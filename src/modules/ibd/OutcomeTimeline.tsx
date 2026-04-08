@@ -231,7 +231,7 @@ export default function OutcomeTimeline() {
             height:          totalH,
             marginLeft:      MARGIN_L,
             marginTop:       28,   // headroom for "Patient Treatments" label
-            marginBottom:    60,
+            marginBottom:    36,
             zooming:         { type: 'x' },
             panning:         { enabled: true, type: 'x' },
             panKey:          'shift',
@@ -256,14 +256,7 @@ export default function OutcomeTimeline() {
         title:     { text: undefined },
         credits:   { enabled: false },
         exporting: { enabled: false },
-        legend: {
-            enabled:       true,
-            verticalAlign: 'bottom',
-            align:         'center',
-            itemStyle:     { fontWeight: 'normal', fontSize: '0.68rem' },
-            margin:        0,
-            y:             14,   // lift above x-axis labels
-        },
+        legend:    { enabled: false },
         xAxis: {
             type:      'datetime',
             lineColor: '#dee2e6',
@@ -302,7 +295,7 @@ export default function OutcomeTimeline() {
                     formatter(this: Highcharts.AxisLabelsFormatterContextObject) {
                         const v = String(this.value);
                         if (!v) return '';
-                        return `<span style="font-size:0.6rem;white-space:nowrap;max-width:138px;overflow:hidden;display:inline-block;text-overflow:ellipsis" title="${v}">${v}</span>`;
+                        return `<span style="font-size:0.7rem;white-space:nowrap;max-width:138px;overflow:hidden;display:inline-block;text-overflow:ellipsis" title="${v}">${v}</span>`;
                     },
                 },
             },
@@ -310,22 +303,22 @@ export default function OutcomeTimeline() {
             {
                 top:           labTopPct,
                 height:        labHPct,
-                title:         { text: '% of limit', style: { fontSize: '0.58rem', color: '#6c757d' }, margin: 6 },
+                title:         { text: '% of limit', style: { fontSize: '0.8rem', color: '#6c757d' }, margin: 6 },
                 min:           0,
-                labels:        { style: { fontSize: '0.63rem', color: '#6c757d' } },
+                labels:        { style: { fontSize: '0.7rem', color: '#6c757d' }, distance: 0 },
                 gridLineWidth: 0,
                 plotBands: [
                     {
                         from: 0, to: 100, color: 'rgba(25,135,84,0.07)',
-                        label: { text: 'Normal',   align: 'left', x: -58, style: { fontSize: '0.56rem', color: '#198754', fontWeight: '500' } },
+                        label: { text: 'Normal',   align: 'left', x: -58, style: { fontSize: '0.7rem', color: '#198754', fontWeight: '500' } },
                     },
                     {
                         from: 100, to: 200, color: 'rgba(253,126,20,0.08)',
-                        label: { text: 'Elevated', align: 'left', x: -58, style: { fontSize: '0.56rem', color: '#fd7e14', fontWeight: '500' } },
+                        label: { text: 'Elevated', align: 'left', x: -58, style: { fontSize: '0.7rem', color: '#fd7e14', fontWeight: '500' } },
                     },
                     {
                         from: 200, to: 999, color: 'rgba(220,53,69,0.09)',
-                        label: { text: 'High',     align: 'left', x: -58, style: { fontSize: '0.56rem', color: '#dc3545', fontWeight: '500' } },
+                        label: { text: 'High',     align: 'left', x: -58, style: { fontSize: '0.7rem', color: '#dc3545', fontWeight: '500' } },
                     },
                 ],
                 plotLines: [
@@ -402,7 +395,9 @@ export default function OutcomeTimeline() {
                 dataLabels: {
                     enabled:  true,
                     inside:   true,
-                    overflow: 'justify',
+                    align:    'left',
+                    x:        4,
+                    overflow: 'allow',
                     crop:     true,
                     color:    '#111',
                     style:    { fontSize: '0.55rem', fontWeight: '600', textOutline: '1px rgba(255,255,255,0.6)' },
@@ -545,6 +540,22 @@ export default function OutcomeTimeline() {
                     </div>
                 </div>
             </div>
+
+            {/* Lab legend — rendered as HTML so wrapping never overlaps the chart */}
+            {labSeries.length > 0 && (
+                <div className="d-flex flex-wrap gap-3 mt-2 px-1">
+                    {labSeries.map(s => (
+                        <span key={s.name} className="d-flex align-items-center gap-1"
+                              style={{ fontSize: '0.68rem' }}>
+                            <span style={{
+                                width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                                background: s.color as string, display: 'inline-block',
+                            }} />
+                            {s.name}
+                        </span>
+                    ))}
+                </div>
+            )}
 
             {/* Selected period badge */}
             {selectedBand && (() => {
