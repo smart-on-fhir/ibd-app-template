@@ -67,6 +67,7 @@ export const LAB_DEFS = {
     Height:       { loincs: ['8302-2', '3137-7'],               keywords: ['body height', 'height'],                        goodDirection: null },
     BMI:          { loincs: ['39156-5'],                        keywords: ['body mass index', 'bmi'],                       goodDirection: null },
     PreAlbumin:   { loincs: ['1809-3', '2857-1'],               keywords: ['prealbumin', 'pre-albumin', 'transthyretin'],   goodDirection: 'up'   as const },
+    PCT:          { loincs: ['33959-8', '75241-0', '44372-3'], keywords: ['procalcitonin', 'pct'],                          goodDirection: 'down' as const },
 } as const;
 
 export type LabKey = keyof typeof LAB_DEFS;
