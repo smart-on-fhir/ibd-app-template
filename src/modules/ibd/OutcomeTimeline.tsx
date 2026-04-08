@@ -382,9 +382,11 @@ export default function OutcomeTimeline() {
                 yAxis:        0,
                 data:         ganttData.map(p => {
                     const sel = selectedBand && p.x === selectedBand.from && p.x2 === selectedBand.to;
-                    return sel
-                        ? { ...p, borderWidth: 2.5, borderColor: '#0d6efd' }
-                        : p;
+                    return {
+                        ...p,
+                        borderWidth: sel ? 2.5 : 0,
+                        borderColor: sel ? '#0d6efd' : 'transparent',
+                    };
                 }),
                 showInLegend: false,
                 pointWidth:   ROW_H - 6,
