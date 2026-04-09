@@ -23,66 +23,23 @@
       "n": 38,
       "sfr_12m_rate": 0.57,
       "median_days_to_sfr": 71,
-      "iqr": [
-        45,
-        128
-      ],
+      "iqr": [ 45, 128 ],
       "endo_12m_rate": 0.47,
       "median_days_to_endo": 120,
-      "iqr_endo": [
-        80,
-        190
-      ],
+      "iqr_endo": [ 80, 190 ],
       "surg_12m_rate": 0.08,
       "median_days_to_surg": 280,
-      "iqr_surg": [
-        210,
-        340
-      ],
+      "iqr_surg": [ 210, 340 ],
       "note": "best overall",
       "median_trajectory": [
-        {
-          "day": 0,
-          "crp": 21,
-          "q25_crp": 15,
-          "q75_crp": 28
-        },
-        {
-          "day": 14,
-          "crp": 16,
-          "q25_crp": 10,
-          "q75_crp": 23
-        },
-        {
-          "day": 30,
-          "crp": 11,
-          "q25_crp": 6,
-          "q75_crp": 18
-        },
-        {
-          "day": 60,
-          "crp": 6,
-          "q25_crp": 3,
-          "q75_crp": 13
-        },
-        {
-          "day": 90,
-          "crp": 4,
-          "q25_crp": 2,
-          "q75_crp": 8
-        },
-        {
-          "day": 120,
-          "crp": 3,
-          "q25_crp": 1,
-          "q75_crp": 6
-        },
-        {
-          "day": 180,
-          "crp": 3,
-          "q25_crp": 1,
-          "q75_crp": 5
-        }
+        { "day": 0,   "crp": 21, "q25_crp": 15, "q75_crp": 28 },
+        { "day": 14,  "crp": 16, "q25_crp": 10, "q75_crp": 23 },
+        { "day": 30,  "crp": 11, "q25_crp": 6,  "q75_crp": 18 },
+        { "day": 60,  "crp": 6,  "q25_crp": 3,  "q75_crp": 13 },
+        { "day": 90,  "crp": 4,  "q25_crp": 2,  "q75_crp": 8 },
+        { "day": 120, "crp": 3,  "q25_crp": 1,  "q75_crp": 6 },
+        { "day": 150, "crp": 3,  "q25_crp": 1,  "q75_crp": 6 },
+        { "day": 180, "crp": 3,  "q25_crp": 1,  "q75_crp": 5 }
       ]
     },
     {

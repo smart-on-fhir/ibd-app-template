@@ -4,6 +4,7 @@
  */
 
 import type { FhirResource } from 'fhir/r4';
+import type { ParisLocation, ParisBehavior } from '../../api/ibd/types';
 import {
     ICD10_CROHNS, ICD10_UC, ICD10_IBD_U,
     SNOMED_CROHNS, SNOMED_UC, SNOMED_IBD,
@@ -385,10 +386,10 @@ export function getMedHistory(resources: Record<string, FhirResource[]>): MedHis
 // ── Paris classification (from structured FHIR) ───────────────────────────────
 
 export interface ParisFHIR {
-    location: string | null;   // L1/L2/L3 (CD) or E1/E2/E3 (UC); null if not determinable
-    behavior: string | null;   // B1/B2/B3 (CD only); null if ambiguous
+    location: ParisLocation | null;  // L1/L2/L3 (CD) or E1/E2/E3 (UC); null if not determinable
+    behavior: ParisBehavior | null;  // B1/B2/B3 (CD only); null if ambiguous
     perianal: boolean;
-    growth:   null;            // not reliably derivable from standard ICD-10
+    growth:   null;                  // not reliably derivable from standard ICD-10
 }
 
 /**
@@ -412,8 +413,8 @@ export function getParisByFHIR(
         (c.code?.coding ?? []).map((cod: any) => (cod.code ?? '') as string).filter(Boolean)
     );
 
-    let location: string | null = null;
-    let behavior: string | null = null;
+    let location: ParisLocation | null = null;
+    let behavior: ParisBehavior | null = null;
 
     if (ibdSubtype === "Crohn's disease") {
         const hasIleal   = codes.some(c => c.startsWith('K50.0'));

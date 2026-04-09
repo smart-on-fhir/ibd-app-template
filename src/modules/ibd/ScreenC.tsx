@@ -3,7 +3,7 @@
  * Based on the IBD CDS Dashboard spec (Section 8, Screen C / Figure 3).
  *
  * Cohort chips and patient-derived context come from real FHIR data.
- * Roster, stats, and distributions are loaded from mockCohort.json,
+ * Roster, stats, and distributions are loaded via the cohort API (fetchIBDCohort),
  * which mirrors the expected backend API response shape.
  */
 import { useMemo, useState, useRef, useEffect } from 'react';
@@ -21,6 +21,16 @@ import {
     hasPerianialDisease,
     getAllIBDMedications,
 } from './utils';
+import type {
+    Endpoint,
+    EpisodeOutcome,
+    DrugClass,
+    ParisBehavior,
+    ParisLocation,
+    ParisGrowth,
+    ActivityIndex,
+    SeverityLevel
+} from '../../api/ibd/types';
 
 // ── Types mirroring the API response ──────────────────────────────────────────
 
@@ -55,7 +65,7 @@ interface TreatmentDist {
 
 interface MedBarEntry {
     drug:       string;
-    drug_class: string;
+    drug_class: DrugClass;
     start_day:  number;
     end_day:    number;
 }
@@ -65,14 +75,14 @@ interface Episode {
     patient_id:         string;
     similarity:         number;
     treatment:          string;
-    outcome:            string;
+    outcome:            EpisodeOutcome;
     days_to_outcome:    number;
     matching_features:  string[];
-    paris:              { location: string; behavior: string; perianal: boolean; growth: string };
+    paris:              { location: ParisLocation; behavior: ParisBehavior; perianal: boolean; growth: ParisGrowth };
     labs_at_baseline:   { crp: number; esr: number; albumin: number; calprotectin: number };
-    activity_score:     { index: string; value: number; severity: string };
+    activity_score:     { index: ActivityIndex; value: number; severity: SeverityLevel };
     endoscopy_pre:      { ses_cd: number; finding: string };
-    note_summary:       { stool_freq_per_day: number; nocturnal: boolean; global_assessment: string };
+    note_summary?:      { stool_freq_per_day?: number; nocturnal?: boolean; global_assessment?: SeverityLevel };
     trajectory:         TrajectoryPoint[];
     medication_history: MedBarEntry[];
 }
@@ -183,7 +193,6 @@ function SFRRangeBar({ iqr, median }: { iqr: number[]; median: number }) {
 
 // ── Treatment distribution chart ──────────────────────────────────────────────
 
-type Endpoint = 'SFR' | 'ENDO' | 'SURG';
 
 function endpointFields(d: TreatmentDist, ep: Endpoint) {
     if (ep === 'ENDO') return { rate: d.endo_12m_rate, median: d.median_days_to_endo, iqr: d.iqr_endo };
@@ -356,9 +365,10 @@ const pct = (r: number) => `${Math.round(r * 100)}%`;
 // ── Screen C ──────────────────────────────────────────────────────────────────
 
 export default function IBDScreenC() {
-    const cohortData = useCohortData();
+    const { data: cohortData, loading, error } = useCohortData();
     const { selectedPatientResources } = usePatientContext();
-    const [selected, setSelected] = useState<Episode | null>(null);
+    const [selected,       setSelected]       = useState<Episode | null>(null);
+    const [selectedTxCode, setSelectedTxCode] = useState('');
 
     // ── Real patient features (for "Why matched" context) ──
     const ibdConditions = useMemo(() => getIBDConditions(selectedPatientResources), [selectedPatientResources]);
@@ -368,10 +378,30 @@ export default function IBDScreenC() {
     const priorSurgery  = useMemo(() => hasPriorIBDSurgery(selectedPatientResources),[selectedPatientResources]);
     const perianal      = useMemo(() => hasPerianialDisease(selectedPatientResources),[selectedPatientResources]);
     const allMeds       = useMemo(() => getAllIBDMedications(selectedPatientResources),[selectedPatientResources]);
-    const hasBiologic   = allMeds.some(m => m.class === 'biologic');
-    const hasImmunomod  = allMeds.some(m => m.class === 'immunomodulator');
 
-    // ── API response (mock) ──
+    // Set default selected treatment once cohort data first arrives
+    useEffect(() => {
+        if (selectedTxCode || !cohortData?.treatment_distributions?.length) return;
+        const dists = cohortData.treatment_distributions as unknown as TreatmentDist[];
+        const best  = dists.reduce((a, b) => b.sfr_12m_rate > a.sfr_12m_rate ? b : a);
+        setSelectedTxCode(best.treatment);
+    }, [selectedTxCode, cohortData]);
+
+    if (loading) return (
+        <div className="d-flex align-items-center justify-content-center text-muted py-5">
+            <span className="spinner-border spinner-border-sm me-2" />
+            Loading cohort data…
+        </div>
+    );
+    if (error) return (
+        <div className="alert alert-danger m-3" style={{ fontSize: '0.85rem' }}>
+            <i className="bi bi-exclamation-triangle me-2" />
+            {error.message}
+        </div>
+    );
+    if (!cohortData) return null;
+
+    // ── API response ──
     const { data_tier, outcomes, treatment_distributions, episodes, treatment_start_rule } = cohortData as {
         data_tier:                'aggregate' | 'episode';
         cohort_size:              number;
@@ -386,12 +416,12 @@ export default function IBDScreenC() {
         episodes:                 Episode[];
     };
 
-    const hasEpisodes = data_tier === 'episode';
-    const maxSFR  = Math.max(...treatment_distributions.map(d => d.sfr_12m_rate));
-    const bestTx  = treatment_distributions.reduce((a, b) => b.sfr_12m_rate > a.sfr_12m_rate ? b : a);
-    const [selectedTxCode, setSelectedTxCode] = useState(bestTx.treatment);
-    const selectedTx = treatment_distributions.find(d => d.treatment === selectedTxCode) ?? bestTx;
-
+    const hasBiologic  = allMeds.some(m => m.class === 'biologic');
+    const hasImmunomod = allMeds.some(m => m.class === 'immunomodulator');
+    const hasEpisodes  = data_tier === 'episode';
+    const maxSFR       = Math.max(...treatment_distributions.map(d => d.sfr_12m_rate));
+    const bestTx       = treatment_distributions.reduce((a, b) => b.sfr_12m_rate > a.sfr_12m_rate ? b : a);
+    const selectedTx   = treatment_distributions.find(d => d.treatment === selectedTxCode) ?? bestTx;
 
     return (
         <div className="container-fluid">
@@ -614,9 +644,11 @@ export default function IBDScreenC() {
                                                 [`${selected.activity_score.index}`, `${selected.activity_score.value} (${selected.activity_score.severity})`],
                                                 ['CRP',     `${selected.labs_at_baseline.crp} mg/L`],
                                                 ['Albumin', `${selected.labs_at_baseline.albumin} g/dL`],
-                                                ['Stool',   `${selected.note_summary.stool_freq_per_day}/day${selected.note_summary.nocturnal ? ' + nocturnal' : ''}`],
+                                                ['Stool',   selected.note_summary?.stool_freq_per_day != null
+                                                                ? `${selected.note_summary.stool_freq_per_day}/day${selected.note_summary.nocturnal ? ' + nocturnal' : ''}`
+                                                                : '—'],
                                                 ['SES-CD',  String(selected.endoscopy_pre.ses_cd)],
-                                                ['Paris',   [selected.paris.location, selected.paris.behavior + (selected.paris.perianal ? 'p' : ''), selected.paris.growth !== 'N/A' ? selected.paris.growth : ''].filter(Boolean).join(' ')],
+                                                ['Paris',   [selected.paris.location, selected.paris.behavior + (selected.paris.perianal ? 'p' : ''), selected.paris.growth].filter(Boolean).join(' ')],
                                             ].map(([label, value], i) => (
                                                 <div key={i} className="d-flex justify-content-between align-items-baseline"
                                                      style={{ fontSize: '0.68rem', borderBottom: '1px solid #8882', padding: '0.1rem 0' }}>

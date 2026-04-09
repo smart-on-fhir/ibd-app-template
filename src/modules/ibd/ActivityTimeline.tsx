@@ -19,7 +19,7 @@ function normalizeCRP(value: number, unit: string): number {
 
 export default function ActivityTimeline() {
     const { selectedPatientResources } = usePatientContext();
-    const cohortData = useCohortData();
+    const { data: cohortData } = useCohortData();
 
     const crpPoints  = useMemo(() => getLabHistory(selectedPatientResources, 'CRP'),          [selectedPatientResources]);
     const fcalPoints = useMemo(() => getLabHistory(selectedPatientResources, 'Calprotectin'), [selectedPatientResources]);
@@ -50,7 +50,7 @@ export default function ActivityTimeline() {
             value: normalizeCRP(p.value, p.unit),
             isMock: false,
         }));
-        const mockTraj: { day: number; crp: number }[] = (cohortData as any).present_patient?.crp_trajectory ?? [];
+        const mockTraj: { day: number; crp: number }[] = (cohortData as any)?.present_patient?.crp_trajectory ?? [];
         if (!mockTraj.length || day0Ms === null) return [];
         return mockTraj.map(p => ({
             date: day0Ms + p.day * 86_400_000,
@@ -61,7 +61,7 @@ export default function ActivityTimeline() {
 
     const effectivePctPoints = useMemo((): { date: number; value: number; isMock: boolean }[] => {
         if (pctPoints.length) return pctPoints.map(p => ({ date: p.date, value: p.value, isMock: false }));
-        const mockTraj: { day: number; pct: number }[] = (cohortData as any).present_patient?.pct_trajectory ?? [];
+        const mockTraj: { day: number; pct: number }[] = (cohortData as any)?.present_patient?.pct_trajectory ?? [];
         if (!mockTraj.length || day0Ms === null) return [];
         return mockTraj.map(p => ({ date: day0Ms + p.day * 86_400_000, value: p.pct, isMock: true }));
     }, [pctPoints, cohortData, day0Ms]);

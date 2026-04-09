@@ -4,7 +4,7 @@
   "symptoms": {
     "abdominal_pain":       "moderate",
     "stool_freq_per_day":   5,
-    "weight_loss_kg":       3.2,
+    "weight_loss_kg_since_last_visit": 3.2,
     "nocturnal_stool":      true
   },
 

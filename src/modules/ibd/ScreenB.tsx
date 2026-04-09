@@ -12,6 +12,7 @@ import { usePatientContext }                    from '../../contexts/PatientCont
 import { useCohortData }                        from './useCohortData';
 import { TreatmentDistChart }                   from './ScreenC';
 import { getMedHistory, normalizeMedName, getLabHistory } from './utils';
+import type { Endpoint, EpisodeOutcome } from '../../api/ibd/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -38,7 +39,7 @@ interface TreatmentDist {
 interface Episode {
     episode_id:        string;
     treatment:         string;
-    outcome:           string;
+    outcome:           EpisodeOutcome;
     days_to_outcome:   number;
     trajectory:        TrajectoryPoint[];
 }
@@ -53,8 +54,7 @@ const OUTCOME_COLOR: Record<string, string> = {
     NO:   '#adb5bd',
 };
 
-const ENDPOINT_OPTIONS = ['SFR', 'ENDO', 'SURG'] as const;
-type Endpoint = typeof ENDPOINT_OPTIONS[number];
+const ENDPOINT_OPTIONS = ['SFR', 'ENDO', 'SURG'] as const satisfies readonly Endpoint[];
 
 const ENDPOINT_LABEL: Record<Endpoint, string> = {
     SFR:  'Steroid-free remission',
@@ -71,21 +71,24 @@ function endpointFields(d: TreatmentDist, ep: Endpoint) {
 // ── Screen B ──────────────────────────────────────────────────────────────────
 
 export default function IBDScreenB() {
-    const cohortData = useCohortData();
+    const { data: cohortData, loading, error } = useCohortData();
     const { selectedPatientResources } = usePatientContext();
 
-    const distributions = cohortData.treatment_distributions as unknown as TreatmentDist[];
-    const allEpisodes   = cohortData.episodes as unknown as Episode[];
-    const hasEpisodes   = (cohortData as any).data_tier === 'episode';
+    const distributions = (cohortData?.treatment_distributions ?? []) as unknown as TreatmentDist[];
+    const allEpisodes   = (cohortData?.episodes ?? [])              as unknown as Episode[];
+    const hasEpisodes   = (cohortData as any)?.data_tier === 'episode';
 
-    const defaultTx = distributions.reduce((a, b) =>
-        b.sfr_12m_rate > a.sfr_12m_rate ? b : a
-    ).treatment;
-
-    const [candidateTx,      setCandidateTx]      = useState(defaultTx);
+    const [candidateTx,      setCandidateTx]      = useState('');
     const [endpoint,         setEndpoint]          = useState<Endpoint>('SFR');
     const [showIndividuals,  setShowIndividuals]   = useState(true);
     const [chartHeight,      setChartHeight]       = useState(450);
+
+    // Set default treatment once cohort data first arrives
+    useEffect(() => {
+        if (!distributions.length || candidateTx) return;
+        const best = distributions.reduce((a, b) => b.sfr_12m_rate > a.sfr_12m_rate ? b : a);
+        setCandidateTx(best.treatment);
+    }, [distributions, candidateTx]);
 
     // ── Present patient CRP relative to index biologic start (Day 0) ──
     const patientMeds = useMemo(() => getMedHistory(selectedPatientResources), [selectedPatientResources]);
@@ -128,18 +131,19 @@ export default function IBDScreenB() {
             if (fhirPoints.length) return { patientTrajectory: fhirPoints, crpSource: 'fhir' as const };
         }
         // Fall back to mock CRP trajectory from cohort API response
-        const mockPoints = ((cohortData as any).present_patient?.crp_trajectory ?? []) as TrajectoryPoint[];
+        const mockPoints = ((cohortData as any)?.present_patient?.crp_trajectory ?? []) as TrajectoryPoint[];
         return { patientTrajectory: mockPoints, crpSource: mockPoints.length ? 'mock' as const : 'none' as const };
     }, [day0Ms, crpHistory, cohortData]);
 
     // ── Cohort data for selected treatment ──
-    const dist              = distributions.find(d => d.treatment === candidateTx)!;
-    const selectedEpisodes  = allEpisodes.filter(e => e.treatment === candidateTx);
-    const hasTrajectoryData = (dist.median_trajectory?.length ?? 0) > 0;
-    const epFields          = endpointFields(dist, endpoint);
+    const dist              = distributions.find(d => d.treatment === candidateTx) ?? distributions[0];
+    const selectedEpisodes  = dist ? allEpisodes.filter(e => e.treatment === candidateTx) : [];
+    const hasTrajectoryData = (dist?.median_trajectory?.length ?? 0) > 0;
+    const epFields          = dist ? endpointFields(dist, endpoint) : { rate: 0, median: 0, iqr: [0, 0] as [number, number] };
 
     // ── Highcharts series ──────────────────────────────────────────────────────
     const series = useMemo((): Highcharts.SeriesOptionsType[] => {
+        if (!dist) return [];
         const out: Highcharts.SeriesOptionsType[] = [];
 
         // IQR band
@@ -310,14 +314,29 @@ export default function IBDScreenB() {
         return () => ro.disconnect();
     }, []);
 
+    if (loading) return (
+        <div className="d-flex align-items-center justify-content-center text-muted py-5">
+            <span className="spinner-border spinner-border-sm me-2" />
+            Loading cohort data…
+        </div>
+    );
+    if (error) return (
+        <div className="alert alert-danger m-3" style={{ fontSize: '0.85rem' }}>
+            <i className="bi bi-exclamation-triangle me-2" />
+            {error.message}
+        </div>
+    );
+
     // ── Interpretation ─────────────────────────────────────────────────────────
     const crpNote = crpSource === 'fhir' ? `The present patient's CRP trajectory is overlaid (from FHIR).`
                   : crpSource === 'mock' ? `The present patient's CRP trajectory is overlaid (indicative — no FHIR observations found).`
                   : `No CRP data found for the present patient.`;
-    const interpretation = `Among ${dist.n} similar historical episodes treated with ${dist.label}, `
-        + `${Math.round(epFields.rate * 100)}% achieved ${ENDPOINT_LABEL[endpoint].toLowerCase()} within 12 months `
-        + `(median ${epFields.median} days; IQR ${epFields.iqr[0]}–${epFields.iqr[1]} days). `
-        + crpNote;
+    const interpretation = dist
+        ? `Among ${dist.n} similar historical episodes treated with ${dist.label}, `
+          + `${Math.round(epFields.rate * 100)}% achieved ${ENDPOINT_LABEL[endpoint].toLowerCase()} within 12 months `
+          + `(median ${epFields.median} days; IQR ${epFields.iqr[0]}–${epFields.iqr[1]} days). `
+          + crpNote
+        : '';
 
     return (
         <div className="container-fluid">

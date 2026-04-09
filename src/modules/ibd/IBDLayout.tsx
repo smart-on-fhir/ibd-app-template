@@ -1,6 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
-import ModuleLayout        from '../shared/ModuleLayout';
-import { GlobalTooltip }   from './Tooltip';
+import { useSearchParams, Outlet } from 'react-router-dom';
+import ModuleLayout                from '../shared/ModuleLayout';
+import { GlobalTooltip }           from './Tooltip';
+import { usePatientContext }       from '../../contexts/PatientContext';
 
 function CohortDataToggle() {
     const [params, setParams] = useSearchParams();
@@ -31,6 +32,26 @@ function CohortDataToggle() {
     );
 }
 
+function PatientGuard() {
+    const { selectedPatient, selectedPatientLoading } = usePatientContext();
+
+    if (selectedPatientLoading) return (
+        <div className="d-flex align-items-center justify-content-center text-muted py-5">
+            <span className="spinner-border spinner-border-sm me-2" />
+            Loading patient…
+        </div>
+    );
+
+    if (!selectedPatient) return (
+        <div className="d-flex flex-column align-items-center justify-content-center text-muted py-5 gap-2">
+            <i className="bi bi-person-x fs-3 opacity-50" />
+            <span style={{ fontSize: '0.9rem' }}>No patient selected. Open a patient record to use this dashboard.</span>
+        </div>
+    );
+
+    return <Outlet />;
+}
+
 export default function IBDLayout() {
     return (
         <>
@@ -48,6 +69,7 @@ export default function IBDLayout() {
                     { path: 'outcomes', label: 'Treatment Outcomes', icon: 'bi-graph-up-arrow opacity-75' },
                 ]}
                 sidebarFooter={<CohortDataToggle />}
+                outlet={<PatientGuard />}
             />
         </>
     );

@@ -10,8 +10,8 @@ import { Link, useParams }    from 'react-router-dom';
 import { usePatientContext }  from '../../contexts/PatientContext';
 import ActivityTimeline       from './ActivityTimeline';
 import { formatDate }         from '../../utils';
-import cohortData             from './mockCohort.json';
-import noteData              from './mockPatientNote.json';
+import { useCohortData }     from './useCohortData';
+import { usePatientNote }    from './usePatientNote';
 import './ibd.scss';
 import { Term, Tip }         from './Tooltip';
 import {
@@ -73,6 +73,8 @@ function LabRow({ label, result }: { label: React.ReactNode; result: LabResult |
 export default function IBDScreenA() {
     const { selectedPatientResources } = usePatientContext();
     const { id } = useParams();
+    const { data: cohortData, loading: cohortLoading, error: cohortError } = useCohortData();
+    const { data: noteData,   loading: noteLoading,   error: noteError   } = usePatientNote();
 
     const ibdConditions = useMemo(() => getIBDConditions(selectedPatientResources), [selectedPatientResources]);
     const subtype       = useMemo(() => getIBDSubtype(ibdConditions),               [ibdConditions]);
@@ -86,18 +88,22 @@ export default function IBDScreenA() {
     const paris         = useMemo(() => getParisByFHIR(ibdConditions, subtype, perianal), [ibdConditions, subtype, perianal]);
     const endoscopy     = useMemo(() => getLatestEndoscopy(selectedPatientResources), [selectedPatientResources]);
 
-    // Merge FHIR-derived with note mock (FHIR wins where it has data)
+    // Merge FHIR-derived with note data (FHIR wins where it has data)
     const effectiveParis = useMemo(() => ({
         location: paris.location,
-        behavior: paris.behavior ?? noteData.paris.behavior,
+        behavior: paris.behavior ?? noteData?.paris?.behavior ?? null,
         perianal: paris.perianal,
-        growth:   noteData.paris.growth,
-    }), [paris]);
+        growth:   noteData?.paris?.growth ?? null,
+    }), [paris, noteData]);
 
     const effectiveEndoscopy = useMemo(() => {
-        if (endoscopy) return { ...endoscopy, ses_cd: noteData.endoscopy.ses_cd };
-        return { date: noteData.endoscopy.date, finding: noteData.endoscopy.finding, ses_cd: noteData.endoscopy.ses_cd };
-    }, [endoscopy]);
+        if (endoscopy) return { ...endoscopy, ses_cd: noteData?.endoscopy?.ses_cd ?? null };
+        return {
+            date:    noteData?.endoscopy?.date    ?? null,
+            finding: noteData?.endoscopy?.finding ?? null,
+            ses_cd:  noteData?.endoscopy?.ses_cd  ?? null,
+        };
+    }, [endoscopy, noteData]);
 
 
     const biomarkerTrend = (() => {
@@ -117,10 +123,26 @@ export default function IBDScreenA() {
         return 'None identified';
     })();
 
-    const bestTx = cohortData.treatment_distributions.reduce((a, b) =>
+    if (cohortLoading || noteLoading) return (
+        <div className="d-flex align-items-center justify-content-center text-muted py-5">
+            <span className="spinner-border spinner-border-sm me-2" />
+            Loading…
+        </div>
+    );
+    if (cohortError || noteError) return (
+        <div className="alert alert-danger m-3" style={{ fontSize: '0.85rem' }}>
+            <i className="bi bi-exclamation-triangle me-2" />
+            {(cohortError ?? noteError)!.message}
+        </div>
+    );
+    if (!cohortData || !noteData) return null;
+
+    const bestTx   = cohortData.treatment_distributions.reduce((a, b) =>
         b.sfr_12m_rate > a.sfr_12m_rate ? b : a
     );
-    const surgRate = Math.round(cohortData.outcomes.surg_12m_rate * 100);
+    const surgRate = cohortData.outcomes.surg_12m_rate != null
+        ? Math.round(cohortData.outcomes.surg_12m_rate * 100)
+        : null;
 
     return (
         <div className="container-fluid">
@@ -167,32 +189,44 @@ export default function IBDScreenA() {
                                     </span>
                                 </DataRow>
                                 <DataRow label="Activity score">
-                                    <span>
-                                        <Term term={noteData.activity_score.index}>{noteData.activity_score.index}</Term>{' '}{noteData.activity_score.value}
-                                        <span className="text-muted ms-1">({noteData.activity_score.severity})</span>
-                                    </span>
+                                    {noteData.activity_score ? (
+                                        <span>
+                                            <Term term={noteData.activity_score.index}>{noteData.activity_score.index}</Term>{' '}{noteData.activity_score.value}
+                                            <span className="text-muted ms-1">({noteData.activity_score.severity})</span>
+                                        </span>
+                                    ) : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                 </DataRow>
                             </div>
 
                             <p className="text-primary text-uppercase mb-1 fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Current symptoms</p>
                             <div className="mb-3">
                                 <DataRow label="Abdominal pain">
-                                    <span className={
-                                        noteData.symptoms.abdominal_pain === 'severe'   ? 'text-danger'  :
-                                        noteData.symptoms.abdominal_pain === 'moderate' ? 'text-warning' : 'text-muted'}>
-                                        {noteData.symptoms.abdominal_pain[0].toUpperCase() + noteData.symptoms.abdominal_pain.slice(1)}
-                                    </span>
+                                    {noteData.symptoms?.abdominal_pain ? (
+                                        <span className={
+                                            noteData.symptoms.abdominal_pain === 'severe'   ? 'text-danger'  :
+                                            noteData.symptoms.abdominal_pain === 'moderate' ? 'text-warning' : 'text-muted'}>
+                                            {noteData.symptoms.abdominal_pain[0].toUpperCase() + noteData.symptoms.abdominal_pain.slice(1)}
+                                        </span>
+                                    ) : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                 </DataRow>
-                                <DataRow label="Stool frequency">{noteData.symptoms.stool_freq_per_day}/day</DataRow>
+                                <DataRow label="Stool frequency">
+                                    {noteData.symptoms?.stool_freq_per_day != null
+                                        ? `${noteData.symptoms.stool_freq_per_day}/day`
+                                        : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
+                                </DataRow>
                                 <DataRow label="Weight loss">
-                                    {noteData.symptoms.weight_loss_kg > 0
-                                        ? `${noteData.symptoms.weight_loss_kg} kg`
-                                        : <span className="text-muted">None</span>}
+                                    {noteData.symptoms?.weight_loss_kg_since_last_visit != null
+                                        ? noteData.symptoms.weight_loss_kg_since_last_visit > 0
+                                            ? `${noteData.symptoms.weight_loss_kg_since_last_visit} kg`
+                                            : <span className="text-muted">None</span>
+                                        : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                 </DataRow>
                                 <DataRow label="Nocturnal stool">
-                                    {noteData.symptoms.nocturnal_stool
-                                        ? <span className="text-warning">Yes</span>
-                                        : <span className="text-muted">No</span>}
+                                    {noteData.symptoms?.nocturnal_stool != null
+                                        ? noteData.symptoms.nocturnal_stool
+                                            ? <span className="text-warning">Yes</span>
+                                            : <span className="text-muted">No</span>
+                                        : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                 </DataRow>
                             </div>
 
@@ -220,11 +254,13 @@ export default function IBDScreenA() {
                                         : <span className="text-muted">None</span>}
                                 </DataRow>
                                 <DataRow label="Adherence">
-                                    <span className={
-                                        noteData.adherence === 'poor'    ? 'text-danger'  :
-                                        noteData.adherence === 'partial' ? 'text-warning' : 'text-success'}>
-                                        {noteData.adherence[0].toUpperCase() + noteData.adherence.slice(1)}
-                                    </span>
+                                    {noteData.adherence ? (
+                                        <span className={
+                                            noteData.adherence === 'poor'    ? 'text-danger'  :
+                                            noteData.adherence === 'partial' ? 'text-warning' : 'text-success'}>
+                                            {noteData.adherence[0].toUpperCase() + noteData.adherence.slice(1)}
+                                        </span>
+                                    ) : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                 </DataRow>
                                 <DataRow label="Prior surgery">
                                     {priorSurgery ? <span className="text-danger">Yes</span> : <span className="text-muted">No</span>}
@@ -300,9 +336,9 @@ export default function IBDScreenA() {
                         <div className="col-6 col-xl-3 text-center">
                             <Tip term="card:risk-signal">
                                 <div className="card h-100">
-                                    <div className="card-body px-3 py-2" style={{ color: surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
+                                    <div className="card-body px-3 py-2" style={{ color: surgRate != null && surgRate >= 20 ? '#dc3545' : '#fd7e14' }}>
                                         <div className="text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>Risk signal</div>
-                                        <div className="fw-semibold my-2" style={{ fontSize: '1.4rem', lineHeight: 1 }}>{surgRate}%</div>
+                                        <div className="fw-semibold my-2" style={{ fontSize: '1.4rem', lineHeight: 1 }}>{surgRate != null ? `${surgRate}%` : '—'}</div>
                                         <div className="text-muted" style={{ fontSize: '0.68rem' }}>surgery within 12 mo in cohort</div>
                                     </div>
                                 </div>
@@ -319,11 +355,13 @@ export default function IBDScreenA() {
                                     <div>
                                         <DataRow label="Disease phenotype">{subtype}{perianal ? ' + perianal' : ''}</DataRow>
                                         <DataRow label="Severity trend">
-                                            <span className={
-                                                noteData.severity_trend === 'worsening' ? 'text-danger'  :
-                                                noteData.severity_trend === 'improving' ? 'text-success' : 'text-muted'}>
-                                                {noteData.severity_trend[0].toUpperCase() + noteData.severity_trend.slice(1)}
-                                            </span>
+                                            {noteData.severity_trend ? (
+                                                <span className={
+                                                    noteData.severity_trend === 'worsening' ? 'text-danger'  :
+                                                    noteData.severity_trend === 'improving' ? 'text-success' : 'text-muted'}>
+                                                    {noteData.severity_trend[0].toUpperCase() + noteData.severity_trend.slice(1)}
+                                                </span>
+                                            ) : <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>—</span>}
                                         </DataRow>
                                         <DataRow label="Biomarker trend">{biomarkerTrend ?? <span className="text-muted fst-italic opacity-50" style={{ fontSize: '0.72em' }}>no data</span>}</DataRow>
                                         <DataRow label="Steroid dependence">{steroidDependenceLabel}</DataRow>

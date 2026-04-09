@@ -7,9 +7,10 @@ interface Props {
     color?:         string;
     navLinks?:      Array<{ path: string; label: string; icon: string }>;
     sidebarFooter?: React.ReactNode;
+    outlet?:        React.ReactNode;
 }
 
-export default function ModuleLayout({ basePath, label, icon, color, navLinks, sidebarFooter }: Props) {
+export default function ModuleLayout({ basePath, label, icon, color, navLinks, sidebarFooter, outlet }: Props) {
     const { id } = useParams();
     const base = `/patients/${id}/${basePath}`;
 
@@ -49,7 +50,7 @@ export default function ModuleLayout({ basePath, label, icon, color, navLinks, s
             </div>
 
             <div className="d-flex flex-column flex-grow-1 ps-3 min-w-0" style={{ minWidth: 0 }}>
-                <Outlet />
+                {outlet ?? <Outlet />}
             </div>
         </div>
     );

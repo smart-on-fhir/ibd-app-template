@@ -3,7 +3,7 @@
  * Shows biologic and steroid transitions before and after the index treatment.
  *
  * Present patient: cohortData.present_patient.medication_history (day-aligned by CDS backend).
- * Historical cohort: medication_history from mockCohort.json (one row per episode).
+ * Historical cohort: medication_history from the cohort API response (one row per episode).
  */
 
 import { useMemo, useRef, useEffect, useState }  from 'react';
@@ -11,6 +11,7 @@ import HighchartsReact                           from 'highcharts-react-official
 import Highcharts                                from '../../highcharts';
 import { IBD_MED_CLASS_COLORS }                  from './config';
 import { useCohortData }                         from './useCohortData';
+import type { DrugClass }                        from '../../api/ibd/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ const COHORT_HEADER  = '▼ Matched cohort';
 
 interface MedBar {
     drug:       string;
-    drug_class: string;
+    drug_class: DrugClass;
     start_day:  number;
     end_day:    number;
 }
@@ -47,7 +48,7 @@ function splitIntoLanes<T extends { start: number; end: number }>(items: T[]): T
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function MedTimeline() {
-    const cohortData                    = useCohortData();
+    const { data: cohortData, loading, error } = useCohortData();
     const chartRef                      = useRef<HighchartsReact.RefObject>(null);
     const containerRef                  = useRef<HTMLDivElement>(null);
     const [chartHeight, setChartHeight] = useState(520);
@@ -62,7 +63,7 @@ export default function MedTimeline() {
 
     // Present patient medication history from the cohort API response (day-aligned to Day 0)
     const presentPatientMeds = useMemo(
-        () => ((cohortData as any).present_patient?.medication_history ?? []) as MedBar[],
+        () => ((cohortData as any)?.present_patient?.medication_history ?? []) as MedBar[],
         [cohortData],
     );
 
@@ -102,7 +103,7 @@ export default function MedTimeline() {
         }
 
         // ── Spacer + cohort header ───────────────────────────────────────────
-        const hasEpisodes = (cohortData as any).data_tier === 'episode';
+        const hasEpisodes = (cohortData as any)?.data_tier === 'episode';
         categories.push('');
         const cohortHeaderRow = categories.length;
 
@@ -110,7 +111,7 @@ export default function MedTimeline() {
             categories.push(COHORT_HEADER);    // styled header, no bars
 
             // ── Cohort episode rows (lane-split to avoid overlaps) ───────────
-            cohortData.episodes.forEach(ep => {
+            ((cohortData as any)?.episodes ?? []).forEach((ep: any) => {
                 const bars = (ep.medication_history as MedBar[]).map(m => ({
                     start: m.start_day,
                     end:   m.end_day,
@@ -144,7 +145,7 @@ export default function MedTimeline() {
 
     // SFR expectation annotations derived from treatment_distributions
     const sfrAnnotations = useMemo(() => {
-        const dists = (cohortData as any).treatment_distributions as Array<{
+        const dists = (cohortData as any)?.treatment_distributions as Array<{
             label: string; sfr_12m_rate: number; median_days_to_sfr: number; iqr: [number, number];
         }> | undefined;
         if (!dists?.length) return { plotLines: [] as Highcharts.XAxisPlotLinesOptions[], plotBands: [] as Highcharts.XAxisPlotBandsOptions[] };
@@ -204,7 +205,20 @@ export default function MedTimeline() {
         return               { label: 'Days',   interval: undefined as number | undefined };
     }, [seriesData]);
 
-    const hasEpisodes = (cohortData as any).data_tier === 'episode';
+    if (loading) return (
+        <div className="d-flex align-items-center justify-content-center text-muted py-5">
+            <span className="spinner-border spinner-border-sm me-2" />
+            Loading cohort data…
+        </div>
+    );
+    if (error) return (
+        <div className="alert alert-danger m-3" style={{ fontSize: '0.85rem' }}>
+            <i className="bi bi-exclamation-triangle me-2" />
+            {error.message}
+        </div>
+    );
+
+    const hasEpisodes = (cohortData as any)?.data_tier === 'episode';
     const options: Highcharts.Options = {
         chart: {
             type:                'xrange',

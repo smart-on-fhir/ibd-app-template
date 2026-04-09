@@ -1,20 +1,16 @@
 import { useState, useEffect }   from 'react';
-import { useSearchParams }       from 'react-router-dom';
 import { usePatientContext }     from '../../contexts/PatientContext';
-import { fetchIBDCohort, type CohortResponse } from '../../api/ibd/cohort';
+import { fetchPatientNote, type PatientNoteResponse } from '../../api/ibd/note';
 
 /**
- * Fetches the IBD cohort response for the selected patient.
+ * Fetches the NLP-extracted patient note data for the selected patient.
  * In dev (no VITE_CDS_API_URL), returns mock data instantly.
- * The ?data=aggregate URL param selects the aggregate-only fixture.
  */
-export function useCohortData() {
-    const [params]            = useSearchParams();
+export function usePatientNote() {
     const { selectedPatient } = usePatientContext();
-    const tier    = params.get('data') === 'aggregate' ? 'aggregate' : 'episode';
     const patientId = selectedPatient?.id ?? '';
 
-    const [data,    setData]    = useState<CohortResponse | null>(null);
+    const [data,    setData]    = useState<PatientNoteResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error,   setError]   = useState<Error | null>(null);
 
@@ -22,12 +18,12 @@ export function useCohortData() {
         if (!patientId) return;
         let cancelled = false;
         setLoading(true);
-        fetchIBDCohort(patientId, tier)
+        fetchPatientNote(patientId)
             .then(d  => { if (!cancelled) { setData(d);  setError(null); } })
             .catch(e => { if (!cancelled) setError(e); })
             .finally(() => { if (!cancelled) setLoading(false); });
         return () => { cancelled = true; };
-    }, [patientId, tier]);
+    }, [patientId]);
 
     return { data, loading, error };
 }
