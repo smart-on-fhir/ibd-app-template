@@ -117,17 +117,25 @@ export default function IBDScreenB() {
     const { patientTrajectory, crpSource } = useMemo(() => {
         // Prefer FHIR CRP observations aligned to Day 0
         if (day0Ms !== null && crpHistory.length) {
-            const fhirPoints = crpHistory
+            const mapped = crpHistory
                 .map(p => {
                     const u = p.unit.toLowerCase();
-                    // Normalize to mg/L (chart baseline unit)
-                    const crp = u === 'mg/dl' || u === 'mg%'   ? p.value * 10
-                              : u === 'g/l'                    ? p.value * 1000
+                    const crp = u === 'mg/dl' || u === 'mg%' ? p.value * 10
+                              : u === 'g/l'                  ? p.value * 1000
                               : p.value;
                     return { day: Math.round((p.date - day0Ms) / 86_400_000), crp };
                 })
                 .filter(p => p.day >= -180 && p.day <= 365)
                 .sort((a, b) => a.day - b.day);
+            // Deduplicate by day — average CRP values that land on the same day
+            const dayMap = new Map<number, number[]>();
+            for (const p of mapped) {
+                const arr = dayMap.get(p.day) ?? [];
+                arr.push(p.crp);
+                dayMap.set(p.day, arr);
+            }
+            const fhirPoints = [...dayMap.entries()]
+                .map(([day, vals]) => ({ day, crp: vals.reduce((s, v) => s + v, 0) / vals.length }));
             if (fhirPoints.length) return { patientTrajectory: fhirPoints, crpSource: 'fhir' as const };
         }
         // Fall back to mock CRP trajectory from cohort API response
@@ -136,10 +144,11 @@ export default function IBDScreenB() {
     }, [day0Ms, crpHistory, cohortData]);
 
     // ── Cohort data for selected treatment ──
-    const dist              = distributions.find(d => d.treatment === candidateTx) ?? distributions[0];
-    const selectedEpisodes  = dist ? allEpisodes.filter(e => e.treatment === candidateTx) : [];
+    const dist             = distributions.find(d => d.treatment === candidateTx) ?? distributions[0];
+    const selectedEpisodes = dist ? allEpisodes.filter(e => e.treatment === candidateTx) : [];
+    const epFields         = dist ? endpointFields(dist, endpoint) : { rate: 0, median: 0, iqr: [0, 0] as [number, number] };
+
     const hasTrajectoryData = (dist?.median_trajectory?.length ?? 0) > 0;
-    const epFields          = dist ? endpointFields(dist, endpoint) : { rate: 0, median: 0, iqr: [0, 0] as [number, number] };
 
     // ── Highcharts series ──────────────────────────────────────────────────────
     const series = useMemo((): Highcharts.SeriesOptionsType[] => {
