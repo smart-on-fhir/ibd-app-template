@@ -102,7 +102,7 @@ function extractReferences(
     }
     if (typeof obj === 'object') {
         if (typeof obj.reference === 'string'
-            && (obj.reference.includes('/') || obj.reference.startsWith('#'))) {
+            && (obj.reference.includes('/') || obj.reference.startsWith('#') || obj.reference.startsWith('urn:uuid:'))) {
             out.push({
                 ref:      obj.reference,
                 fieldName,
@@ -118,8 +118,12 @@ function extractReferences(
     }
 }
 
-/** Resolve "ResourceType/id" against the allResources map. */
-function resolveRef(ref: string, allResources: Record<string, any[]>): any | null {
+/** Resolve "ResourceType/id", "urn:uuid:xxx", or "#localId" against the allResources map. */
+function resolveRef(ref: string, allResources: Record<string, any[]>, uuidMap?: Map<string, any>): any | null {
+    if (ref.startsWith('urn:uuid:')) {
+        const uuid = ref.slice('urn:uuid:'.length);
+        return uuidMap?.get(uuid) ?? null;
+    }
     const slash = ref.lastIndexOf('/');
     if (slash < 0) return null;
     const rType = ref.slice(0, slash);
@@ -247,6 +251,7 @@ export function buildFlowGraph(
     startResource: any,
     allResources: Record<string, any[]>,
     reverseIndex?: Map<string, Array<{ res: any; entry: RefEntry }>>,
+    uuidMap?: Map<string, any>,
 ): { nodes: Map<string, FlowNode>; edges: FlowEdge[] } {
     const nodes = new Map<string, FlowNode>();
     const edges: FlowEdge[] = [];
@@ -289,10 +294,10 @@ export function buildFlowGraph(
         }
     }
 
-    /** Resolve either a local "#id" or an external "ResourceType/id" reference. */
+    /** Resolve either a local "#id", "urn:uuid:xxx", or "ResourceType/id" reference. */
     const resolveAnyRef = (ref: string): any | null => {
         if (ref.startsWith('#')) return containedById.get(ref) ?? null;
-        return resolveRef(ref, allResources);
+        return resolveRef(ref, allResources, uuidMap);
     };
 
     addNode(startResource, true);
@@ -483,8 +488,21 @@ export default function ResourceFlowDiagram({
     const containerRef = useRef<HTMLDivElement>(null);
     const tooltipRef   = useRef<HTMLDivElement>(null);
 
+    // Build a UUID→resource map so urn:uuid: references (Synthea transaction bundles)
+    // can be resolved in O(1). Synthea sets resource.id to the same UUID used in fullUrl.
+    const uuidMap = useMemo(() => {
+        const map = new Map<string, any>();
+        for (const bucket of Object.values(allResources)) {
+            for (const res of bucket) {
+                if (res.id) map.set(res.id, res);
+            }
+        }
+        return map;
+    }, [allResources]);
+
     // Pre-build reverse reference index once per allResources change so the
     // backward walk in buildFlowGraph is O(1) instead of O(n * depth).
+    // urn:uuid: refs are normalized to ResourceType/id so the lookup key matches.
     const reverseIndex = useMemo(() => {
         const index = new Map<string, Array<{ res: any; entry: RefEntry }>>();
         for (const bucket of Object.values(allResources)) {
@@ -493,23 +511,29 @@ export default function ResourceFlowDiagram({
                 extractReferences(res, '', 0, refs);
                 for (const entry of refs) {
                     if (!entry.ref || entry.fieldName === '') continue;
-                    const arr = index.get(entry.ref);
+                    let indexRef = entry.ref;
+                    if (indexRef.startsWith('urn:uuid:')) {
+                        const target = uuidMap.get(indexRef.slice('urn:uuid:'.length));
+                        if (!target) continue;
+                        indexRef = `${target.resourceType}/${target.id}`;
+                    }
+                    const arr = index.get(indexRef);
                     if (arr) arr.push({ res, entry });
-                    else index.set(entry.ref, [{ res, entry }]);
+                    else index.set(indexRef, [{ res, entry }]);
                 }
             }
         }
         return index;
-    }, [allResources]);
+    }, [allResources, uuidMap]);
 
     const chart = useMemo(() => {
         if (!event?.raw) return null;
-        const { nodes, edges } = buildFlowGraph(event.raw, allResources, reverseIndex);
+        const { nodes, edges } = buildFlowGraph(event.raw, allResources, reverseIndex, uuidMap);
         if (nodes.size <= 1 && edges.length === 0) return null;
         nodeIdMap.current      = new Map([...nodes.values()].map(n => [safeMermaidId(n.id), n.id]));
         nodeTooltipMap.current = new Map([...nodes.values()].map(n => [safeMermaidId(n.id), n.tooltip]));
         return graphToMermaid(nodes, edges, { clickCallbackName: undefined, fontSize });
-    }, [event, allResources, reverseIndex, fontSize]);
+    }, [event, allResources, reverseIndex, uuidMap, fontSize]);
 
     // Reset selection when the start event changes
     useEffect(() => { setSelectedNodeId(null); }, [event]);
