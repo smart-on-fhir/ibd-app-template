@@ -12,7 +12,7 @@ const BASE = import.meta.env.VITE_CDS_API_URL ?? '';
 export async function fetchPatientNote(
     patientId: string,
 ): Promise<PatientNoteResponse> {
-    if (!BASE) return mockNote;
+    if (!BASE) return mockNote as PatientNoteResponse;
     const res = await fetch(`${BASE}/ibd/note?patient=${patientId}`);
     if (!res.ok) throw new Error(`CDS API error ${res.status}`);
     return res.json();
