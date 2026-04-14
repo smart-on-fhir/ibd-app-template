@@ -21,7 +21,7 @@ import type { LabKey }                          from './config';
 
 // ── Layout constants ───────────────────────────────────────────────────────────
 
-const ROW_H    = 22;    // px per Gantt row
+const ROW_H    = 24;    // px per Gantt row
 const MARGIN_L = 148;   // left margin — room for drug name labels
 const LAB_H    = 322;   // fixed height of the lab pane (px)
 const GAP      = 44;    // px gap between panes (includes space for "LAB TRENDS" label)
@@ -70,7 +70,7 @@ const LAB_NORM: Partial<Record<LabKey, { limit: number; inverted: boolean; label
     AST:          { limit: 40,    inverted: false, label: 'AST (U/L)'       },
 };
 
-/** One distinct colour per lab key. */
+/** One distinct color per lab key. */
 const LAB_COLORS: Partial<Record<LabKey, string>> = {
     CRP:          '#dc3545',
     ESR:          '#fd7e14',
@@ -384,25 +384,25 @@ export default function OutcomeTimeline() {
                     const sel = selectedBand && p.x === selectedBand.from && p.x2 === selectedBand.to;
                     return {
                         ...p,
-                        borderWidth: sel ? 2.5 : 0,
-                        borderColor: sel ? '#0d6efd' : 'transparent',
+                        borderWidth: sel ? 2.5 : 0.5,
+                        borderColor: sel ? '#0d6efd' : '#00000066',
                     };
                 }),
                 showInLegend: false,
-                pointWidth:   ROW_H - 6,
+                pointWidth:   ROW_H - 4,
                 minPointLength: 4,
                 borderRadius: 3,
-                borderWidth:  0.5,
                 cursor:       'pointer',
                 dataLabels: {
                     enabled:  true,
                     inside:   true,
                     align:    'left',
                     x:        4,
+                    y     : 0,
                     overflow: 'allow',
                     crop:     true,
                     color:    '#111',
-                    style:    { fontSize: '0.55rem', fontWeight: '600', textOutline: '1px rgba(255,255,255,0.6)' },
+                    style:    { fontSize: '0.68rem', fontWeight: '600', textOutline: '1px rgba(255,255,255,0.6)' },
                     formatter(this: any) {
                         // suppress label on bars narrower than 20 days
                         return (this.point.x2 - this.point.x) >= 20 * 864e5 ? this.point.name : '';
@@ -420,6 +420,15 @@ export default function OutcomeTimeline() {
         ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [categories, ganttData, ganttHPct, labTopPct, labHPct, totalH, labSeries, selectedBand]);
+
+    // ── Which labs have any data points ──────────────────────────────────────
+
+    const labsWithData = useMemo<Set<LabKey>>(() => {
+        const s = new Set<LabKey>();
+        for (const key of ALL_LAB_KEYS)
+            if (getLabHistory(selectedPatientResources, key).length > 0) s.add(key);
+        return s;
+    }, [selectedPatientResources]);
 
     // ── Lab selector helpers ──────────────────────────────────────────────────
 
@@ -467,19 +476,21 @@ export default function OutcomeTimeline() {
                             {ALL_LAB_KEYS.map(key => {
                                 const norm = LAB_NORM[key];
                                 if (!norm) return null;
+                                const hasLabData = labsWithData.has(key);
                                 return (
                                     <div key={key} className="form-check mb-0"
-                                         style={{ padding: '2px 8px 2px 28px' }}>
+                                         style={{ padding: '2px 8px 2px 28px', opacity: hasLabData ? 1 : 0.4 }}>
                                         <input
                                             className="form-check-input"
                                             type="checkbox"
                                             id={`lab-cb-${key}`}
                                             checked={selectedLabs.includes(key)}
                                             onChange={() => toggleLab(key)}
+                                            disabled={!hasLabData}
                                         />
                                         <label className="form-check-label"
                                                htmlFor={`lab-cb-${key}`}
-                                               style={{ fontSize: '0.72rem', cursor: 'pointer' }}>
+                                               style={{ fontSize: '0.72rem', cursor: hasLabData ? 'pointer' : 'default' }}>
                                             <span style={{
                                                 display: 'inline-block', width: 8, height: 8,
                                                 borderRadius: '50%', marginRight: 5, verticalAlign: 'middle',
