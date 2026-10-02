@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { usePatientContext } from "../contexts/PatientContext";
 import { formatDate } from "../utils";
 
@@ -8,10 +8,12 @@ export default function SiteHeader() {
         selectedPatientSummary
     } = usePatientContext();
 
+    const { pathname} = useLocation();
+
     return (
         <header className="border-bottom">
             <div className='d-flex flex-row align-items-center column-gap-3'>
-                { selectedPatient && selectedPatientSummary ?
+                { selectedPatient && selectedPatientSummary && pathname !== "/" ?
                     <>
                         <i className="bi bi-person-circle text-secondary m-0 lh-1" style={{ fontSize: '2.7rem' }} />
                         <div>
@@ -35,7 +37,7 @@ export default function SiteHeader() {
                         <h2 className="m-0">Patient App</h2>
                     </>
                 }
-                <Link to="/" className="btn btn-sm btn-primary ms-auto rounded-2 px-3">Select Patient</Link>
+                { pathname !== "/" && <Link to="/" className="btn btn-sm btn-primary rounded-2 px-3">Select Patient</Link> }
             </div>
         </header>
     );
