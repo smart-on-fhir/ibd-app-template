@@ -1,0 +1,62 @@
+.chat-history {
+    .chat-message {
+        line-height: normal;
+        &.user-message {
+            // User message styles
+            line-height: normal;
+        }
+        &.agent-message {
+            // Agent message styles
+            text-align: start;
+            font-size: small;
+
+            > .cp-column,
+            > .cp-row,
+            > .cp-card {
+                // Clinical primitive styles
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            } 
+
+            > table {
+                // Table styles
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 0.5rem;
+
+                th, td {
+                    border: 1px solid #dee2e6;
+                    padding: 0.5rem;
+                }
+
+                th {
+                    background-color: #f8f9fa;
+                    font-weight: 600;
+                }
+            }
+
+            ul, ol, dl {
+                margin: 0.5rem 0;
+                padding-left: 1.5rem;
+            }
+
+            h1,h2,h3,h4,h5,h6 {
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.4rem; }
+            h3 { font-size: 1.3rem; }
+            h4 { font-size: 1.2rem; }
+            h5 { font-size: 1.1rem; }
+            h6 { font-size: 1rem; }
+        }
+    }
+
+    
+}

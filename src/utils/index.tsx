@@ -7,16 +7,16 @@ import type { Resource } from 'fhir/r4';
  * @returns A locally formatted date string
  */
 export function formatDate(
-    dateStr: string,
+    dateStr: string | Date | undefined,
     options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
 ): string {
     if (!dateStr) return '—';
     try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return dateStr;
+        if (isNaN(date.getTime())) return dateStr instanceof Date ? dateStr.toString() : dateStr;
         return date.toLocaleDateString(undefined, { year: options.year, month: options.month, day: options.day });
     } catch (e) {
-        return dateStr;
+        return dateStr instanceof Date ? dateStr.toString() : dateStr;
     }
 }
 
