@@ -96,8 +96,8 @@ export function classifyMedication(name: string): MedClass {
     if (IBD_BIOLOGICS.some(b => n.includes(b)))         return 'biologic';
     if (IBD_IMMUNOMODULATORS.some(b => n.includes(b)))  return 'immunomodulator';
     if (IBD_AMINOSALICYLATES.some(b => n.includes(b)))  return 'aminosalicylate';
-    if (IBD_STEROIDS.some(b => n.includes(b)))           return 'steroid';
-    if (IBD_ANTIBIOTICS.some(b => n.includes(b)))        return 'antibiotic';
+    if (IBD_STEROIDS.some(b => n.includes(b)))          return 'steroid';
+    if (IBD_ANTIBIOTICS.some(b => n.includes(b)))       return 'antibiotic';
     return 'other';
 }
 
@@ -131,12 +131,40 @@ export function getAllIBDMedications(resources: Record<string, FhirResource[]>):
     });
 }
 
-/** Extracts the first word (generic drug name) from a raw FHIR medication string. */
+/**
+ * Extracts the generic drug name from a raw FHIR medication string.
+ * Collects words up to the first dose/form token (digit-prefixed or known unit/form word).
+ * Strips the FDA biosimilar 4-letter suffix (e.g. adalimumab-adaz → Adalimumab).
+ */
 export function normalizeMedName(raw: string): string {
-    const first = raw.trim().split(/[\s,/()]+/).find(t => /^[A-Za-z]/.test(t)) ?? raw;
-    // Strip FDA biosimilar suffix: exactly 4 lowercase letters after a hyphen (e.g. adalimumab-adaz → adalimumab)
-    const stripped = first.replace(/-[a-z]{4}$/i, '');
-    return stripped.charAt(0).toUpperCase() + stripped.slice(1).toLowerCase();
+    const STOP_WORDS = new Set([
+        'MG', 'MCG', 'UG', 'G', 'ML', 'L', 'MEQ', 'UNIT', 'UNITS', 'IU', 'MMol',
+        'ORAL', 'TABLET', 'TABLETS', 'TAB', 'TABS', 'CAPSULE', 'CAPSULES', 'CAP', 'CAPS',
+        'SOLUTION', 'SUSPENSION', 'INJECTABLE', 'INJECTION', 'INFUSION',
+        'PREFILLED', 'SYRINGE', 'PEN', 'AUTO-INJECTOR',
+        'PATCH', 'CREAM', 'GEL', 'OINTMENT', 'FOAM', 'SUPPOSITORY', 'ENEMA', 'DROPS',
+        'EXTENDED', 'IMMEDIATE', 'MODIFIED', 'DELAYED', 'RELEASE',
+    ]);
+
+    // Tokens that may appear before the drug name (e.g. "24 HR Metformin...")
+    const PREFIX_SKIP = new Set(['HR', 'H', 'MIN', 'SEC']);
+
+    const tokens = raw.trim().split(/[\s,/()[\]]+/).filter(Boolean);
+    const nameTokens: string[] = [];
+    let nameStarted = false;
+
+    for (const t of tokens) {
+        const up = t.toUpperCase();
+        // Skip leading numeric/time-unit tokens before the drug name begins
+        if (!nameStarted && (/^\d/.test(t) || PREFIX_SKIP.has(up))) continue;
+        nameStarted = true;
+        if (/^\d/.test(t) || STOP_WORDS.has(up)) break;
+        // Strip FDA biosimilar suffix: exactly 4 lowercase letters after a hyphen
+        const stripped = t.replace(/-[a-z]{4}$/i, '');
+        nameTokens.push(stripped.charAt(0).toUpperCase() + stripped.slice(1).toLowerCase());
+    }
+
+    return nameTokens.join(' ') || raw;
 }
 
 /** Only active IBD medications, sorted by class priority (biologic first). */
@@ -480,6 +508,8 @@ export function getLatestEndoscopy(resources: Record<string, FhirResource[]>): E
         }))
         .filter(r => r.date)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    console.log("reports:", reports);
 
     return reports[0] ?? null;
 }

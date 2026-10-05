@@ -65,11 +65,12 @@ export interface EncounterAttributes {
 }
 
 export interface MedicationRequestAttributes {
-    id        : string | null;
-    status    : string | null;
-    intent    : string | null;
-    medication: string | null;
-    authoredOn: ISODate | null;
+    id               : string | null;
+    status           : string | null;
+    intent           : string | null;
+    medication       : string | null;
+    authoredOn       : ISODate | null;
+    statusReasonText : string | null;
 }
 
 export interface ObservationAttributes {

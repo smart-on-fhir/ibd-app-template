@@ -6,13 +6,14 @@ import type { MedicationRequestAttributes } from "./types";
 export class MedicationRequestModel extends Model<MedicationRequestAttributes> {
 
     readonly attributes: MedicationRequestAttributes = {
-        id        : null,
-        status    : null,
-        intent    : null,
-        medication: null,
-        authoredOn: null,
+        id               : null,
+        status           : null,
+        intent           : null,
+        medication       : null,
+        authoredOn       : null,
+        statusReasonText : null,
     };
-    
+
     constructor(medicationRequest: MedicationRequest) {
         super();
         this.attributes.id         = medicationRequest.id || null;
@@ -23,6 +24,9 @@ export class MedicationRequestModel extends Model<MedicationRequestAttributes> {
             || medicationRequest.medicationCodeableConcept?.coding?.[0]?.code
             || medicationRequest.medicationReference?.display
             || null;
-        this.attributes.authoredOn = medicationRequest.authoredOn || null;
+        this.attributes.authoredOn       = medicationRequest.authoredOn || null;
+        this.attributes.statusReasonText = medicationRequest.statusReason?.text
+            || medicationRequest.statusReason?.coding?.[0]?.display
+            || null;
     }
 }

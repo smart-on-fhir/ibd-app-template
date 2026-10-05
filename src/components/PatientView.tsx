@@ -58,6 +58,18 @@ export default function PatientView() {
                         ))}
                         <hr />
                     </>)}
+                    <div className='px-3 py-1 text-muted fw-bold mt-2' style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Dev
+                    </div>
+                    <NavLink to="./playground" className='d-flex gap-2 text-decoration-none nav-link py-1 fw-bold'>
+                        <i className="bi bi-rocket" />
+                        <span>Embedded Components</span>
+                    </NavLink>
+                    {/* <NavLink to="./chat" className='d-flex gap-2 text-decoration-none nav-link py-1 fw-bold'>
+                        <i className="bi bi-chat-dots" />
+                        <span>AI Chat</span>
+                    </NavLink> */}
+                    <hr />
                     <div className='d-flex gap-2 text-decoration-none px-3 py-1 fw-bold text-secondary'>
                         <i className="bi bi-folder2-open" />
                         <span className='flex-grow-1'>Resources:</span>
