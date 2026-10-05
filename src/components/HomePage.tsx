@@ -2,6 +2,7 @@ import { useState }          from "react";
 import { useNavigate }       from "react-router-dom";
 import PatientList           from "./PatientList";
 import { usePatientContext } from "../contexts/PatientContext";
+import { useClinicalData }   from "clinical-primitives";
 
 
 const LOCAL_SANDBOX_URL = import.meta.env.VITE_LOCAL_SANDBOX_URL as string | undefined;
@@ -70,6 +71,8 @@ function BundleImporter() {
     const { loadPatientBundle } = usePatientContext();
     const navigate = useNavigate();
 
+    const { loadFromBundle  } = useClinicalData();
+
     function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -82,6 +85,7 @@ function BundleImporter() {
                     const json = JSON.parse(text);
                     console.log('Parsed JSON:', json);
                     loadPatientBundle(json);
+                    loadFromBundle(json);
                     const patient = json.entry?.find((e: any) => e.resource?.resourceType === 'Patient')?.resource;
                     if (patient) {
                         navigate('/patients/' + patient.id);
