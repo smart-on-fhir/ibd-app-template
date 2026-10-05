@@ -1,7 +1,7 @@
 import type { FhirResource } from 'fhir/r4';
 import type { JSX }  from 'react';
 import { summarize } from '../utils/summarizer';
-import { Decorator } from './JsonViewer/FhirJsonViewer';
+import { FhirJsonDecorator } from 'clinical-primitives';
 
 /**
  * Return a plain‑text summary for any FHIR resource.  This is just a thin
@@ -45,7 +45,7 @@ export function summarizeResourceJSX(resource: FhirResource): JSX.Element {
                     <div key={idx} className='p-1 border-top'>
                         <strong>{prop.name}:</strong>
                         <div className='text-muted' style={{ paddingLeft: '1rem', whiteSpace: 'pre-wrap', maxHeight: 200, overflowY: 'auto' }}>
-                            <Decorator type={prop.type as any}>{prop.value}</Decorator>
+                            <FhirJsonDecorator type={prop.type as any}>{prop.value}</FhirJsonDecorator>
                         </div>
                     </div>
                 ))

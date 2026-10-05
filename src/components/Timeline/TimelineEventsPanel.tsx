@@ -1,8 +1,8 @@
-import Collapse from "../generic/Collapse";
+import { Collapse } from "clinical-primitives";
 import TimelineEventView from "./TimelineEventView";
 import ResourceFlowDiagram from "./ResourceFlowDiagram";
 import { getIconForResourceType, type TimelineEvent } from "./utils";
-import FhirResourceJsonViewer from "../JsonViewer/FhirJsonViewer";
+import { FhirResourceJsonViewer } from "clinical-primitives";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import ResourceSummary from "../ResourceSummary";

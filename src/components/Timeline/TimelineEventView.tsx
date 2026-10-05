@@ -1,6 +1,5 @@
 import { humanizeNumericValue, textForCoding } from "../../utils/patientTimeline";
-import Collapse               from "../generic/Collapse";
-import FhirResourceJsonViewer from "../JsonViewer/FhirJsonViewer";
+import { Collapse, FhirResourceJsonViewer } from "clinical-primitives"
 import type { TimelineEvent } from "./utils";
 
 

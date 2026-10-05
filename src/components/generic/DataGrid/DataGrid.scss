@@ -1,5 +1,25 @@
 .data-grid {
 
+    .table-responsive {
+        border: 1px solid var(--bs-border-color);
+    }
+
+    table {
+        border-spacing: 0;
+        min-width: 100%;
+        table-layout: fixed;
+        // border: 0px transparent;
+    }
+
+    td, th {
+        width: 10em;
+        // max-width: max-content;
+        + td, + th {
+            border-left: 1px solid var(--bs-border-color);
+        }
+    }
+    
+
     td.date {
         font-family: monospace;
         font-size: 86%;

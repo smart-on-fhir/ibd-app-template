@@ -112,7 +112,7 @@ export default function DataGrid({
             </div>
 
             <div className="table-responsive small">
-                <table className="table table-sm table-hover align-middle">
+                <table className="table table-sm table-hover align-middle table-fixed w-100">
                     <thead>
                         <tr>
                             {cols.map((c) => (

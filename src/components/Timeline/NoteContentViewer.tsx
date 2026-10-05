@@ -1,4 +1,4 @@
-import AttachmentPreview from '../JsonViewer/Attachment';
+import { AttachmentPreview } from 'clinical-primitives';
 
 // ─── Sanitize HTML ────────────────────────────────────────────────────────────
 // Strip script/style tags before rendering FHIR narrative HTML in the DOM.
