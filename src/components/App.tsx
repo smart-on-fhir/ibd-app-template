@@ -7,11 +7,14 @@ import SiteFooter                       from './SiteFooter';
 import PatientSummaryView               from './PatientSummary';
 import ResourceView                     from './ResourceView';
 import PatientTimeline                  from './Timeline/PatientTimeline';
-import AIChat                           from './AIChat';
+// import AIChat                           from './AIChat';
 import HomePage                         from './HomePage';
 import { PatientProvider }              from '../contexts/PatientContext';
 import PhiDisclaimerModal               from './PhiDisclaimerModal';
 import { MODULE_REGISTRY }              from '../modules/registry';
+import ClinicalPrimitivesPlayground     from './Playground';
+import { ClinicalDataProvider }         from 'clinical-primitives';
+import { Chat }                         from './AI/Chat';
 
 const OPENAI_ENABLED = !!import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -20,33 +23,37 @@ export default function App() {
     return (
         <BrowserRouter>
             <PhiDisclaimerModal />
-            <PatientProvider>
-                <SiteHeader />
-                <main>
-                    <Routes>
-                        <Route path="/"           element={<HomePage />} />
-                        <Route path="patients"    element={<PatientList />} />
+            <ClinicalDataProvider>
+                <PatientProvider>
+                    <SiteHeader />
+                    <main>
+                        <Routes>
+                            <Route path="/"           element={<HomePage />} />
+                            <Route path="patients"    element={<PatientList />} />
 
-                        {/* Disease module routes — more specific, matched before the generic :id route */}
-                        {MODULE_REGISTRY.map(mod => (
-                            <Route key={mod.id} path={`patients/:id/${mod.basePath}`} element={mod.layout}>
-                                {mod.routes.map((r, i) =>
-                                    r.index
-                                        ? <Route key={i} index element={r.element} />
-                                        : <Route key={r.path} path={r.path} element={r.element} />
-                                )}
+                            {/* Disease module routes — more specific, matched before the generic :id route */}
+                            {MODULE_REGISTRY.map(mod => (
+                                <Route key={mod.id} path={`patients/:id/${mod.basePath}`} element={mod.layout}>
+                                    {mod.routes.map((r, i) =>
+                                        r.index
+                                            ? <Route key={i} index element={r.element} />
+                                            : <Route key={r.path} path={r.path} element={r.element} />
+                                    )}
+                                </Route>
+                            ))}
+
+                            <Route path="patients/:id" element={<PatientView />}>
+                                <Route index element={<PatientSummaryView  />} />
+                                {/* {OPENAI_ENABLED && <Route path="chat" element={<AIChat />} />} */}
+                                {OPENAI_ENABLED && <Route path="chat" element={<Chat />} /> }
+                                <Route path="timeline" element={<PatientTimeline />} />
+                                <Route path="playground" element={<ClinicalPrimitivesPlayground />} />
+                                <Route path=":resourceType" element={<ResourceView />} />
                             </Route>
-                        ))}
-
-                        <Route path="patients/:id" element={<PatientView />}>
-                            <Route index element={<PatientSummaryView  />} />
-                            {OPENAI_ENABLED && <Route path="chat" element={<AIChat />} />}
-                            <Route path="timeline" element={<PatientTimeline />} />
-                            <Route path=":resourceType" element={<ResourceView />} />
-                        </Route>
-                    </Routes>
-                </main>
-            </PatientProvider>
+                        </Routes>
+                    </main>
+                </PatientProvider>
+            </ClinicalDataProvider>
             <SiteFooter />
         </BrowserRouter>
     )

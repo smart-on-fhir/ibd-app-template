@@ -4,6 +4,7 @@ import App            from './components/App';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './style.scss'
+import 'clinical-primitives/styles.css';
 
 
 createRoot(document.getElementById('root')!).render(
