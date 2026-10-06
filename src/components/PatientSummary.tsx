@@ -17,9 +17,9 @@ export default function PatientSummaryView() {
     const immunizations = selectedPatientResources?.Immunization || [];
 
     return (
-        <div className="d-flex flex-column gap-4">
+        <div className="d-flex flex-column gap-3">
             { (conditions.length > 0 || medications.length > 0 || immunizations.length > 0) && (
-                <div className='row small flex-nowrap' style={{ height: '50vh', minHeight: '300px' }}>
+                <div className='row small flex-nowrap' style={{ height: '45vh', minHeight: '200px' }}>
                     <div className='col d-flex'>
                         { conditions.length > 0 && <ConditionList conditions={conditions as any} /> }
                     </div>
