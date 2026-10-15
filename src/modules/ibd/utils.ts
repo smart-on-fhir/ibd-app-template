@@ -199,13 +199,70 @@ export interface LabResult {
     goodDirection: 'up' | 'down' | null;
 }
 
-function obsMatchesLab(obs: any, loincs: readonly string[], keywords: readonly string[]): boolean {
-    for (const cod of (obs.code?.coding ?? [])) {
-        if ((cod.system ?? '').toLowerCase().includes('loinc') && loincs.includes(cod.code)) return true;
+/**
+ * Which lab each observation belongs to, decided across all of LAB_DEFS at
+ * once. Same rules as clinical-primitives' `assignReadings`
+ * (src/components/Observation/analyteMatching.ts), which LabTrendPanel and
+ * ObservationsTimeline use:
+ *
+ * 1. A lab whose `loincs` contain one of the reading's codes takes it.
+ * 2. A reading coded in LOINC under a code no lab lists belongs to none, and its
+ *    name is not consulted. This is what keeps Hemoglobin A1c (4548-4) out of
+ *    Hemoglobin, urine microalbumin (14959-1) out of Albumin, and lymphocyte
+ *    percentages (26478-8) out of the count row: a substring keyword test used
+ *    to put each of them there.
+ * 3. Otherwise the lab with the longest whole-word keyword match takes it, ties
+ *    going to LAB_DEFS order, so "prealbumin" beats "albumin". Keywords exist
+ *    for readings with a local code or none.
+ */
+type CodedReading = {
+    code?: { text?: string; coding?: { system?: string; code?: string; display?: string }[] };
+};
+
+function assignLabs(observations: readonly FhirResource[]): Map<FhirResource, LabKey> {
+    const labs = Object.keys(LAB_DEFS) as LabKey[];
+    const owners = new Map<FhirResource, LabKey>();
+
+    for (const obs of observations) {
+        const codings = (obs as CodedReading).code?.coding ?? [];
+
+        const byCode = labs.find(lab =>
+            codings.some(c => c.code !== undefined && (LAB_DEFS[lab].loincs as readonly string[]).includes(c.code)));
+        if (byCode) { owners.set(obs, byCode); continue; }
+
+        if (codings.some(c => c.code !== undefined && c.system === 'http://loinc.org')) continue;
+
+        const text = [(obs as CodedReading).code?.text, ...codings.map(c => c.display)].filter(Boolean).join(' ').toLowerCase();
+        let best: LabKey | null = null;
+        let bestLen = 0;
+        for (const lab of labs) {
+            for (const keyword of LAB_DEFS[lab].keywords) {
+                const escaped = keyword.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // Whole words: bare substrings let `ast` claim gastrin and `mch` MCHC.
+                if (keyword.length > bestLen && new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text)) {
+                    best = lab;
+                    bestLen = keyword.length;
+                }
+            }
+        }
+        if (best) owners.set(obs, best);
     }
-    const text = [obs.code?.text, ...(obs.code?.coding ?? []).map((c: any) => c.display)]
-        .filter(Boolean).join(' ').toLowerCase();
-    return keywords.some(kw => text.includes(kw));
+
+    return owners;
+}
+
+// Every lab lookup for one patient reads the same Observation array, so the
+// assignment is worked out once per array.
+const labOwnersCache = new WeakMap<readonly FhirResource[], Map<FhirResource, LabKey>>();
+
+function observationsForLab(resources: Record<string, FhirResource[]>, labKey: LabKey): FhirResource[] {
+    const observations = resources['Observation'] ?? [];
+    let owners = labOwnersCache.get(observations);
+    if (!owners) {
+        owners = assignLabs(observations);
+        labOwnersCache.set(observations, owners);
+    }
+    return observations.filter(obs => owners!.get(obs) === labKey);
 }
 
 function extractObsValue(obs: any): string | null {
@@ -223,9 +280,8 @@ export function getRecentLab(
     resources: Record<string, FhirResource[]>,
     labKey:    LabKey,
 ): LabResult | null {
-    const { loincs, keywords, goodDirection } = LAB_DEFS[labKey];
-    const matching = (resources['Observation'] ?? [])
-        .filter((obs: any) => obsMatchesLab(obs, loincs, keywords))
+    const { goodDirection } = LAB_DEFS[labKey];
+    const matching = observationsForLab(resources, labKey)
         .map((obs: any) => ({
             value:    extractObsValue(obs),
             date:     obs.effectiveDateTime ?? obs.issued ?? '',
@@ -257,9 +313,7 @@ export function getLabHistory(
     resources: Record<string, FhirResource[]>,
     labKey:    LabKey,
 ): LabPoint[] {
-    const { loincs, keywords } = LAB_DEFS[labKey];
-    return (resources['Observation'] ?? [])
-        .filter((obs: any) => obsMatchesLab(obs, loincs, keywords))
+    return observationsForLab(resources, labKey)
         .filter((obs: any) => obs.valueQuantity?.value !== undefined)
         .map((obs: any) => ({
             date:  new Date(obs.effectiveDateTime ?? obs.issued ?? '').getTime(),
